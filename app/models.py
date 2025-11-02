@@ -6,12 +6,12 @@ class Paciente(models.Model):
     nombre = models.CharField(max_length=100)
     apellido = models.CharField(max_length=100)
     fecha_nacimiento = models.DateField(verbose_name="Fecha de Nacimiento")
-    
+
     # Elecciones de Sexo
     SEXO_CHOICES = [
-        ('M', 'Masculino'),
-        ('F', 'Femenino'),
-        ('O', 'Otro'),
+      ('M', 'Masculino'),
+      ('F', 'Femenino'),
+      ('O', 'Otro'),
     ]
     sexo = models.CharField(max_length=1, choices=SEXO_CHOICES)
     
@@ -43,17 +43,6 @@ class Perfil(models.Model):
 
     def __str__(self):
         return self.user.username
-
-
-# 🧑 PACIENTE 
-class Paciente(models.Model):
-    id_paciente = models.IntegerField(db_column='ID_Paciente', primary_key=True)
-    nombre = models.CharField(max_length=100)
-    apellido = models.CharField(max_length=100)
-    dni = models.IntegerField(db_column='DNI')
-    
-    def __str__(self):
-        return f"{self.nombre} {self.apellido}"
 
 # 📊 ESTADO DEL PACIENTE
 class EstadoPaciente(models.Model):
@@ -93,3 +82,75 @@ class Turno(models.Model):
 
     def __str__(self):
         return f"Turno {self.id_turno} - Paciente {self.paciente}"
+    
+
+# 🏥 CENTROS TERAPÉUTICOS
+class Centrosterapeuticos(models.Model):
+    id_centroterapeutico = models.IntegerField(db_column='ID_CentroTerapeutico', primary_key=True)
+    nombre = models.CharField(db_column='Nombre', max_length=100, blank=True, null=True)
+    telefono = models.IntegerField(db_column='Telefono', blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'centrosterapeuticos'
+
+    def __str__(self):
+        return self.nombre or f"Centro {self.id_centroterapeutico}"
+
+
+# 💳 DETALLE DE PAGOS
+class Detallepagos(models.Model):
+    codigo_pago = models.IntegerField(db_column='Codigo_Pago', primary_key=True)
+    monto = models.DecimalField(db_column='Monto', max_digits=10, decimal_places=2, blank=True, null=True)
+    observaciones = models.CharField(db_column='Observaciones', max_length=400, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'detallepagos'
+
+    def __str__(self):
+        return f"Pago {self.codigo_pago} - ${self.monto}"
+
+
+# 🧠 ESPECIALIDADES
+class Especialidades(models.Model):
+    id_especialidades = models.IntegerField(db_column='id_Especialidades', primary_key=True)
+    id_especialista = models.IntegerField()
+    nombre = models.CharField(db_column='Nombre', max_length=100, blank=True, null=True)
+    matricula = models.IntegerField(db_column='Matricula', blank=True, null=True)
+
+    class Meta:
+        db_table = 'especialidades'
+
+    def __str__(self):
+        return self.nombre or f"Especialidad {self.id_especialidades}"
+
+
+# 👩‍⚕️ ESPECIALISTAS
+class Especialistas(models.Model):
+    id_especialistas = models.IntegerField(db_column='ID_Especialistas', primary_key=True)
+    id_especialidad_especialista = models.CharField(max_length=45, blank=True, null=True)
+    dni = models.IntegerField(db_column='DNI', blank=True, null=True)
+    matricula = models.IntegerField(db_column='Matricula', blank=True, null=True)
+    email = models.CharField(db_column='Email', max_length=100, blank=True, null=True)
+    telefono = models.IntegerField(db_column='Telefono', blank=True, null=True)
+
+    class Meta:
+        db_table = 'especialistas'
+    def __str__(self):
+        return f"Especialista {self.dni or self.id_especialistas}"
+    
+# 📑 INFORME
+class Informe(models.Model):
+    id_informe = models.IntegerField(primary_key=True)
+    titulo = models.CharField(max_length=255)
+    contenido = models.TextField()
+    fecha_creacion = models.DateField(auto_now_add=True)
+    # ... otros campos
+    
+    class Meta:
+        managed = False
+        # db_table = 'informes' 
+        
+    def __str__(self):
+        return self.titulo

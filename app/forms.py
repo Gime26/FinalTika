@@ -4,7 +4,7 @@ from django.forms import ModelForm, NumberInput
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User 
-from .models import Perfil, Entrevista, Paciente 
+from .models import Perfil, Entrevista, Paciente, Informe  
 from datetime import date
 
 
@@ -57,7 +57,17 @@ class RegisterForm(UserCreationForm):
 class LoginForm(AuthenticationForm):
     pass
 
+
 class PacienteForm(forms.ModelForm):
     class Meta:
         model = Paciente
         fields = ['dni_paciente', 'nombre', 'apellido', 'fecha_nacimiento', 'sexo', 'telefono', 'email']
+
+class InformeForm(forms.ModelForm):
+    class Meta:
+        model = Informe
+        fields = ['titulo', 'contenido']
+        widgets = {
+            'contenido': forms.Textarea(attrs={'rows': 4}),
+        }
+

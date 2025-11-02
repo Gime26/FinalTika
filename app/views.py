@@ -3,11 +3,15 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.models import User
 # Importar todas las clases de formularios desde forms.py
-from .forms import LoginForm, RegisterForm, EntrevistaForm, PacienteForm
-from .models import Perfil , Paciente
+from .forms import LoginForm, RegisterForm, EntrevistaForm, PacienteForm, InformeForm
+from .models import Entrevista, EstadoPaciente, Informe, Perfil, Paciente
 
 
 # La vista principal que renderiza index.html y pasa ambos formularios para los modales
+
+def base(request):
+    return render(request, "base.html")
+
 def inicio(request):
     # Instanciar ambos formularios para los modales en index.html
     login_form = LoginForm()
@@ -148,3 +152,22 @@ def paciente_delete(request, pk):
         return redirect('pacientes_list') 
     
     return render(request, 'pacientes/paciente_confirm_delete.html', {'paciente': paciente})
+
+def estadistica_view(request):
+    estados = EstadoPaciente.objects.all()
+    return render(request, 'estadistica.html', {'estados': estados})   
+
+
+def crear_informe(request):
+    if request.method == 'POST':
+        form = InformeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('lista_informes')
+    else:
+        form = InformeForm()
+    return render(request, 'informes.html', {'form': form})
+
+def lista_informes(request):
+    informes = Informe.objects.all()
+    return render(request, 'lista_informes.html', {'informes': informes})
