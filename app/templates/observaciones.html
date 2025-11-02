@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro de Observaciones</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #e2cdd6;
+      margin: 0;
+      padding: 0;
+      color: #000000;
+    }
+
+    header {
+      background: linear-gradient(to right,#f4eef3, #9d38e5,#34052a); 
+      text-align: center;
+      padding: 20px;
+    }
+
+    .titulo {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 700px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      margin-top: 0;
+      color: #000000;
+    }
+
+    form label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    form input, form select {
+      width: 100%;
+      margin-top: 5px;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    textarea {
+      width: 98%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-family: 'Lexend', sans-serif;
+      background-color: #d4d5d2;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 8px;
+      width: 100%;
+      border: none;
+      border-radius: 8px;
+      background: #0077b6;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #005f86;
+    }
+
+    .historial {
+      list-style: none;
+      padding: 0;
+    }
+
+    .historial li {
+      border-bottom: 1px solid #eee;
+      padding: 10px 0;
+    }
+
+    .detalle {
+      font-size: 0.9em;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1> TIKA · OBSERVACIONES</h1>
+    <h2>Registro y observación de sesión</h2>
+  </header>
+  <section class="titulo">
+    <h2>Nueva observación</h2>
+    <form>
+      <label>Paciente:</label>
+      <select>
+        <option>— Seleccionar —</option>
+        <option>Juan Pérez (DNI 12345678)</option>
+        <option>María Gómez (DNI 87654321)</option>
+      </select>
+
+      <label>Fecha:</label>
+      <input type="date">
+
+      <label>Tipo de sesión:</label>
+      <select>
+        <option>— Seleccionar —</option>
+        <option>Psicología</option>
+        <option>Fonoaudiología</option>
+        <option>Kinesiología</option>
+        <option>Psicomotricidad</option>
+        <option>Psicopedagogía</option>
+      </select>
+
+      <label>Observación clínica:</label>
+      <textarea id="obs" name="observacion" required></textarea>
+
+      <button type="submit">Guardar observación</button>
+    </form>
+  </section>
+
+  <!-- Historial -->
+  <section class="titulo">
+    <h2>Historial de observaciones</h2>
+    <ul class="historial">
+      <li>
+        <span class="detalle">25/08/2025 · Psicología · Lic. Silvina Díaz</span>
+        <p>El paciente mostró avances en la interacción social.</p>
+      </li>
+      <li>
+        <span class="detalle">20/08/2025 · Fonoaudiología · Lic. Mónica Palacios</span>
+        <p>Se observó mejora en pronunciación de sonidos complejos.</p>
+      </li>
+    </ul>
+  </section>
+</body>
+</html>

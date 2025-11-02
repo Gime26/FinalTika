@@ -1,0 +1,184 @@
+    body {
+      position: relative;
+      min-height: 100vh;
+      background-color: #3100317e; /* color de fondo base */
+    }
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('../img/logotikadash.png'); /* ruta de tu imagen */
+      background-size: cover; /* hace que la imagen cubra toda la pantalla */
+      background-repeat: no-repeat; /* evita que se repita */
+      background-attachment: fixed; /* hace que la imagen quede fija al hacer scroll */
+      background-position: center; /* centra la imagen */
+      opacity: 0.5; /* 🔹 Transparencia del fondo */
+      z-index: -1; /* 🔹 Envía la imagen detrás del contenido */
+    }
+ 
+    .sidebar {
+      top: 60px; /* igual a la altura del navbar */
+      height: calc(100vh - 60px); /* para que no se pase de la pantalla */
+      background-color: #e1b9eb;
+      border-right: 1px solid #dee2e6;
+      padding-top: 20px;
+      position: fixed;
+      width: 220px;
+    }
+    .sidebar a {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    color: #000;
+    text-decoration: none;
+    margin-bottom: 8px;
+    border: 2px solid #610455; /* 👈 borde visible */
+    border-radius: 2px; /* bordes redondeados */
+    background-color: #f6e8fa; /* color de fondo suave */
+    transition: all 0.3s ease;
+}
+
+    .sidebar a:hover {
+    background-color: #ec99ecee;
+    color: rgb(0, 0, 0);
+    border-color: #e478e4; /* cambia el color del borde al pasar el mouse */
+  }
+
+    .sidebar a i {
+    margin-right: 10px;
+}
+    .content {
+      padding: 20px;
+      margin-left: 240px; /* ancho del sidebar */
+      padding-top: 80px;  /* un poco más que la altura del navbar */
+    }
+    .card-custom {
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    .header-icons {
+      float: right;
+    }
+    .header-icons i {
+      font-size: 1.2rem;
+      margin-left: 15px;
+      cursor: pointer;
+    }
+    .dashboard-cards {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .dashboard-cards .card {
+      flex: 1;
+      min-width: 180px;
+    }
+    
+/* Botón principal del desplegable */
+.dropdown-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* texto a la izquierda, caret a la derecha */
+  width: 100%;
+  padding: 10px 20px;
+  border: 2px solid #610455; /* mismo borde que los links */
+  border-radius: 2px; /* mismo radio que los links */
+  background-color: #f6e8fa; /* color de fondo suave */
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 8px;
+}
+
+.dropdown-btn:hover {
+  background-color: #ec99ecee; /* mismo hover que los links */
+  color: rgb(0, 0, 0);
+  border-color: #e478e4; /* mismo cambio de borde al hover */
+}
+
+.btn-text i {
+  margin-right: 8px; /* espacio entre icono principal y texto */
+}
+
+.btn-caret {
+  margin-left: 10px; /* separa el caret del texto */
+  transition: transform 0.3s;
+}
+
+
+.dropdown-btn:hover {
+  background-color: #ffffff50;
+  color: #861313;
+}
+
+/* Contenedor de los enlaces desplegados */
+.dropdown-container {
+  display: none; /* oculto por defecto */
+  flex-direction: column;
+  padding-left: 15px;
+}
+
+.dropdown-container a {
+  display: block;
+  padding: 8px 20px;
+  text-decoration: none;
+  color: #000;
+  border-radius: 8px;
+  transition: 0.3s;
+}
+
+.dropdown-container a:hover {
+  background-color: #e9ecef;
+  border: 1px solid #861313;
+}
+
+/* Cuando el menú está activo */
+.dropdown-active {
+  display: flex;
+}
+.dropdown-btn {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 10px 20px;
+  border: 2px solid #861313;
+  border-radius: 8px;
+  background: transparent;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+  margin-bottom: 5px;
+}
+
+.dropdown-btn:hover {
+  background-color: #e478e450;
+  color: #861313;
+}
+
+.dropdown-container {
+  display: none;
+  flex-direction: column;
+  padding-left: 15px;
+}
+
+.dropdown-container a {
+  padding: 8px 20px;
+  text-decoration: none;
+  color: #000;
+  border-radius: 8px;
+  transition: 0.3s;
+}
+
+.dropdown-container a:hover {
+  background-color: #e9ecef;
+  border: 1px solid #861313;
+}
+
+.dropdown-active {
+  display: flex;
+}

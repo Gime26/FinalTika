@@ -1,0 +1,254 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pagina Web TIKA</title>
+  
+  <link rel="stylesheet" href="{% static 'css/Opcion3.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'css/entrevista.css' %}">
+
+
+ <a href=""></a>
+
+</head>
+<body>
+  <header>
+    <div class="head">
+      <div class="logo">
+       <img src="{% static 'img/sinfondo.png' %}" alt="Tika" class="logo">
+      </div>
+    </div>
+    <div class="menu-toggle" onclick="toggleMenu()">
+     <span></span>
+     <span></span>
+     <span></span>
+    </div>
+    <nav class="navbar" id="navbar">
+     <a href="#inicio">Inicio</a>
+     <a href="#nosotros">Nosotros</a>
+     <a href="#servicios">Servicios</a>
+     <a href="#test">Test</a>
+     <a href="#equipo">Equipo</a>
+     <a href="#testimonios">Testimonios</a>
+  <a href="#contacto">Contacto</a>
+  <!-- Cambiado a ancla local para evitar 404; apunta a <section id="footer"> -->
+  <a href="#footer">Footer</a>
+    </nav>
+  </header>
+  <main>
+    <section id="inicio" class="content home">
+        <h2 class="title"> ¡BIENVENIDOS A TIKA! </h2>
+        <p>Tu espacio para aprender y crecer.</p>
+        <div class="btn-home">
+       <h3><button id="openModal" class="btn">INGRESAR</button></h3>
+
+<!-- 🟣 MODAL DE LOGIN -->
+ <link rel="stylesheet" href="{% static 'css/modal.css' %}">
+
+<div id="loginModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <form method="POST" action="{% url 'dashboard' %}">
+      {% csrf_token %}
+      {{ login_form.as_p }} 
+      <button type="submit" class="btn Ingresar-btn"> 
+        INGRESAR
+      </button>
+    </form>
+    <a href="{% url 'registro' %}" class="btn register-btn" >
+      Registrarse
+    </a>
+  </div>
+</div>
+
+          {% comment %} <h3><a href={% url 'register' %} class="btn">Registrarse</a></h3> {% endcomment %}
+        </div>
+        
+    </section>
+
+    <section id="nosotros"  class="content about">
+        <h2 class="title">Nosotros</h2>
+        <p>Cada niño y adolescente es único, valioso y capaz. Somos un espacio dedicado al acompañamiento terapéutico integral, especializado 
+          en neurodesarrollo. Brindamos contención, herramientas y apoyo tanto a los niños como a sus familias. Con un enfoque personalizado y un
+          equipo interdisciplinario que trabaja con empatía, profesionalismo y pasión. Celebramos cada logro, acompañamos cada avance y nos impulsa
+          cada sonrisa.
+        </p>
+        
+        <div class="box-container">
+
+            <div class="box">
+                <i class="fas fa-puzzle-piece"></i>
+                <h3>Aprender jugando </h3>
+                <p>
+                </p>
+            </div>
+            <div class="box">
+                <i class="fas fa-heart"></i>
+                <h3>Creamos vínculos de confianza</h3>
+                <p>
+                </p>
+            </div>
+            <div class="box">
+                <i class="fas fa-users"></i>
+                <h3>Acompañamos a la familia</h3>
+                <p>
+                </p>
+            </div>
+    </section>
+    <section id="servicios" class="content services">
+        <h2 class="title">Servicios</h2>
+        <div class="box-container"> 
+            <div class="box" id="psicologia">
+                <i class="fas fa-brain"></i>
+                <h3>Psicología</h3>
+                <p class="descripcion-oculta">Atención psicológica especializada para niños y adolescentes.</p>
+            </div>
+            <div class="box" id="fonoaudiologia">
+                <i class="fas fa-ear-listen"></i>
+                <h3>Fonoaudiología</h3>
+                <p class="descripcion-oculta">Intervención fonoaudiológica para potenciar el lenguaje, la voz y la comunicación.</p>
+            </div>
+            <div class="box" id="kinesiologia">
+                <i class="fas fa-bed"></i>
+                <h3>Kinesiología</h3>
+                <p class="descripcion-oculta">Tratamiento kinesiológico infantil para mejorar el movimiento y la autonomía física.</p>
+            </div>
+            <div class="box" id="psicomotricidad">
+                <i class="fas fa-child"></i>
+                <h3>Psicomotricidad</h3>
+                <p class="descripcion-oculta">Estimulación psicomotriz para el desarrollo integral del cuerpo y la mente.</p>
+            </div>
+            <div class="box" id="psicopedagogia">
+                <i class="fas fa-user-md"></i>
+                <h3>Psicopedagogía</h3>
+                <p class="descripcion-oculta">Apoyo pedagógico personalizado para acompañar el proceso de aprendizaje.</p>
+            </div>
+        </div>
+    </section>
+    <section id="test" class="content test">
+        <h2 class="title">Test</h2>
+        <p>Realizamos evaluaciones y diagnósticos para comprender mejor las necesidades de cada niño y adolescente. 
+          Nuestros tests abarcan áreas como el desarrollo cognitivo, emocional, social y motor, permitiéndonos diseñar 
+         un plan de intervención personalizado y efectivo.
+        </p>
+
+<div class="btn-home mt-4">
+        <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modalEntrevista">
+          Realizar Entrevista
+        </button>
+</button>
+  <!-- Incluimos el modal (partial) -->
+  {% include 'partials/entrevista_form.html' %}
+</section>
+    </section>
+
+    <section id="equipo" class="content equipo">
+        <h2 class="title">Equipo</h2>
+        <div class="team-container">
+            <div class="team-member">
+                <figure class="Psicólogas">
+                   <img src="{% static 'img/psico.png' %}" alt="Psicólogas" width="600" height="500" />
+                </figure>
+                <h3>Lic. Silvina Diaz</h3>
+                <h3>Lic. Mailén Danilowicz</h3>
+                <p>Psicólogas especializadas en neurodesarrollo.</p>
+            </div>
+            <div class="team-member">
+                <figure class="Fonoaudióloga">
+                  <img src="{% static 'img/fono.png' %}" alt="Fonoaudióloga" width="600" height="500" />
+                </figure>
+                <h3>Lic. Monica Palacios Cañizares</h3>
+                <p>Fonoaudióloga con enfoque en comunicación infantil.</p>
+            </div>
+            <div class="team-member">
+                <figure class="Kinesiólogo">
+                  <img src="{% static 'img/kines.png' %}" alt="Kinesiólogo" width="600" height="500"/>
+                </figure>
+                <h3>Lic. Carlos Herrera</h3>
+                <p>Kinesiólogo especializado en rehabilitación pediátrica.</p>
+            </div>
+            <div class="team-member">
+                <figure class="Psicomotricistas">
+                  <img src="{% static 'img/motric.png' %}" alt="Psicomotricistas" width="600" height="500" />
+                </figure>
+                <h3>Lic. Sol Espasandin</h3>
+                <h3>Lic. Lucila Lencina</h3>
+                <p>Psicomotricistas enfocadas en el desarrollo motor y emocional.</p>
+            </div>
+            <div class="team-member">
+                <figure class="Psicopedagogas">
+                  <img src="{% static 'img/pedag.png' %}" alt="Psicopedagogas" width="600" height="500"/>
+                </figure>
+                <h3>Lic. Carolina Castro Herrera</h3>
+                <h3>Lic. Itati Gordillo</h3>
+                <p>Psicopedagogas dedicadas a potenciar el aprendizaje infantil.</p>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="testimonios" class="content testimonials">
+        <h2 class="title">Testimonios</h2>
+        <div class="testimonial-container">
+            <div class="testimonial">
+                <p>"TIKA ha sido un lugar de luz y esperanza para mi hijo. Gracias a su equipo, hemos visto un cambio increíble en su desarrollo 
+                y bienestar."</p>
+                <h3>- Agustina, mamá de Leonel</h3>
+                <figure class="testimonio 1">
+                    <img src="{% static 'img/foto.png' %}" alt="Testimonio de Agustina" width="600" height="500">
+
+                </figure>
+            </div>
+            <div class="testimonial">
+                <p>"El acompañamiento en TIKA ha sido fundamental para nuestra familia. Nos sentimos apoyados y comprendidos en cada paso del camino."</p>
+                <h3>- Carlos, papá de Valentina</h3>
+                <figure class="testimonio 2">
+                  <img src="{% static 'img/FotoTikaa.jpeg' %}" alt="Testimonio de Carlos" width="600" height="500">
+
+                </figure>
+            </div>
+        </div>
+    </section>
+
+    <section id="contacto" class="content contact">
+        <h2 class="title">Contacto</h2>
+        <p> Nos encontramos ubicados en Bolivar 142, Salta Capital</p>
+        <a href="#"><i class="fab fa-whatsapp"></i> 3875827499</a> 
+        <figure class="mapa">
+          <img src="{% static 'img/mapa.png' %}" alt="Mapa de ubicación" width="600" height="500">
+        </figure>
+    </section>
+
+    <section id="footer" class="footer">
+        <p>© 2025 TIKA. Todos los derechos reservados.</p>
+        <p>Diseñado por <a href="Isa Agustina y Sandoval Gimena">Isa Agustina y Sandoval Gimena.</a></p>
+        <p>¡Seguinos en nuestras redes sociales!</p>
+        <div class="social-icons">
+          <a href="https://www.facebook.com/tikaespacioterapeutico" target="_blank"><i class="fab fa-facebook"></i></a>
+          <a href="https://www.instagram.com/tika.et" target="_blank"><i class="fab fa-instagram"></i></a>
+        </div>
+
+    </section>
+  </main>
+  
+  <script>
+      function toggleMenu() {
+      const navbar = document.getElementById("navbar");
+      navbar.classList.toggle("show");
+      
+    }
+  </script>
+  <script src="/script.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="DescriOculta.js"></script>
+    <script src="{% static 'js/modal.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script src="{% static 'js/entrevista.js' %}"></script>
+  </script> 
+</body>
+</html>

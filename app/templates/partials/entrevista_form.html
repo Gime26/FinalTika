@@ -1,0 +1,70 @@
+{% load static %}
+
+<div class="modal fade" id="modalEntrevista" tabindex="-1" aria-labelledby="modalEntrevistaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content" style="background-color:#fff8dc; width:700px; max-width:100%;">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalEntrevistaLabel">Entrevista Integral - TIKA</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Progreso -->
+        <div class="progress-container mb-4 text-center">
+          <span class="step-circle active">1</span>
+          <span class="step-circle">2</span>
+          <span class="step-circle">3</span>
+          <span class="step-circle">4</span>
+        </div>
+
+        <form id="entrevistaForm" method="POST" action="{% url 'entrevista' %}">
+          {% csrf_token %}
+
+          <!-- Paso 1: Niño y Tutor -->
+          <div class="form-step form-step-active">
+            <h5>Datos del Niño y Tutor</h5>
+            <input type="text" name="nombre_nino" class="form-control mb-2" placeholder="Nombre del niño">
+            <input type="text" name="apellido_nino" class="form-control mb-2" placeholder="Apellido del niño">
+            <input type="date" name="fecha_nacimiento" class="form-control mb-2">
+            <input type="text" name="nombre_tutor" class="form-control mb-2" placeholder="Nombre del tutor">
+            <input type="text" name="telefono_contacto" class="form-control mb-2" placeholder="Teléfono de contacto">
+            <div class="text-end mt-3">
+              <button type="button" class="btn btn-dark next-step">Siguiente</button>
+            </div>
+          </div>
+
+          <!-- Paso 2: Prenatal y Perinatal -->
+          <div class="form-step">
+            <h5>Etapa Prenatal y Perinatal</h5>
+            <textarea name="datos_prenatales" class="form-control mb-2" rows="4" placeholder="Detalles sobre embarazo, parto y primeros meses"></textarea>
+            <div class="d-flex justify-content-between mt-3">
+              <button type="button" class="btn btn-secondary prev-step">Volver</button>
+              <button type="button" class="btn btn-dark next-step">Siguiente</button>
+            </div>
+          </div>
+
+          <!-- Paso 3: Escolar -->
+          <div class="form-step">
+            <h5>Etapa Escolar</h5>
+            <textarea name="datos_escolares" class="form-control mb-2" rows="4" placeholder="Información sobre escolaridad, desempeño y actividades"></textarea>
+            <div class="d-flex justify-content-between mt-3">
+              <button type="button" class="btn btn-secondary prev-step">Volver</button>
+              <button type="button" class="btn btn-dark next-step">Siguiente</button>
+            </div>
+          </div>
+
+          <!-- Paso 4: Clínico -->
+          <div class="form-step">
+            <h5>Antecedentes Clínicos</h5>
+            <textarea name="datos_clinicos" class="form-control mb-2" rows="4" placeholder="Información sobre medicación, antecedentes familiares y CUD"></textarea>
+            <div class="d-flex justify-content-between mt-3">
+              <button type="button" class="btn btn-secondary prev-step">Volver</button>
+              <button type="submit" class="btn btn-success">Guardar</button>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

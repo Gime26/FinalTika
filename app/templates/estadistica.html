@@ -1,0 +1,69 @@
+<html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Reporte Analitico</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  body{font-family:Arial;margin:20px;background:rgb(213, 165, 202)}
+  input{margin:4px;padding:6px}
+  button{margin:6px;padding:6px 12px;background:#a78bfa;color:#fff;border:0;border-radius:6px;cursor:pointer}
+  #info{margin-top:10px;font-weight:bold}
+  canvas{max-width:250px;max-height:200px;margin-top:10px}
+  table{margin-top:10px;border-collapse:collapse;width:100%;max-width:400px;background:#fff}
+  th,td{border:1px solid #ccc;padding:6px;text-align:left}
+  th{background:#eee}
+</style>
+</head>
+<body>
+<h2>Centro Terapéutico TIKA</h2>
+<input id="n" placeholder="Nombre">
+<input id="e" type="number" min="0" max="16" placeholder="Edad">
+<input id="d" placeholder="Diagnóstico">
+<button onclick="agregar()">Agregar</button>
+
+<div id="info">Total: 0 | Promedio: —</div>
+<canvas id="pie"></canvas>
+
+<table id="tabla">
+  <thead>
+    <tr><th>Nombre</th><th>Edad</th><th>Diagnóstico</th></tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<script>
+let pacientes=[], pie;
+function agregar(){
+  const n=document.getElementById('n').value.trim();
+  const e=Number(document.getElementById('e').value);
+  const d=document.getElementById('d').value.trim();
+  // validación: nombre, diagnóstico no vacíos y edad válida entre 0 y 16
+  if(!n||!d||isNaN(e)||e<0||e>16) return;
+  pacientes.push({n,e,d});
+  document.getElementById('n').value=document.getElementById('e').value=document.getElementById('d').value="";
+  mostrar();
+}
+function mostrar(){
+  const total=pacientes.length;
+  const prom=(pacientes.reduce((s,p)=>s+p.e,0)/total).toFixed(1);
+  document.getElementById('info').textContent=`Total: ${total} | Promedio: ${prom} años`;
+
+  // actualizar tabla
+  const tbody=document.querySelector("#tabla tbody");
+  tbody.innerHTML=pacientes.map(p=>`<tr><td>${p.n}</td><td>${p.e}</td><td>${p.d}</td></tr>`).join("");
+
+  // actualizar gráfico
+  const conteo={}; pacientes.forEach(p=>conteo[p.d]=(conteo[p.d]||0)+1);
+  const labels=Object.keys(conteo), data=Object.values(conteo);
+  const colores=["#ddd6fe","#fbcfe8","#bbf7d0","#a5f3fc"];
+  if(pie) pie.destroy();
+  pie=new Chart(document.getElementById('pie'),{
+    type:'pie',
+    data:{labels,datasets:[{data,backgroundColor:colores}]},
+    options:{plugins:{legend:{position:'bottom'}}}
+  });
+}
+</script>
+</body>
+</html>

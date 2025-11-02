@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}TIKA | Dashboard{% endblock %}</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Estilos -->
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/Opcion3.css' %}">
+</head>
+<body>
+    <header>
+      <div class="head">
+         <div class="logo">
+              <img src="{% static 'img/sinfondo.png' %}" alt="Tika" class="logo">
+           </div>
+      </div>
+   </header>
+    <div class="text-white">
+      <i class="bi bi-person-circle"></i> USERNAME
+      <i class="bi bi-bell ms-3"></i>
+    </div>
+
+    <!-- Sidebar lateral -->
+<div class="sidebar">
+  <a href="#"><i class="bi bi-display"></i> Mi Perfil</a>
+  <a href="{% url 'turnos' %}"><i class="bi bi-calendar-event"></i> Turnos</a>
+  <a href="{% url 'pacientes_list' %}"><i class="bi bi-people"></i> Pacientes</a>
+  <a href="#"><i class="bi bi-file-earmark-medical"></i> Obras Sociales</a>
+  <a href="#"><i class="bi bi-list"></i> Servicios</a>
+  <a href="#"><i class="bi bi-person-badge"></i> Profesionales</a>
+  <a href="#"><i class="bi bi-file-text"></i> Informes Interdisciplinarios</a>
+
+  
+        <!-- Desplegable -->
+        <button class="dropdown-btn">
+            <span class="btn-text"><i class="bi bi-bar-chart"></i> Plataforma</span>
+            <i class="bi bi-caret-down-fill btn-caret"></i>
+        </button>
+        <div class="dropdown-container">
+            <a href="#">Reportes</a>
+            <a href="#">Estadísticas</a>
+        </div>
+
+        <a href="#"><i class="bi bi-robot"></i> TikaBot</a>
+        <a href="#"><i class="bi bi-gear"></i> Configuración</a>
+    </div>
+    
+<form action="{% url 'logout' %}" method="post" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit" class="btn-salir">SALIR</button>
+</form>
+    <!-- Contenido dinámico -->
+    <main class="content">
+        {% block content %}
+
+        {% endblock %}
+    </main>
+
+    <!-- Scripts -->
+    <script>
+        // Toggle del menú desplegable
+        const dropdownBtn = document.querySelector(".dropdown-btn");
+        const dropdownContainer = document.querySelector(".dropdown-container");
+        const caret = document.querySelector(".btn-caret");
+        dropdownBtn.addEventListener("click", () => {
+            dropdownContainer.classList.toggle("dropdown-active");
+            caret.classList.toggle("rotate");
+        });
+    </script>
+</body>
+
+</html>
