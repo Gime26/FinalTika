@@ -2,62 +2,44 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nuevo Informe - Tika</title>
-  <link rel="stylesheet" href="{% static 'css/informe.css' %}">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Informes</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
 
-  <div class="modal">
     <div class="form-container">
-      <div class="form-header">
-        <span class="icon">📋</span>
-        <h2>Informes</h2>
-        <a href="{% url 'lista_informes' %}" class="close-btn">✕</a>
-      </div>
-      <p class="subtitle">Completá el siguiente formulario para añadir un informe.</p>
 
-      <form method="POST">
-        {% csrf_token %}
-        {{ form.non_field_errors }}
-
-        <div class="form-group">
-          <label for="{{ form.asunto.id_for_label }}">Asunto</label>
-          {{ form.asunto }}
+        <div class="form-header">
+            <div class="header-title">
+                <span class="icon">📋</span>
+                <h1>Informes</h1>
+            </div>
         </div>
 
-        <div class="form-group">
-          <label for="{{ form.especialidad.id_for_label }}">Especialidad</label>
-          {{ form.especialidad }}
-        </div>
+        <p class="subtitle">Completá el siguiente formulario para añadir un informe.</p>
 
-        <div class="form-group">
-          <label for="{{ form.paciente.id_for_label }}">Paciente (DNI)</label>
-          {{ form.paciente }}
-        </div>
+        <form action="{% url 'guardar_informe' %}" method="POST" class="report-form">
+            {% csrf_token %} <div class="form-group">
+                <label for="asunto">Asunto</label>
+                <input type="text" id="asunto" placeholder="Ej: Psicológico" class="input-dropdown">
+            </div>
+            
+            <div class="form-group-inline">
+                <div class="form-group date-time-field">
+                    <label for="fecha">Fecha</label>
+                    <input type="text" id="fecha" value="DD/MM/AAAA" class="input-dropdown">
+                </div>
+                <div class="form-group date-time-field">
+                    <label for="hora">Hora</label>
+                    <input type="text" id="hora" value="Seleccione hora" class="input-dropdown">
+                </div>
+            </div>
 
-        <div class="form-group">
-          <label for="{{ form.descripcion.id_for_label }}">Descripción</label>
-          {{ form.descripcion }}
-        </div>
-
-        <div class="row">
-          <div class="column">
-            <label for="{{ form.fecha.id_for_label }}">Fecha</label>
-            {{ form.fecha }}
-          </div>
-          <div class="column">
-            <label for="{{ form.hora.id_for_label }}">Hora</label>
-            {{ form.hora }}
-          </div>
-        </div>
-
-        <button type="submit" class="btn-guardar">GUARDAR</button>
-      </form>
+            <button type="submit" class="btn-guardar">GUARDAR</button>
+        </form>
     </div>
-  </div>
 
 </body>
 </html>

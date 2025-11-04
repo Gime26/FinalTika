@@ -3,11 +3,13 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.models import User
 # Importar todas las clases de formularios desde forms.py
-from .forms import LoginForm, RegisterForm, EntrevistaForm, PacienteForm, InformeForm
-from .models import Entrevista, EstadoPaciente, Informe, Perfil, Paciente
-
-
-# La vista principal que renderiza index.html y pasa ambos formularios para los modales
+from .forms import LoginForm, RegisterForm, EntrevistaForm, PacienteForm, InformeForm, ObservacionForm, TestimonioForm
+from .models import Entrevista, EstadoPaciente, Informe, Perfil, Paciente, Observacion, Testimonio
+from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic.edit import CreateView
+from django.views.generic import ListView
+from django.contrib.auth.decorators import login_required, user_passes_test
 
 def base(request):
     return render(request, "base.html")
@@ -30,26 +32,33 @@ def inicio(request):
 def login_view(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
+        
         if form.is_valid():
-            # Intentamos autenticar usando el campo 'username' (que puede ser nombre de usuario o email si lo configuraste así)
+            # 1. Los datos se obtienen SOLO si el formulario es válido
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             
-            # NOTA: Si Django solo autentica por username, 
-            # podrías necesitar una lógica extra para buscar por email aquí.
+            # 2. Intenta autenticar
             user = authenticate(request, username=username, password=password)
             
+            # 3. La comprobación del usuario se hace DENTRO de form.is_valid()
             if user is not None:
                 login(request, user)
                 messages.success(request, f"¡Bienvenido {user.username}!")
-                return redirect('dashboard')  # 👉 Cambia 'dashboard' por tu vista de destino
+                # Si Django pasa un parámetro 'next', redirige ahí
+                next_url = request.POST.get('next') or 'dashboard' 
+                return redirect(next_url) 
             else:
                 messages.error(request, "Usuario o contraseña incorrectos.")
+        
+        # Si el formulario no es válido, o si la autenticación falla,
+        # el código continúa ejecutándose hasta el return final.
+        
     else:
         form = LoginForm()
 
     # Si se accede directamente a /login/ o si el POST falla, 
-    # se renderiza la plantilla de login dedicada.
+    # se renderiza la plantilla de login dedicada con el formulario y mensajes.
     return render(request, 'login.html', {'form': form})
 
 
@@ -111,17 +120,20 @@ def register_view(request):
         
     return render(request, 'register.html', {'form': form}) 
 
+@login_required
 def dashboard_view(request):
     return render(request, 'dashboard.html')
 
 def turnos_view(request):
     return render(request, 'turnos.html')
 
+def gestionturnos(request):
+    return render(request, 'gestionturnos.html')
+
+
 def pacientes_list(request):
     pacientes = Paciente.objects.all()
     return render(request, 'pacientes/pacientes_list.html', {'pacientes': pacientes})
-
-
 
 def paciente_create(request):
     if request.method == 'POST':
@@ -171,3 +183,74 @@ def crear_informe(request):
 def lista_informes(request):
     informes = Informe.objects.all()
     return render(request, 'lista_informes.html', {'informes': informes})
+# --- Vista para Listar (Historial) ---
+
+class ListaObservacionesView(LoginRequiredMixin, ListView):
+    """Muestra el historial de todas las observaciones."""
+    model = Observacion
+    template_name = 'observaciones/registro_observaciones.html' # Mismo HTML
+    context_object_name = 'historial_observaciones'
+    ordering = ['-fecha'] # Ordenar por fecha más reciente
+
+    def get_context_data(self, **kwargs):
+        # Esto permite que la plantilla reciba ambos datos: el formulario vacío y el historial
+        context = super().get_context_data(**kwargs)
+        context['form'] = ObservacionForm()
+        return context
+    
+
+class CrearObservacionView(LoginRequiredMixin, CreateView):
+    """Maneja la creación de una nueva observación."""
+    model = Observacion
+    form_class = ObservacionForm
+    template_name = 'observaciones/registro_observaciones.html' # <--- Usar el HTML de historial
+    success_url = reverse_lazy('lista_observaciones') # <--- Apunta a la URL de listado
+
+
+def comprobantes_view(request):
+    return render(request, 'comprobantes.html')
+
+def enviar_testimonio(request):
+    if request.method == 'POST':
+        form = TestimonioForm(request.POST)
+        if form.is_valid():
+            testimonio = form.save(commit=False)
+            testimonio.usuario = request.user if request.user.is_authenticated else None
+            testimonio.save()
+            return redirect('index')
+    else:
+        form = TestimonioForm()
+    return render(request, 'testimonio/enviar_testimonio.html', {'form': form})
+
+# Mostrar testimonios públicos (aprobados)
+def testimonios_publicos(request):
+    testimonios = Testimonio.objects.filter(estado='aprobado', publicado=True).order_by('-fecha_envio')
+    return render(request, 'testimonios_publicos.html', {'testimonios': testimonios})
+
+
+@user_passes_test(lambda u: u.is_superuser or u.is_staff)
+def testimonios_lista(request):
+    testimonios = Testimonio.objects.all().order_by('-fecha_envio')
+    return render(request, 'dashboard/testimonios.html', {'testimonios': testimonios})
+# Acciones del admin 
+def aprobar_testimonio(request, id):
+    testimonio = get_object_or_404(Testimonio, id=id)
+    testimonio.estado = 'aprobado'
+    testimonio.publicado = True
+    testimonio.save()
+    return redirect('testimonios_lista')
+
+def restringir_testimonio(request, id):
+    testimonio = get_object_or_404(Testimonio, id=id)
+    testimonio.estado = 'restringido'
+    testimonio.publicado = False
+    testimonio.save()
+    return redirect('testimonios_lista')
+def testimonios_inicio(request):
+    testimonios = Testimonio.objects.filter(publicado=True).order_by('-fecha_envio')
+    return render(request, 'testimonio/test_public.html', {'testimonios': testimonios})
+
+def eliminar_testimonio(request, id):
+    testimonio = get_object_or_404(Testimonio, id=id)
+    testimonio.delete()
+    return redirect('testimonios_lista')

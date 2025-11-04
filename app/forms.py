@@ -4,9 +4,9 @@ from django.forms import ModelForm, NumberInput
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User 
-from .models import Perfil, Entrevista, Paciente, Informe  
+from .models import Perfil, Entrevista, Paciente, Informe, Especialidades, Observacion, Testimonio
 from datetime import date
-
+from django.forms.widgets import DateInput, Select, Textarea
 
 class EntrevistaForm(forms.ModelForm):
     class Meta:
@@ -52,10 +52,12 @@ class RegisterForm(UserCreationForm):
         # 🟢 Eliminamos los widgets que referencian campos de Perfil.
         widgets = {}
 
+class LoginForm(forms.Form):
+    # Asegúrate de que los nombres sean 'username' y 'password'
+    username = forms.CharField(label="Nombre de usuario", max_length=150)
+    password = forms.CharField(label="Contraseña", widget=forms.PasswordInput)
 
-# ✅ Formulario de Login Estándar (Mantener solo este)
-class LoginForm(AuthenticationForm):
-    pass
+    # (Debe tener la lógica para limpiar y autenticar si no usas AuthenticationForm de Django)
 
 
 class PacienteForm(forms.ModelForm):
@@ -71,3 +73,56 @@ class InformeForm(forms.ModelForm):
             'contenido': forms.Textarea(attrs={'rows': 4}),
         }
 
+class ObservacionForm(forms.ModelForm):
+    # Personalizamos los campos ForeignKey para que usen la clase CSS de tu HTML
+    
+    paciente = forms.ModelChoiceField(
+        queryset=Paciente.objects.all(),
+        empty_label="— Seleccionar —", # El primer <option> de tu HTML
+        label="Paciente:",
+        widget=Select(attrs={'class': 'custom-select'}) 
+    )
+
+    tipo_sesion = forms.ModelChoiceField(
+        queryset=Especialidades.objects.all(),
+        empty_label="— Seleccionar —",
+        label="Tipo de sesión:",
+        widget=Select(attrs={'class': 'custom-select'})
+    )
+
+    class Meta:
+        model = Observacion
+        fields = ['paciente', 'fecha', 'tipo_sesion', 'observacion_clinica']
+        
+        # Asignar widgets para aplicar estilos y tipos HTML
+        widgets = {
+            'fecha': DateInput(attrs={'type': 'date'}),
+            'observacion_clinica': Textarea(attrs={'rows': 5}), # Mantener el tamaño visible
+        }
+        # forms.py
+
+from django import forms
+from .models import Turno, Paciente # Asegúrate de importar Paciente también
+
+class TurnoForm(forms.ModelForm):
+    class Meta:
+        model = Turno
+        fields = ['paciente', 'fecha', 'hora', 'motivo']
+        
+        widgets = {
+            'fecha': forms.DateInput(attrs={'type': 'date'}),
+            'hora': forms.TimeInput(attrs={'type': 'time'}),
+        }
+
+class TestimonioForm(forms.ModelForm):
+    class Meta:
+        model = Testimonio
+        fields = ['relacion','titulo', 'contenido', 'imagen']
+        widgets = {
+            'relacion': forms.TextInput(attrs={
+                'placeholder': 'Ejemplo: Mamá de Mateo, Papá de Lucía, Tutor de Ana...',
+                'class': 'form-control'
+            }),
+            'contenido': forms.Textarea(attrs={'rows': 4, 'class': 'form-control'}),
+            'titulo': forms.TextInput(attrs={'class': 'form-control'}),
+        }

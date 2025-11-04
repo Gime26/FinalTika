@@ -1,148 +1,185 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Iniciar sesión - TIKA</title>
+ <head>
+   <meta charset="UTF-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+   <title>Iniciar sesión - TIKA</title>
+   <link rel="stylesheet" href="{% static 'css/Opcion3.css' %}">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-  <link rel="stylesheet" href="{% static 'css/Opcion3.css' %}">
-  <link rel="stylesheet" href="{% static 'css/modal.css' %}">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+   <style>
+     body {
+       background: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)),
+       url("{% static 'img/fondo2.jpg' %}") no-repeat center center fixed;
+       background-size: cover; 
+       font-family: 'Poppins', sans-serif;
+       display: flex;
+       flex-direction: column;
+       align-items: center;
+       justify-content: center;
+       height: 100vh;
+       margin: 0;
+      }
 
-  <style>
-    body {
-      background: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)),
-                  url("{% static 'img/fondo2.jpg' %}") no-repeat center center fixed;
-      background-size: cover;
-      font-family: 'Poppins', sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-    }
+      .login-container {
+        background-color: #ffffff;
+       border-radius: 20px;
+       box-shadow: 0 0 20px rgba(0,0,0,0.1);
+       width: 380px;
+       padding: 40px 30px;
+       text-align: center;
+       animation: fadeIn 1s ease;
+      }
 
-    .login-container {
-      background-color: #ffffff;
-      border-radius: 20px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.1);
-      width: 380px;
-      padding: 40px 30px;
-      text-align: center;
-      animation: fadeIn 1s ease;
-    }
+      .login-container img {
+        width: 130px;
+        margin-bottom: 15px;
+      }
 
-    .login-container img {
-      width: 130px;
-      margin-bottom: 15px;
-    }
+      .login-container h2 {
+        color: #6c3483;
+        margin-bottom: 25px;
+        font-size: 1.8em;
+      }
 
-    .login-container h2 {
-      color: #6c3483;
-      margin-bottom: 25px;
-      font-size: 1.8em;
-    }
+      form {
+        text-align: left;
+      }
+ 
+      form p {
+       margin-bottom: 15px;
+     }
 
-    form {
-      text-align: left;
-    }
+      input {
+       width: 100%;
+       padding: 10px;
+       border: 1px solid #ccc;
+       border-radius: 10px;
+       outline: none;
+       font-size: 15px;
+       transition: all 0.3s;
+      }
 
-    form p {
-      margin-bottom: 15px;
-    }
+      input:focus {
+        border-color: #6c3483;
+        box-shadow: 0 0 5px rgba(108, 52, 131, 0.3);
+      } 
 
-    input {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      outline: none;
-      font-size: 15px;
-      transition: all 0.3s;
-    }
+      .error-text {
+        color: #ff3333;
+        font-size: 0.85em;
+        font-weight: 600;
+        margin-top: 5px;
+       list-style: none;
+       padding: 0;
+      }
+    
+      input:invalid:not([value=""]), 
+      ul.error-field-list + input {
+       border-color: #ff3333 !important; 
+       box-shadow: 0 0 5px rgba(255, 51, 51, 0.5) !important;
+     }
+  
+      .error-field-list {
+        padding-left: 0;
+        margin: 5px 0 0 0;
+      }
+      
+      button {
+        background-color: #6c3483;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 15px;
+        cursor: pointer;
+        width: 100%;
+        font-size: 1em;
+        transition: 0.3s;
+      }
+  
+      button:hover {
+        background-color: #512e5f;
+      }
+  
+      .messages {
+        margin-top: 10px;
+        text-align: center;
+      }
+  
+      .messages p {
+       color: red;
+       font-weight: 500;
+      }
+  
+      .forgot {
+        display: block;
+        margin-top: 10px;
+        color: #6c3483;
+        text-decoration: none;
+        font-size: 0.9em;
+      }
 
-    input:focus {
-      border-color: #6c3483;
-      box-shadow: 0 0 5px rgba(108, 52, 131, 0.3);
-    }
+      .forgot:hover {
+       text-decoration: underline;
+      }
+  
+      .back-home {
+        display: inline-block;
+        margin-top: 20px;
+        color: #6c3483;
+        font-size: 0.9em;
+      }
 
-    button {
-      background-color: #6c3483;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 15px;
-      cursor: pointer;
-      width: 100%;
-      font-size: 1em;
-      transition: 0.3s;
-    }
+      @keyframes fadeIn {
+       from { opacity: 0; transform: translateY(-20px); }
+       to { opacity: 1; transform: translateY(0); }
+      }
+   </style>
+ </head>
 
-    button:hover {
-      background-color: #512e5f;
-    }
+ <body>
+   <div class="login-container">
+     <img src="{% static 'img/sinfondo.png' %}" alt="Logo TIKA">
+     <h2>Iniciar sesión</h2>
 
-    .messages {
-      margin-top: 10px;
-      text-align: center;
-    }
+     <form method="POST" action="{% url 'login' %}">
+       {% csrf_token %}
+       {% for field in form %}
+       <p>
+         <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+         {{ field }} 
+          {% if field.errors %}
+          <ul class="error-field-list">
+           {% for error in field.errors %}
+           <li class="error-text">{{ error }}</li>
+           {% endfor %}
+          </ul>
+          {% endif %}
+       </p>
+       {% endfor %}
+       {% if form.non_field_errors %}
+       <div class="messages non-field-errors">
+          {% for error in form.non_field_errors %}
+          <p class="error-text">{{ error }}</p>
+          {% endfor %}
+       </div>
+       {% endif %}
+        <button type="submit">Ingresar</button>
+      </form>
 
-    .messages p {
-      color: red;
-      font-weight: 500;
-    }
-
-    .forgot {
-      display: block;
-      margin-top: 10px;
-      color: #6c3483;
-      text-decoration: none;
-      font-size: 0.9em;
-    }
-
-    .forgot:hover {
-      text-decoration: underline;
-    }
-
-    .back-home {
-      margin-top: 20px;
-      display: inline-block;
-      color: #6c3483;
-      font-size: 0.9em;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
-</head>
-
-<body>
-  <div class="login-container">
-    <img src="{% static 'img/sinfondo.png' %}" alt="Logo TIKA">
-    <h2>Iniciar sesión</h2>
-
-    <form method="POST" action="{% url 'login' %}">
-      {% csrf_token %}
-      {{ login_form.as_p }}
-      <button type="submit">Ingresar</button>
-    </form>
-
-    <div class="messages">
-      {% if messages %}
+      <div class="messages">
+        {% if messages %}
         {% for message in messages %}
-          <p>{{ message }}</p>
+        <p>{{ message }}</p>
         {% endfor %}
-      {% endif %}
-    </div>
-
-    <a href="#" class="forgot">¿Olvidaste tu contraseña?</a>
-    <a href="{% url 'inicio' %}" class="back-home">
-      <i class="fas fa-arrow-left"></i> Volver al inicio
-    </a>
-  </div>
-</body>
+        {% endif %}
+     </div>
+       <a href="#" class="forgot">¿Olvidaste tu contraseña?</a>
+       <a href="{% url 'inicio' %}" class="back-home">
+         <i class="fas fa-arrow-left"></i> Volver al inicio
+       </a>
+      </div>
+   </div>
+ </body>
 </html>

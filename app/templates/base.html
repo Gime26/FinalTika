@@ -32,10 +32,10 @@
   <a href="#"><i class="bi bi-display"></i> Mi Perfil</a>
   <a href="{% url 'turnos' %}"><i class="bi bi-calendar-event"></i> Turnos</a>
   <a href="{% url 'pacientes_list' %}"><i class="bi bi-people"></i> Pacientes</a>
-  <a href="#"><i class="bi bi-file-earmark-medical"></i> Obras Sociales</a>
-  <a href="#"><i class="bi bi-list"></i> Servicios</a>
-  <a href="#"><i class="bi bi-person-badge"></i> Profesionales</a>
   <a href="#"><i class="bi bi-file-text"></i> Informes Interdisciplinarios</a>
+  <a href="{% url 'estadisticas' %}"><i class="bi bi-bar-chart"></i> Estadísticas</a>
+  <a href="{% url 'lista_observaciones' %}"><i class="bi bi-bar-chart"></i> Observaciones</a>
+  <a href="{% url 'comprobantes' %}"><i class="bi bi-bar-chart"></i> Comprobantes</a>
 
   
         <!-- Desplegable -->
@@ -44,12 +44,11 @@
             <i class="bi bi-caret-down-fill btn-caret"></i>
         </button>
         <div class="dropdown-container">
-            <a href="#">Reportes</a>
-            <a href="#">Estadísticas</a>
+            <a href="#">Contacto</a>
+            <a href="{%url 'testimonios_lista' %}"> <i class="bi bi-chat-quote"> </i> Testimonios </a>
         </div>
 
         <a href="#"><i class="bi bi-robot"></i> TikaBot</a>
-        <a href="#"><i class="bi bi-gear"></i> Configuración</a>
     </div>
     
 <form action="{% url 'logout' %}" method="post" style="display:inline;">
