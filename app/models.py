@@ -154,3 +154,39 @@ class Informe(models.Model):
         
     def __str__(self):
         return self.titulo
+    
+class Observacion(models.Model):
+    """Modelo para guardar el registro de una observación de sesión."""
+    
+    paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
+    fecha = models.DateField()
+    tipo_sesion = models.ForeignKey(Especialidades, on_delete=models.PROTECT)
+    observacion_clinica = models.TextField()
+    
+    # Datos de seguimiento
+    creada_por = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    fecha_registro = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"Obs. de {self.paciente.nombre} el {self.fecha}"
+    
+
+class Testimonio(models.Model):
+    ESTADOS = [
+        ('pendiente', 'Pendiente'),
+        ('aprobado', 'Publicado'),
+        ('restringido', 'Restringido'),
+    ]
+
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='testimonios')
+    titulo = models.CharField(max_length=100, verbose_name="Título del testimonio")
+    relacion = models.CharField(max_length=100, verbose_name="Tu relación con el niño/a (ejemplo: Mamá de Mateo, Tutor de Ana)")
+    contenido = models.TextField(verbose_name="Contenido")
+    fecha_envio = models.DateTimeField(auto_now_add=True)
+    estado = models.CharField(max_length=20, choices=ESTADOS, default='pendiente')
+    publicado = models.BooleanField(default=False)
+    imagen = models.ImageField(upload_to='testimonios/', blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.titulo} - {self.usuario.username}"
+    

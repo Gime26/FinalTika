@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TIKA · Gestión de Turnos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    header {
+      background: #0077b6;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 700px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      margin-top: 0;
+      color: #009688;
+    }
+
+    form label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    form input, form select {
+      width: 100%;
+      margin-top: 5px;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px;
+      width: 100%;
+      border: none;
+      border-radius: 8px;
+      background: #009688;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #00796b;
+    }
+
+    .lista-turnos {
+      list-style: none;
+      padding: 0;
+    }
+
+    .lista-turnos li {
+      border-bottom: 1px solid #eee;
+      padding: 10px 0;
+    }
+
+    .detalle {
+      font-size: 0.9em;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>TIKA · Gestión de Turnos</h1>
+    <p>Formulario para asignar y ver turnos</p>
+  </header>
+
+  <!-- Formulario -->
+  <section class="card">
+    <h2>Asignar nuevo turno</h2>
+    <form>
+      <label>Paciente:</label>
+      <select>
+        <option>— Seleccionar —</option>
+        <option>Juan Pérez (DNI 12345678)</option>
+        <option>María Gómez (DNI 87654321)</option>
+      </select>
+
+      <label>Profesional:</label>
+      <select>
+        <option>— Seleccionar —</option>
+        <option>Lic. Sol Espasandin(Psicomotricidad)</option>
+        <option>Lic. Carlos Herrera(Kinesiología)</option>
+        <option>Lic. Mailen Danilowicz(Psicología)</option>
+        <option>Lic. Silvina Diaz(Psicología)</option>
+        <option>Lic. Carolina Herrera(Psicopedagogía)</option>
+        <option>Lic. Monica Palacios Cañizares(Fonoaudiología)</option>
+        <option>Lic. Itati Gordillo(Psicopedagogía)</option>
+      </select>
+
+      <label>Fecha:</label>
+      <input type="date">
+
+      <label>Hora:</label>
+      <input type="time">
+
+      <button type="submit">Guardar turno</button>
+    </form>
+  </section>
+
+  <!-- Lista de turnos -->
+  <section class="card">
+    <h2>Turnos programados</h2>
+    <ul class="lista-turnos">
+      <li>
+        <span class="detalle">26/08/2025 · 10:00 · Juan Pérez · Psicología (Lic. Silvina Diaz)</span>
+      </li>
+      <li>
+        <span class="detalle">26/08/2025 · 15:00 · María Gómez · Fonoaudiología (Lic. Monica Palacios Cañizares)</span>
+      </li>
+    </ul>
+  </section>
+</body>
+</html>

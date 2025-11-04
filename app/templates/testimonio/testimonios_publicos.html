@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testimonios Públicos - TIKA</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+    <div class="container py-5">
+        <h2 class="text-center mb-4">Testimonios de nuestras familias</h2>
+
+        <div class="row">
+            {% for t in testimonios %}
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm h-100">
+                        {% if t.imagen %}
+                            <img src="{{ t.imagen.url }}" class="card-img-top" alt="Imagen de {{ t.usuario.username }}">
+                        {% endif %}
+                        <div class="card-body text-center">
+                            <h5 class="card-title">{{ t.titulo }}</h5>
+                            <p class="card-text text-muted fst-italic">"{{ t.contenido }}"</p>
+                            <p class="fw-bold">- {{ t.usuario.username }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="text-center text-muted">Aún no hay testimonios publicados.</p>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="/" class="btn btn-secondary">Volver al inicio</a>
+        </div>
+    </div>
+
+</body>
+</html>

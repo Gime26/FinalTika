@@ -1,0 +1,136 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Emisión de Comprobante</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body {
+      background-color: #fdf6fb;
+      font-family: Arial, sans-serif;
+    }
+    .form-container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 15px;
+      width: 450px;
+      margin: 40px auto;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15);
+    }
+    h2 {
+      text-align: center;
+      color: #4b2e83;
+      margin-bottom: 25px;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-top: 5px;
+    }
+    button {
+      background-color: #d79ce7;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 8px;
+      color: #fff;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+    button:hover {
+      background-color: #c078d6;
+    }
+    .comprobante-box {
+      margin-top: 30px;
+      padding: 20px;
+      border: 2px solid #d79ce7;
+      border-radius: 10px;
+      background-color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>Emisión de Comprobante</h2>
+
+    <form id="formComprobante">
+      <label>Paciente:</label>
+      <input type="text" id="paciente" required>
+
+      <label>Concepto:</label>
+      <input type="text" id="concepto" required>
+
+      <label>Monto:</label>
+      <input type="number" id="monto" required>
+
+      <label>Fecha:</label>
+      <input type="date" id="fecha" required>
+
+      <label>Método de pago:</label>
+      <select id="metodo" required>
+        <option value="">Seleccionar</option>
+        <option value="Efectivo">Efectivo</option>
+        <option value="Tarjeta">Tarjeta</option>
+        <option value="Transferencia">Transferencia</option>
+      </select>
+
+      <button type="submit">Emitir Comprobante</button>
+    </form>
+
+    <div id="resultado"></div>
+  </div>
+
+  <script>
+    const { jsPDF } = window.jspdf;
+    const form = document.getElementById("formComprobante");
+    const resultado = document.getElementById("resultado");
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const data = {
+        paciente: form.paciente.value,
+        concepto: form.concepto.value,
+        monto: form.monto.value,
+        fecha: form.fecha.value,
+        metodo: form.metodo.value,
+      };
+      resultado.innerHTML = `
+        <div class="comprobante-box">
+          <h3 style="color:#4b2e83">Comprobante Emitido</h3>
+          <p><strong>Paciente:</strong> ${data.paciente}</p>
+          <p><strong>Concepto:</strong> ${data.concepto}</p>
+          <p><strong>Monto:</strong> $${data.monto}</p>
+          <p><strong>Fecha:</strong> ${data.fecha}</p>
+          <p><strong>Método de pago:</strong> ${data.metodo}</p>
+          <button id="descargar">Descargar PDF</button>
+        </div>`;
+
+      document.getElementById("descargar").addEventListener("click", () => generarPDF(data));
+    });
+
+    function generarPDF(data) {
+      const doc = new jsPDF();
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(18);
+      doc.text("Comprobante de Pago - TIKA", 105, 20, { align: "center" });
+
+      doc.setFontSize(12);
+      doc.text(`Paciente: ${data.paciente}`, 20, 40);
+      doc.text(`Concepto: ${data.concepto}`, 20, 50);
+      doc.text(`Monto: $${data.monto}`, 20, 60);
+      doc.text(`Fecha: ${data.fecha}`, 20, 70);
+      doc.text(`Método de pago: ${data.metodo}`, 20, 80);
+
+      doc.text("TIKA Espacio Terapéutico - Bolívar 142, Salta", 20, 100);
+      doc.text("Tel: +54 9 387 582 7499", 20, 108);
+      doc.save(`Comprobante_TIKA_${data.paciente}.pdf`);
+    }
+  </script>
+</body>
+</html>

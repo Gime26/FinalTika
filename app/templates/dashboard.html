@@ -30,11 +30,12 @@
 
 <div class="sidebar">
   <a href="#"><i class="bi bi-display"></i> Mi Perfil</a>
-  <a href="{% url 'turnos' %}"><i class="bi bi-calendar-event"></i> Turnos</a>
+  <a href="{% url 'gestionturnos' %}"><i class="bi bi-calendar-event"></i> Turnos</a>
   <a href="{% url 'pacientes_list' %}"><i class="bi bi-people"></i> Pacientes</a>
   <a href="{% url 'informes' %}"><i class="bi bi-file-text"></i> Informes Interdisciplinarios</a>
   <a href="{% url 'estadistica' %}"><i class="bi bi-bar-chart"></i> Estadisticas</a>
-
+  <a href="{% url 'lista_observaciones' %}"><i class="bi bi-bar-chart"></i> Observaciones</a>
+  <a href="{% url 'comprobantes' %}"><i class="bi bi-bar-chart"></i> Comprobantes</a>
 
   <!-- botón desplegable -->
  <button class="dropdown-btn">
@@ -43,11 +44,10 @@
 </button>
   <div class="dropdown-container">
     <a href="#">Contacto</a>
-    <a href="#">Testimonios</a>
+    <a href="{%url 'testimonios_lista' %}"> <i class="bi bi-chat-quote"> </i> Testimonios </a>
   </div>
 
   <a href="#"><i class="bi bi-robot"></i> TikaBot</a>
-  <a href="#"><i class="bi bi-tools"></i> Configuración</a>
 </div>
 
   <div class="content">

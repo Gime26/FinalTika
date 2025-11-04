@@ -1,0 +1,83 @@
+{% extends "dashboard.html" %}
+
+{% block content %}
+<h2 class="mt-4 text-center">Gestión de Testimonios</h2>
+
+<table class="table mt-3 table-hover align-middle">
+  <thead class="table-light">
+  <tr>
+    <th>Título</th>
+    <th>Usuario</th>
+    <th>Relación</th>
+    <th>Contenido</th>
+    <th>Estado</th>
+    <th>Acciones</th>
+  </tr>
+  </thead>
+  <tbody>
+    {% for t in testimonios %}
+      <tr>
+        <td><strong>{{ t.titulo }}</strong></td>
+        <td>{{ t.usuario.username }}</td>
+        <td>{{ t.relacion }}</td>
+        <td style="max-width: 400px;">{{ t.contenido|truncatechars:120 }}</td>
+        <td>
+          {% if t.estado == 'pendiente' %}
+            <span class="badge bg-warning text-dark">Pendiente</span>
+          {% elif t.estado == 'aprobado' %}
+            <span class="badge bg-success">Publicado</span>
+          {% elif t.estado == 'restringido' %}
+            <span class="badge bg-danger">Restringido</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if t.estado == 'pendiente' %}
+             <a href="{% url 'aprobar_testimonio' t.id %}" class="btn-custom btn-publicar">PUBLICAR</a>
+             <a href="{% url 'restringir_testimonio' t.id %}" class="btn-custom btn-restringir">RESTRINGIR</a>
+          {% elif t.estado == 'aprobado' %}
+             <a href="{% url 'restringir_testimonio' t.id %}" class="btn-custom btn-restringir">RESTRINGIR</a>
+          {% elif t.estado == 'restringido' %}
+             <a href="{% url 'aprobar_testimonio' t.id %}" class="btn-custom btn-publicar">PUBLICAR</a>
+          {% endif %}
+  
+         <a href="{% url 'eliminar_testimonio' t.id %}"
+         class="btn-custom btn-eliminar"
+         onclick="return confirm('¿Estás seguro de eliminar este testimonio? Esta acción no se puede deshacer?')">
+         ELIMINAR
+         </a>
+        </td>
+      </tr>
+    {% empty %}
+      <tr>
+        <td colspan="5" class="text-center text-muted">No hay testimonios cargados todavía.</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<style>
+.btn-custom {
+  display: inline-block;
+  padding: 10px 24px; /* mismo tamaño para todos */
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: white;
+  font-size: 0.85rem;
+  transition: all 0.2s ease-in-out;
+  text-decoration: none;
+  min-width: 120px; /* todos los botones iguales */
+  text-align: center;
+  margin: 2px;
+}
+
+.btn-publicar { background-color: #28a745; }
+.btn-restringir { background-color: #dc3545; }
+.btn-eliminar { background-color: #ff4d4d; }
+
+.btn-custom:hover { opacity: 0.9; transform: scale(1.03); }
+.btn-custom:active { transform: scale(0.97); }
+
+</style>
+{% endblock %}
