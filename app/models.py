@@ -8,12 +8,12 @@ class Paciente(models.Model):
     fecha_nacimiento = models.DateField(verbose_name="Fecha de Nacimiento")
 
     # Elecciones de Sexo
-    SEXO_CHOICES = [
+    GENERO_CHOICES = [
       ('M', 'Masculino'),
       ('F', 'Femenino'),
       ('O', 'Otro'),
     ]
-    sexo = models.CharField(max_length=1, choices=SEXO_CHOICES)
+    genero = models.CharField(max_length=1, choices=GENERO_CHOICES)
     
     telefono = models.CharField(max_length=20, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)

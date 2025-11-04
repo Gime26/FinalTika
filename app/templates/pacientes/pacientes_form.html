@@ -1,11 +1,22 @@
-{% extends 'pacientes/pacientes_list.html' %}
-{% block content %}
-<h2>{% if form.instance.pk %}Editar Paciente{% else %}Nuevo Paciente{% endif %}</h2>
+{% extends 'base.html' %}
+{% load static %}
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Guardar</button>
-    <a href="{% url 'pacientes_list' %}">Cancelar</a>
-</form>
+{% block content %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/forms.css' %}">
+{% endblock %}
+
+<div class="form-card">
+    <h2>{% if form.instance.pk %}✏️ Editar Paciente{% else %}➕ Nuevo Paciente{% endif %}</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit" class="btn-form btn-save">💾 Guardar</button>
+        <a href="{% url 'pacientes_list' %}" class="btn-form btn-cancel">❌ Cancelar</a>
+    </form>
+</div>
+
 {% endblock %}

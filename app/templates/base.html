@@ -1,5 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
+{% block extra_css %}{% endblock %}
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -13,6 +14,8 @@
     <!-- Estilos -->
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
     <link rel="stylesheet" href="{% static 'css/Opcion3.css' %}">
+    <link rel="stylesheet" href="{% static 'css/pacientes.css' %}">
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
 </head>
 <body>
     <header>
@@ -33,7 +36,7 @@
   <a href="{% url 'turnos' %}"><i class="bi bi-calendar-event"></i> Turnos</a>
   <a href="{% url 'pacientes_list' %}"><i class="bi bi-people"></i> Pacientes</a>
   <a href="#"><i class="bi bi-file-text"></i> Informes Interdisciplinarios</a>
-  <a href="{% url 'estadisticas' %}"><i class="bi bi-bar-chart"></i> Estadísticas</a>
+  <a href="{% url 'estadistica' %}"><i class="bi bi-bar-chart"></i> Estadísticas</a>
   <a href="{% url 'lista_observaciones' %}"><i class="bi bi-bar-chart"></i> Observaciones</a>
   <a href="{% url 'comprobantes' %}"><i class="bi bi-bar-chart"></i> Comprobantes</a>
 

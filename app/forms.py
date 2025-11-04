@@ -63,7 +63,19 @@ class LoginForm(forms.Form):
 class PacienteForm(forms.ModelForm):
     class Meta:
         model = Paciente
-        fields = ['dni_paciente', 'nombre', 'apellido', 'fecha_nacimiento', 'sexo', 'telefono', 'email']
+        fields = ['dni_paciente', 'nombre', 'apellido', 'fecha_nacimiento', 'genero', 'telefono', 'email']
+        widgets = {
+            'dni_paciente': forms.TextInput(attrs={'class': 'form-input'}),
+            'nombre': forms.TextInput(attrs={'class': 'form-input'}),
+            'apellido': forms.TextInput(attrs={'class': 'form-input'}),
+            'fecha_nacimiento': forms.DateInput(attrs={
+                'type': 'date',
+                'class': 'form-input'
+            }),
+            'genero': forms.Select(attrs={'class': 'form-input'}),
+            'telefono': forms.TextInput(attrs={'class': 'form-input'}),
+            'email': forms.EmailInput(attrs={'class': 'form-input'}),
+        }
 
 class InformeForm(forms.ModelForm):
     class Meta:

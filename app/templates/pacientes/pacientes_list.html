@@ -2,19 +2,25 @@
 {% load static %}
 
 {% block content %}
-<head>
+
+<!-- ✅ CSS personal -->
 <link rel="stylesheet" href="{% static 'css/pacientes.css' %}">
-</head>
-<h2>Lista de Pacientes</h2>
-<a href="{% url 'pacientes_create' %}">➕ Nuevo Paciente</a>
-<table border="1" cellpadding="5" cellspacing="0">
+
+<!-- ✅ DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/2.1.4/css/dataTables.dataTables.min.css">
+
+<h2 class="titulo-pacientes">Lista de Pacientes</h2>
+
+<a href="{% url 'pacientes_create' %}" class="btn-add">➕ Nuevo Paciente</a>
+
+<table id="tablaPacientes" class="display">
     <thead>
         <tr>
             <th>DNI</th>
             <th>Nombre</th>
             <th>Apellido</th>
             <th>Fecha Nacimiento</th>
-            <th>Sexo</th>
+            <th>Genero</th>
             <th>Teléfono</th>
             <th>Email</th>
             <th>Acciones</th>
@@ -27,12 +33,12 @@
             <td>{{ paciente.nombre }}</td>
             <td>{{ paciente.apellido }}</td>
             <td>{{ paciente.fecha_nacimiento }}</td>
-            <td>{{ paciente.sexo }}</td>
+            <td>{{ paciente.get_genero_display }}</td>
             <td>{{ paciente.telefono }}</td>
             <td>{{ paciente.email }}</td>
             <td>
-                <a href="{% url 'pacientes_update' paciente.dni_paciente %}">Editar</a> |
-                <a href="{% url 'pacientes_delete' paciente.dni_paciente %}">Eliminar</a>
+                <a href="{% url 'pacientes_update' paciente.dni_paciente %}" class="btn-action btn-edit">✏️ Editar</a>
+                <a href="{% url 'pacientes_delete' paciente.dni_paciente %}" class="btn-action btn-delete">🗑️ Eliminar</a>
             </td>
         </tr>
         {% empty %}
@@ -40,4 +46,26 @@
         {% endfor %}
     </tbody>
 </table>
-{% endblock content %}
+
+<!-- ✅ jQuery + DataTables JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+<script>
+
+$(document).ready(function () {
+    $('#tablaPacientes').DataTable({
+        paging: false,
+        searching: true,
+        info: false,
+        language: {
+            search: "Buscar paciente:",
+            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
+        }
+    });
+});
+</script>
+
+
+</script>
+{% endblock %}

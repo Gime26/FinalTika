@@ -1,0 +1,75 @@
+/* === FORMULARIO PACIENTES === */
+
+.form-card {
+    max-width: 500px;
+    margin: 40px auto;
+    padding: 25px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    border: 1px solid rgba(140, 100, 200, 0.25);
+}
+
+/* Etiquetas */
+.form-card label {
+    font-weight: 600;
+    color: #4a306d;
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* Inputs, selects */
+.form-card input,
+.form-card select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #bda8e6;
+    border-radius: 8px;
+    font-size: 15px;
+    margin-bottom: 15px;
+    transition: 0.2s;
+}
+
+.form-card input:focus,
+.form-card select:focus {
+    border-color: #8b5cf6;
+    outline: none;
+    box-shadow: 0 0 5px rgba(160, 80, 255, 0.4);
+}
+
+/* Botones */
+.form-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.btn-save {
+    background: #8b5cf6;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.btn-save:hover {
+    background: #6d42d9;
+}
+
+.btn-cancel {
+    background: #ff7aa5;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.btn-cancel:hover {
+    background: #ff5e92;
+}
