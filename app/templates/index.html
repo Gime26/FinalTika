@@ -191,41 +191,31 @@
     </section>
 
     <section id="testimonios" class="content testimonials">
-        <h2 class="title">Testimonios</h2>
-        <div class="testimonial-container">
-            <div class="testimonial">
-             <p>"TIKA ha sido un lugar de luz y esperanza para mi hijo. Gracias a su equipo, hemos visto un cambio increíble en su desarrollo 
-              y bienestar."</p>
-             <h3>- Agustina, mamá de Leonel</h3>
-              <figure class="testimonio 1">
-               <img src="{% static 'img/foto.png' %}" alt="Testimonio de Agustina" width="600" height="500">
+       <h2 class="title">Testimonios</h2>
 
-              </figure>
-            </div>
-            <section id="testimonios" class="content testimonials">
-               <h2 class="title">Testimonios</h2>
-               <div class="testimonial-container">
-                  {% for t in testimonios %}
-                  <div class="testimonial">
-                   <p>"{{ t.contenido }}"</p>
-                   <h3>- {{ t.relacion }}</h3>
-                   {% if t.imagen %}
-                    <figure class="testimonio">
-                      <img src="{{ t.imagen.url }}" alt="Imagen del testimonio de {{ t.usuario.username }}" width="600" height="500">
-                   </figure>
-                   {% else %}
-                   <figure class="testimonio">
-                      <img src="{% static 'img/foto.png' %}" alt="Testimonio sin imagen" width="600" height="500">
-                   </figure>
-                   {% endif %}
-                 </div>
-                 {% empty %}
-                 <p>No hay testimonios publicados todavía.</p>
-                 {% endfor %}
-               </div>
-             </section>
-       </div>
-      </section>
+       <div class="testimonial-container">
+            {% if testimonios %}
+            {% for t in testimonios %}
+             <div class="testimonial">
+          <p>"{{ t.contenido }}"</p>
+          <h3>- {{ t.relacion }}</h3>
+
+          {% if t.imagen %}
+            <figure class="testimonio">
+              <img src="{{ t.imagen.url }}" alt="Imagen del testimonio de {{ t.usuario.username }}" width="600" height="500">
+            </figure>
+          {% else %}
+            <figure class="testimonio">
+              <img src="{% static 'img/foto.png' %}" alt="Testimonio sin imagen" width="600" height="500">
+            </figure>
+          {% endif %}
+        </div>
+      {% endfor %}
+    {% else %}
+      <p>No hay testimonios publicados todavía.</p>
+    {% endif %}
+  </div>
+    </section>
 
     <section id="contacto" class="content contact">
         <h2 class="title">Contacto</h2>

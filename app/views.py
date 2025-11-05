@@ -18,11 +18,13 @@ def inicio(request):
     # Instanciar ambos formularios para los modales en index.html
     login_form = LoginForm()
     entrevista_form = EntrevistaForm() 
+    testimonios = Testimonio.objects.filter(estado='aprobado', publicado=True).order_by('-fecha_envio')
     
     # Usamos nombres específicos en el contexto para evitar conflictos
     context = {
         'login_form': login_form, 
         'entrevista_form': entrevista_form,
+         'testimonios': testimonios,
     }
     
     return render(request, 'index.html', context)
@@ -212,7 +214,7 @@ def comprobantes_view(request):
 
 def enviar_testimonio(request):
     if request.method == 'POST':
-        form = TestimonioForm(request.POST)
+        form = TestimonioForm(request.POST, request.FILES)
         if form.is_valid():
             testimonio = form.save(commit=False)
             testimonio.usuario = request.user if request.user.is_authenticated else None
@@ -222,17 +224,22 @@ def enviar_testimonio(request):
         form = TestimonioForm()
     return render(request, 'testimonio/enviar_testimonio.html', {'form': form})
 
-# Mostrar testimonios públicos (aprobados)
+
+# ✅ Mostrar testimonios públicos (solo los aprobados y publicados)
 def testimonios_publicos(request):
-    testimonios = Testimonio.objects.filter(estado='aprobado', publicado=True).order_by('-fecha_envio')
+    testimonios = Testimonio.objects.filter(
+        estado='aprobado', publicado=True
+    ).order_by('-fecha_envio')
     return render(request, 'testimonios_publicos.html', {'testimonios': testimonios})
 
 
-@user_passes_test(lambda u: u.is_superuser or u.is_staff)
+# ✅ Vista del panel (administración interna)
 def testimonios_lista(request):
     testimonios = Testimonio.objects.all().order_by('-fecha_envio')
     return render(request, 'dashboard/testimonios.html', {'testimonios': testimonios})
-# Acciones del admin 
+
+
+# ✅ Acciones del panel de administración
 def aprobar_testimonio(request, id):
     testimonio = get_object_or_404(Testimonio, id=id)
     testimonio.estado = 'aprobado'
@@ -240,17 +247,24 @@ def aprobar_testimonio(request, id):
     testimonio.save()
     return redirect('testimonios_lista')
 
+
 def restringir_testimonio(request, id):
     testimonio = get_object_or_404(Testimonio, id=id)
     testimonio.estado = 'restringido'
     testimonio.publicado = False
     testimonio.save()
     return redirect('testimonios_lista')
-def testimonios_inicio(request):
-    testimonios = Testimonio.objects.filter(publicado=True).order_by('-fecha_envio')
-    return render(request, 'testimonio/test_public.html', {'testimonios': testimonios})
+
 
 def eliminar_testimonio(request, id):
     testimonio = get_object_or_404(Testimonio, id=id)
     testimonio.delete()
     return redirect('testimonios_lista')
+
+
+# ✅ Página de inicio que muestra los testimonios públicos
+def testimonios_inicio(request):
+    testimonios = Testimonio.objects.filter(
+        publicado=True, estado='aprobado'
+    ).order_by('-fecha_envio')
+    return render(request, 'testimonio/test_public.html', {'testimonios': testimonios})

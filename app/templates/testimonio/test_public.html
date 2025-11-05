@@ -10,15 +10,17 @@
 <section class="testimonios-section">
   <h2 class="titulo">TESTIMONIOS</h2>
   <div class="testimonios-container">
-    {% for t in testimonios %}
-      <div class="testimonio-card">
-        <p class="contenido">“{{ t.contenido }}”</p>
-        <p class="autor">- {{ t.usuario.first_name }} {{ t.usuario.last_name }}</p>
-        <img src="{% static 'img/avatar.png' %}" class="foto" alt="Foto">
-      </div>
-    {% empty %}
-      <p class="no-testimonios">No hay testimonios publicados todavía.</p>
-    {% endfor %}
+   {% for t in testimonios %}
+<div class="testimonio">
+  <blockquote>"{{ t.contenido }}"</blockquote>
+  <p><strong>- {{ t.relacion }}</strong></p>
+  {% if t.imagen %}
+    <img src="{{ t.imagen.url }}" alt="Foto de testimonio" width="100">
+  {% endif %}
+</div>
+{% empty %}
+  <p>No hay testimonios publicados todavía.</p>
+{% endfor %}
   </div>
 </section>
 </body>
