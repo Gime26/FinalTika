@@ -5,14 +5,14 @@
 
 <table class="table mt-3 table-hover align-middle">
   <thead class="table-light">
-  <tr>
-    <th>Título</th>
-    <th>Usuario</th>
-    <th>Relación</th>
-    <th>Contenido</th>
-    <th>Estado</th>
-    <th>Acciones</th>
-  </tr>
+    <tr>
+      <th>Título</th>
+      <th>Usuario</th>
+      <th>Relación</th>
+      <th>Contenido</th>
+      <th>Estado</th>
+      <th>Acciones</th>
+    </tr>
   </thead>
   <tbody>
     {% for t in testimonios %}
@@ -32,24 +32,24 @@
         </td>
         <td>
           {% if t.estado == 'pendiente' %}
-             <a href="{% url 'aprobar_testimonio' t.id %}" class="btn-custom btn-publicar">PUBLICAR</a>
-             <a href="{% url 'restringir_testimonio' t.id %}" class="btn-custom btn-restringir">RESTRINGIR</a>
+            <a href="{% url 'aprobar_testimonio' t.id %}" class="btn-custom btn-publicar">PUBLICAR</a>
+            <a href="{% url 'restringir_testimonio' t.id %}" class="btn-custom btn-restringir">RESTRINGIR</a>
           {% elif t.estado == 'aprobado' %}
-             <a href="{% url 'restringir_testimonio' t.id %}" class="btn-custom btn-restringir">RESTRINGIR</a>
+            <a href="{% url 'restringir_testimonio' t.id %}" class="btn-custom btn-restringir">RESTRINGIR</a>
           {% elif t.estado == 'restringido' %}
-             <a href="{% url 'aprobar_testimonio' t.id %}" class="btn-custom btn-publicar">PUBLICAR</a>
+            <a href="{% url 'aprobar_testimonio' t.id %}" class="btn-custom btn-publicar">PUBLICAR</a>
           {% endif %}
   
-         <a href="{% url 'eliminar_testimonio' t.id %}"
-         class="btn-custom btn-eliminar"
-         onclick="return confirm('¿Estás seguro de eliminar este testimonio? Esta acción no se puede deshacer?')">
-         ELIMINAR
-         </a>
+          <a href="{% url 'eliminar_testimonio' t.id %}"
+             class="btn-custom btn-eliminar"
+             onclick="return confirm('¿Estás seguro de eliminar este testimonio? Esta acción no se puede deshacer?')">
+            ELIMINAR
+          </a>
         </td>
       </tr>
     {% empty %}
       <tr>
-        <td colspan="5" class="text-center text-muted">No hay testimonios cargados todavía.</td>
+        <td colspan="6" class="text-center text-muted">No hay testimonios cargados todavía.</td>
       </tr>
     {% endfor %}
   </tbody>
@@ -58,7 +58,7 @@
 <style>
 .btn-custom {
   display: inline-block;
-  padding: 10px 24px; /* mismo tamaño para todos */
+  padding: 10px 24px;
   border: none;
   border-radius: 8px;
   font-weight: bold;
@@ -67,7 +67,7 @@
   font-size: 0.85rem;
   transition: all 0.2s ease-in-out;
   text-decoration: none;
-  min-width: 120px; /* todos los botones iguales */
+  min-width: 120px;
   text-align: center;
   margin: 2px;
 }
@@ -78,6 +78,5 @@
 
 .btn-custom:hover { opacity: 0.9; transform: scale(1.03); }
 .btn-custom:active { transform: scale(0.97); }
-
 </style>
 {% endblock %}

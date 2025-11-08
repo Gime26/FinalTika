@@ -225,7 +225,7 @@ def enviar_testimonio(request):
     return render(request, 'testimonio/enviar_testimonio.html', {'form': form})
 
 
-# ✅ Mostrar testimonios públicos (solo los aprobados y publicados)
+#  Mostrar testimonios públicos (solo los aprobados y publicados)
 def testimonios_publicos(request):
     testimonios = Testimonio.objects.filter(
         estado='aprobado', publicado=True
