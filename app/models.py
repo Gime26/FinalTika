@@ -141,20 +141,31 @@ class Especialistas(models.Model):
         return f"Especialista {self.dni or self.id_especialistas}"
     
 # 📑 INFORME
+
 class Informe(models.Model):
-    id_informe = models.IntegerField(primary_key=True)
-    titulo = models.CharField(max_length=255)
-    contenido = models.TextField()
-    fecha_creacion = models.DateField(auto_now_add=True)
-    # ... otros campos
+    # Campo para el asunto del informe
+    asunto = models.CharField(max_length=200)
     
-    class Meta:
-        managed = False
-        # db_table = 'informes' 
-        
+    # Campo para la fecha del informe
+    fecha = models.DateField() 
+    
+    # Campo para la hora de registro
+    hora = models.TimeField()
+    
+    # Campo para el contenido o detalle del informe (textarea en el HTML)
+    contenido = models.TextField(blank=True, null=True) 
+    
+    # Campo de registro de cuándo se creó el informe
+    fecha_creacion = models.DateTimeField(auto_now_add=True) 
+
     def __str__(self):
-        return self.titulo
-    
+        # Muestra el asunto y la fecha en el administrador de Django
+        return f"Informe de {self.asunto} - {self.fecha}"
+
+    class Meta:
+        # Ordena los informes por fecha de creación descendente
+        ordering = ['-fecha_creacion']
+
 class Observacion(models.Model):
     """Modelo para guardar el registro de una observación de sesión."""
     

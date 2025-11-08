@@ -4,41 +4,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario de Informes</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <title>Formulario de Informes - TIKA</title>
+    <link rel="stylesheet" href="{% static 'css/informes.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap">
 </head>
 <body>
 
-    <div class="form-container">
+    <div class="main-container">
 
-        <div class="form-header">
-            <div class="header-title">
-                <span class="icon">📋</span>
-                <h1>Informes</h1>
-            </div>
+        <div class="form-card">
+            <header class="card-header">
+                <span class="icon">📝</span>
+                <h2>Nuevo Informe</h2>
+            </header>
+
+            <p class="subtitle">Completá los datos requeridos para generar el informe.</p>
+
+            <form action="{% url 'guardar_informe' %}" method="POST" class="report-form">
+                {% csrf_token %} 
+                
+                <div class="form-group">
+                    <label for="asunto">Asunto del Informe</label>
+                    <input type="text" id="asunto" name="asunto" placeholder="Ej: Psicológico, Fonoaudiológico" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group half-width">
+                        <label for="fecha">Fecha del Informe</label>
+                        <input type="date" id="fecha" name="fecha" required>
+                    </div>
+                    <div class="form-group half-width">
+                        <label for="hora">Hora del Registro</label>
+                        <input type="time" id="hora" name="hora" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="contenido">Contenido / Observaciones</label>
+                    <textarea id="contenido" name="contenido" rows="6" placeholder="Detalle del informe y resultados..."></textarea>
+                </div>
+                
+                <button type="submit" class="btn-submit">
+                    GUARDAR INFORME
+                </button>
+            </form>
         </div>
-
-        <p class="subtitle">Completá el siguiente formulario para añadir un informe.</p>
-
-        <form action="{% url 'guardar_informe' %}" method="POST" class="report-form">
-            {% csrf_token %} <div class="form-group">
-                <label for="asunto">Asunto</label>
-                <input type="text" id="asunto" placeholder="Ej: Psicológico" class="input-dropdown">
-            </div>
-            
-            <div class="form-group-inline">
-                <div class="form-group date-time-field">
-                    <label for="fecha">Fecha</label>
-                    <input type="text" id="fecha" value="DD/MM/AAAA" class="input-dropdown">
-                </div>
-                <div class="form-group date-time-field">
-                    <label for="hora">Hora</label>
-                    <input type="text" id="hora" value="Seleccione hora" class="input-dropdown">
-                </div>
-            </div>
-
-            <button type="submit" class="btn-guardar">GUARDAR</button>
-        </form>
     </div>
 
 </body>

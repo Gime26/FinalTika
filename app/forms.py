@@ -4,7 +4,7 @@ from django.forms import ModelForm, NumberInput
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User 
-from .models import Perfil, Entrevista, Paciente, Informe, Especialidades, Observacion, Testimonio
+from .models import Perfil, Entrevista, Paciente, Informe, Especialidades, Observacion, Testimonio, Turno
 from datetime import date
 from django.forms.widgets import DateInput, Select, Textarea
 
@@ -68,9 +68,10 @@ class PacienteForm(forms.ModelForm):
 class InformeForm(forms.ModelForm):
     class Meta:
         model = Informe
-        fields = ['titulo', 'contenido']
+        fields = ('asunto', 'fecha', 'hora', 'contenido') 
+
         widgets = {
-            'contenido': forms.Textarea(attrs={'rows': 4}),
+            'asunto': forms.TextInput(attrs={'placeholder': 'Asunto del informe'}),
         }
 
 class ObservacionForm(forms.ModelForm):
@@ -100,9 +101,6 @@ class ObservacionForm(forms.ModelForm):
             'observacion_clinica': Textarea(attrs={'rows': 5}), # Mantener el tamaño visible
         }
         # forms.py
-
-from django import forms
-from .models import Turno, Paciente # Asegúrate de importar Paciente también
 
 class TurnoForm(forms.ModelForm):
     class Meta:

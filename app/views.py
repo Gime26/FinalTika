@@ -10,6 +10,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.http import HttpResponse
 
 def base(request):
     return render(request, "base.html")
@@ -44,7 +45,6 @@ def login_view(request):
             # 3. La comprobación del usuario se hace DENTRO de form.is_valid()
             if user is not None:
                 login(request, user)
-                messages.success(request, f"¡Bienvenido {user.username}!")
                 # Si Django pasa un parámetro 'next', redirige ahí
                 next_url = request.POST.get('next') or 'dashboard' 
                 return redirect(next_url) 
@@ -169,21 +169,39 @@ def estadistica_view(request):
     estados = EstadoPaciente.objects.all()
     return render(request, 'estadistica.html', {'estados': estados})   
 
+def formulario_informe(request):
+    """Muestra el template del formulario de informes."""
+    # El template que te di se llama informes_formulario.html
+    return render(request, 'informes_formulario.html') 
 
-def crear_informe(request):
+# 2. Vista para manejar el POST y guardar los datos
+def guardar_informe(request):
+    """Procesa los datos del formulario y los guarda en la base de datos."""
+    
+    # Asegúrate de que el método de la solicitud sea POST
     if request.method == 'POST':
-        form = InformeForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('lista_informes')
-    else:
-        form = InformeForm()
-    return render(request, 'informes.html', {'form': form})
+        # Recupera los datos del formulario usando los atributos 'name' del HTML
+        asunto_data = request.POST.get('asunto')
+        fecha_data = request.POST.get('fecha')
+        hora_data = request.POST.get('hora')
+        contenido_data = request.POST.get('contenido')
+        
+        # Crea y guarda una nueva instancia del modelo Informe
+        nuevo_informe = Informe.objects.create(
+            asunto=asunto_data,
+            fecha=fecha_data,
+            hora=hora_data,
+            contenido=contenido_data
+        )
+        
+        # Opcional: Redirige al usuario a una página de éxito o al dashboard
+        # Por ejemplo, podrías usar 'dashboard' o 'informes_listado'
+        return redirect('dashboard') 
+        
+    # Si la solicitud no es POST (por ejemplo, alguien intenta acceder directamente),
+    # simplemente redirige al formulario o al dashboard.
+    return redirect('formulario_informe')
 
-def lista_informes(request):
-    informes = Informe.objects.all()
-    return render(request, 'lista_informes.html', {'informes': informes})
-# --- Vista para Listar (Historial) ---
 
 class ListaObservacionesView(LoginRequiredMixin, ListView):
     """Muestra el historial de todas las observaciones."""
@@ -212,7 +230,7 @@ def comprobantes_view(request):
 
 def enviar_testimonio(request):
     if request.method == 'POST':
-        form = TestimonioForm(request.POST)
+        form = TestimonioForm(request.POST, request.FILES)
         if form.is_valid():
             testimonio = form.save(commit=False)
             testimonio.usuario = request.user if request.user.is_authenticated else None
@@ -222,17 +240,22 @@ def enviar_testimonio(request):
         form = TestimonioForm()
     return render(request, 'testimonio/enviar_testimonio.html', {'form': form})
 
-# Mostrar testimonios públicos (aprobados)
+
+#  Mostrar testimonios públicos (solo los aprobados y publicados)
 def testimonios_publicos(request):
-    testimonios = Testimonio.objects.filter(estado='aprobado', publicado=True).order_by('-fecha_envio')
+    testimonios = Testimonio.objects.filter(
+        estado='aprobado', publicado=True
+    ).order_by('-fecha_envio')
     return render(request, 'testimonios_publicos.html', {'testimonios': testimonios})
 
 
-@user_passes_test(lambda u: u.is_superuser or u.is_staff)
+# ✅ Vista del panel (administración interna)
 def testimonios_lista(request):
     testimonios = Testimonio.objects.all().order_by('-fecha_envio')
     return render(request, 'dashboard/testimonios.html', {'testimonios': testimonios})
-# Acciones del admin 
+
+
+# ✅ Acciones del panel de administración
 def aprobar_testimonio(request, id):
     testimonio = get_object_or_404(Testimonio, id=id)
     testimonio.estado = 'aprobado'
@@ -240,17 +263,24 @@ def aprobar_testimonio(request, id):
     testimonio.save()
     return redirect('testimonios_lista')
 
+
 def restringir_testimonio(request, id):
     testimonio = get_object_or_404(Testimonio, id=id)
     testimonio.estado = 'restringido'
     testimonio.publicado = False
     testimonio.save()
     return redirect('testimonios_lista')
-def testimonios_inicio(request):
-    testimonios = Testimonio.objects.filter(publicado=True).order_by('-fecha_envio')
-    return render(request, 'testimonio/test_public.html', {'testimonios': testimonios})
+
 
 def eliminar_testimonio(request, id):
     testimonio = get_object_or_404(Testimonio, id=id)
     testimonio.delete()
     return redirect('testimonios_lista')
+
+
+# ✅ Página de inicio que muestra los testimonios públicos
+def testimonios_inicio(request):
+    testimonios = Testimonio.objects.filter(
+        publicado=True, estado='aprobado'
+    ).order_by('-fecha_envio')
+    return render(request, 'testimonio/test_public.html', {'testimonios': testimonios})

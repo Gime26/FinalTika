@@ -13,12 +13,12 @@ urlpatterns = [
     path('dashboard/', views.dashboard_view, name='dashboard'),
     path("turnos/", views.turnos_view, name="turnos"),
     path("estadistica/", views.estadistica_view, name="estadistica"),
-    path("informes/", views.crear_informe, name="informes"),
-    path("lista_informes/", views.lista_informes, name="lista_informes"),
     path("gestionturnos/", views.gestionturnos, name="gestionturnos"),
     path('observaciones/nueva/', CrearObservacionView.as_view(), name='crear_observacion'), 
     path('observaciones/', ListaObservacionesView.as_view(), name='lista_observaciones'),
     path('comprobantes/', views.comprobantes_view, name='comprobantes'),   
+    path('informes/nuevo/', views.formulario_informe, name='lista_formulario'),
+    path('informes/guardar/', views.guardar_informe, name='guardar_informe'),
 
      # CRUD Pacientes
     path("pacientes/", views.pacientes_list, name="pacientes_list"),
