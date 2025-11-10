@@ -13,6 +13,15 @@
 
  <a href=""></a>
 
+ <style>
+#testimonios .btn-enviar-testimonio {
+  color: white !important;
+  font-size: 1.5rem !important;
+  font-weight: bold !important;
+  text-decoration: none !important;
+}
+</style>
+
 </head>
 <body>
   <header>
@@ -192,6 +201,12 @@
 
     <section id="testimonios" class="content testimonials">
        <h2 class="title">Testimonios</h2>
+
+       <div class="text-center mt-4 mb-4">
+       <a href="{% url 'enviar_testimonio' %}" class="btn-enviar-testimonio">
+       💬 Enviar tu testimonio
+        </a>
+       </div>
 
        <div class="testimonial-container">
             {% if testimonios %}
