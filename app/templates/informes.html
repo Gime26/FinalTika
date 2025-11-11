@@ -20,7 +20,7 @@
 
         <p class="subtitle">Completá el siguiente formulario para añadir un informe.</p>
 
-        <form action="{% url 'guardar_informe' %}" method="POST" class="report-form">
+        <form action="{% url 'crear_informe' %}" method="post">
             {% csrf_token %} <div class="form-group">
                 <label for="asunto">Asunto</label>
                 <input type="text" id="asunto" placeholder="Ej: Psicológico" class="input-dropdown">

@@ -2,13 +2,13 @@
 __pycache__/
 *.pyc
 
-# Entorno virtual
-virtual/
+# Entornos virtuales
 venv/
+virtual/
 .venv/
 
 # Archivos temporales
 *.log
 *.sqlite3
-.DS_Store
 .env
+.DS_Store
