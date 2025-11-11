@@ -1,14 +1,14 @@
-# Ignorar entorno virtual
-virtual/
-venv/
-.venv/
-
 # Archivos de Python
 __pycache__/
 *.pyc
 
-# Archivos de entorno
-.env
+# Entorno virtual
+virtual/
+venv/
+.venv/
 
-# Archivos de VSCode
-.vscode/
+# Archivos temporales
+*.log
+*.sqlite3
+.DS_Store
+.env
