@@ -1,0 +1,22 @@
+{
+    "intents": [
+        {
+            "tag": "saludo",
+            "patterns": ["Hola", "Buenos dias", "Buenas tardes"],
+            "responses":["¡Hola! ¿ cómo puedo ayudarte hoy?", "¡Buenas!, ¿Que necesitas?"]
+        },
+
+        {
+            "tag": "despedida",
+            "patterns":["Adios", "Hasta luego", "Nos vemos"],
+            "responses":["¡Adios!", "¡Esperamos verte pronto!", "¡Hasta luego!", 
+                         "¡Gracias por visitarnos!", "¡Vuelve pronto!"]
+
+        },
+        {
+            "tag":"Obra social",
+            "patterns":["¿Reciben obra social?", "¿Que obra social reciben?"], 
+            "responses":["Recibimos las siguientes obras sociales: Sancor,Ospedym, PrevencionSalud, Swiss Medical"]
+        }
+    ]
+}

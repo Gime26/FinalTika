@@ -33,14 +33,14 @@
      <a href="#test">Test</a>
      <a href="#equipo">Equipo</a>
      <a href="#testimonios">Testimonios</a>
-  <a href="#contacto">Contacto</a>
+     <a href="#contacto">Contacto</a>
   <!-- Cambiado a ancla local para evitar 404; apunta a <section id="footer"> -->
+      <a href="http://localhost:8501" target="_blank"> 
+        <i class="bi bi-robot"></i> TikaBot
+      </a>
     </nav>
   </header>
   <main>
-    <a href="http://localhost:8501" target="_blank"> 
-        <i class="bi bi-robot"></i> TikaBot
-      </a>
     <section id="inicio" class="content home">
         <h2 class="title"> ¡BIENVENIDOS A TIKA! </h2>
         <p>Tu espacio para aprender y crecer.</p>
@@ -126,7 +126,7 @@
         </p>
 
 <div class="btn-home mt-4">
-        <a href="{% url 'partials/entrevista_form.html' %}" class="btn register-btn"> 
+        <a href="{% url 'entrevista' %}" class="btn register-btn"> 
           Realizar Entrevista
         </a>
 </button>

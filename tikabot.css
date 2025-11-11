@@ -1,0 +1,75 @@
+/* style.css */
+
+/* Oculta los elementos por defecto de Streamlit que no necesitamos */
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+header {visibility: hidden;}
+
+/* Estilo general del cuerpo de la aplicación */
+body {
+    background-color: #f0f2f6; /* Fondo más claro */
+    font-family: 'Arial', sans-serif;
+    color: #333;
+}
+
+/* Contenedor principal del chat */
+.stApp {
+    max-width: 800px; /* Limita el ancho para que no sea demasiado grande */
+    margin: 0 auto; /* Centra el contenido */
+    padding: 20px;
+}
+
+/* Estilo del título */
+.st-emotion-cache-1r6dmui { /* Este selector puede variar, es el H1 de Streamlit */
+    color: #FF0066; /* Rosa vibrante */
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* Contenedores de mensaje del usuario y del asistente */
+.st-emotion-cache-1c7y2c1.e1y0ueyl5 { /* Contenedor de mensaje del asistente */
+    background-color: #ffe6f2; /* Fondo rosa claro para el asistente */
+    border-radius: 15px;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-left: 5px solid #FF0066;
+}
+
+.st-emotion-cache-1c7y2c1.e1y0ueyl4 { /* Contenedor de mensaje del usuario */
+    background-color: #e0f2f7; /* Fondo azul claro para el usuario */
+    border-radius: 15px;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-right: 5px solid #00BFFF; /* Azul vibrante */
+}
+
+/* Estilo del texto dentro de los mensajes */
+.stMarkdown p {
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+/* Entrada de texto del chat */
+.st-emotion-cache-vdsa9a { /* Esto es el chat_input */
+    border-radius: 25px;
+    border: 1px solid #FF0066;
+    padding: 10px 20px;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+}
+
+/* Botones (si los usas, como los de Previ) */
+.stButton button {
+    background-color: #FF0066;
+    color: white;
+    border-radius: 20px;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.stButton button:hover {
+    background-color: #CC0052;
+}

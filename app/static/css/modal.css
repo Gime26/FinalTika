@@ -1,66 +1,70 @@
-/* Fondo del modal */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
-  justify-content: center;
-  align-items: center;
+/* tikabot.css */
+
+/* --- Configuración Global --- */
+
+/* Oculta elementos por defecto de Streamlit (menú, footer) */
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+header {visibility: hidden;}
+
+/* Establece el fondo principal de la aplicación con tu color morado claro */
+.stApp {
+    background-color: #f0f2f6; /* Fondo ligero para contraste */
+    font-family: 'Arial', sans-serif;
+    color: #333;
 }
 
-/* Contenedor del contenido */
-.modal-content {
-  background-color: #caa7d8;
-  padding: 2rem;
-  border-radius: 15px;
-  width: 320px;
-  text-align: center;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-  animation: showModal 0.3s ease;
+/* Modifica el contenedor principal de la aplicación para limitar el ancho y centrar */
+.stApp > header {
+    background-color: #f0f2f6;
 }
 
-/* Animación */
-@keyframes showModal {
-  from { transform: scale(0.7); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+/* --- Título y Encabezado --- */
+
+/* Estilo del título (H1) */
+.st-emotion-cache-1waq2fm { /* Este selector apunta al H1 */
+    color: #a000eb; /* Morado/Violeta fuerte */
+    text-align: center;
+    margin-bottom: 30px;
+    padding-top: 10px;
 }
 
-.modal-content h2 {
-  color: #4b004b;
-  margin-bottom: 15px;
+/* --- Contenedores de Mensaje (Simulando el modal-content) --- */
+
+/* Mensaje del ASISTENTE (Tikabot) */
+/* El color #caa7d8 es el color que usaste para el modal-content */
+.st-emotion-cache-1c7y2c1.e1y0ueyl5 { 
+    background-color: #caa7d8; /* Morado claro de tu modal-content */
+    padding: 1.5rem;
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+    border-left: 5px solid #4b004b; /* Borde oscuro */
 }
 
-.modal-content input {
-  width: 100%;
-  padding: 10px;
-  margin: 8px 0;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+/* Mensaje del USUARIO */
+/* Damos al usuario un color de contraste, por ejemplo, gris claro. */
+.st-emotion-cache-1c7y2c1.e1y0ueyl4 { 
+    background-color: #e0e0e0; 
+    padding: 1.5rem;
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+    border-right: 5px solid #000000; /* Borde negro de tus botones */
 }
 
-.modal-content button {
-  background-color: #000000;
-  color: rgb(255, 255, 255);
-  border: none;
-  border-radius: 8px;
-  padding: 10px 20px;
-  cursor: pointer;
-  transition: background 0.3s;
+/* --- Entrada de Chat (Chat Input) --- */
+
+/* Estilo de la caja de entrada de texto */
+.st-emotion-cache-vdsa9a { /* Este es el st.chat_input */
+    border-radius: 25px;
+    border: 2px solid #a000eb; /* Borde morado oscuro */
+    padding: 5px 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    background-color: white;
 }
 
-.modal-content button:hover {
-  background-color: #a000eb;
-}
-
-.close {
-  position: absolute;
-  top: 15px;
-  right: 25px;
-  font-size: 24px;
-  cursor: pointer;
-  color: #555;
+/* Color del texto dentro de la caja de entrada */
+.st-emotion-cache-10o4cmr { 
+    color: #4b004b; 
 }
