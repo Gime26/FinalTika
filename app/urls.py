@@ -16,8 +16,8 @@ urlpatterns = [
     path("informes/", views.crear_informe, name="informes"),
     path("lista_informes/", views.lista_informes, name="lista_informes"),
     path("gestionturnos/", views.gestionturnos, name="gestionturnos"),
-    path('observaciones/nueva/', CrearObservacionView.as_view(), name='crear_observacion'), 
     path('observaciones/', ListaObservacionesView.as_view(), name='lista_observaciones'),
+    path('observaciones/nueva/', CrearObservacionView.as_view(), name='crear_observacion'),
     path('comprobantes/', views.comprobantes_view, name='comprobantes'),   
 
      # CRUD Pacientes

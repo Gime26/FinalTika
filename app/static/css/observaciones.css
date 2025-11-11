@@ -1,0 +1,119 @@
+/* ======= ESTILOS GENERALES ======= */
+body {
+    font-family: "Lexend", sans-serif;
+    background: #f3e9f7;
+    margin: 0;
+    padding: 0;
+    color: #2b2b2b;
+}
+
+/* Header */
+header {
+    background: linear-gradient(to right, #e3b7ff, #8a2be2, #4a035f);
+    padding: 25px;
+    text-align: center;
+    color: white;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2rem;
+    letter-spacing: 1px;
+}
+
+header h2 {
+    margin-top: 8px;
+    font-weight: 300;
+    opacity: 0.9;
+}
+
+/* Tarjetas */
+.card {
+    max-width: 800px;
+    background: white;
+    margin: 25px auto;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.12);
+}
+
+/* Títulos */
+.card h2 {
+    margin-top: 0;
+    font-size: 1.4rem;
+    color: #4a035f;
+}
+
+/* Formulario */
+form label {
+    font-weight: 600;
+    display: block;
+    margin-top: 12px;
+}
+
+form input, 
+form select,
+form textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #bbb;
+    margin-top: 6px;
+    font-size: 0.95rem;
+}
+
+form textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+/* Botones */
+.btn {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 18px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+}
+
+.btn-primary {
+    background: #8a2be2;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #6d20b4;
+}
+
+.btn-secondary {
+    background: #ccc;
+    color: #222;
+}
+
+.btn-secondary:hover {
+    background: #b5b5b5;
+}
+
+/* Lista historial */
+.historial {
+    list-style: none;
+    padding: 0;
+}
+
+.historial li {
+    padding: 12px 0;
+    border-bottom: 1px solid #e6e6e6;
+}
+
+.historial li:last-child {
+    border-bottom: none;
+}
+
+.detalle {
+    font-size: 0.9rem;
+    color: #555;
+    font-style: italic;
+}

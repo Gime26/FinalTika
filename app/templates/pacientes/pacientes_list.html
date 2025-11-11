@@ -37,8 +37,8 @@
             <td>{{ paciente.telefono }}</td>
             <td>{{ paciente.email }}</td>
             <td>
-                <a href="{% url 'pacientes_update' paciente.dni_paciente %}" class="btn-action btn-edit">✏️ Editar</a>
-                <a href="{% url 'pacientes_delete' paciente.dni_paciente %}" class="btn-action btn-delete">🗑️ Eliminar</a>
+                <a href="{% url 'pacientes_update' paciente.pk %}" class="btn-action btn-edit">✏️ Editar</a>
+                <a href="{% url 'pacientes_delete' paciente.pk %}" class="btn btn-danger">Eliminar</a>
             </td>
         </tr>
         {% empty %}

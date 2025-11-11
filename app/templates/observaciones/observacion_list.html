@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/observaciones.css' %}">
+<h2>Historial de observaciones</h2>
+
+<a href="{% url 'crear_observacion' %}">➕ Nueva observación</a>
+
+<ul>
+{% for o in observaciones %}
+    <li>
+        {{ o.fecha|date:"d/m/Y" }} · {{ o.paciente }} · {{ o.get_especialista_display }}
+    </li>
+    <li>
+    {{ o.observacion_clinica }}
+    </li>
+{% empty %}
+    <li>No hay observaciones registradas.</li>
+{% endfor %}
+</ul>
+
+{% endblock %}

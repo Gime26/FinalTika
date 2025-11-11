@@ -44,7 +44,6 @@ def login_view(request):
             # 3. La comprobación del usuario se hace DENTRO de form.is_valid()
             if user is not None:
                 login(request, user)
-                messages.success(request, f"¡Bienvenido {user.username}!")
                 # Si Django pasa un parámetro 'next', redirige ahí
                 next_url = request.POST.get('next') or 'dashboard' 
                 return redirect(next_url) 
@@ -186,26 +185,20 @@ def lista_informes(request):
 # --- Vista para Listar (Historial) ---
 
 class ListaObservacionesView(LoginRequiredMixin, ListView):
-    """Muestra el historial de todas las observaciones."""
     model = Observacion
-    template_name = 'observaciones/registro_observaciones.html' # Mismo HTML
-    context_object_name = 'historial_observaciones'
-    ordering = ['-fecha'] # Ordenar por fecha más reciente
-
-    def get_context_data(self, **kwargs):
-        # Esto permite que la plantilla reciba ambos datos: el formulario vacío y el historial
-        context = super().get_context_data(**kwargs)
-        context['form'] = ObservacionForm()
-        return context
+    template_name = 'observaciones/observacion_list.html'
+    context_object_name = 'observaciones'
+    ordering = ['-fecha']
     
-
 class CrearObservacionView(LoginRequiredMixin, CreateView):
-    """Maneja la creación de una nueva observación."""
     model = Observacion
     form_class = ObservacionForm
-    template_name = 'observaciones/registro_observaciones.html' # <--- Usar el HTML de historial
-    success_url = reverse_lazy('lista_observaciones') # <--- Apunta a la URL de listado
+    template_name = 'observaciones/observacion_form.html'
+    success_url = reverse_lazy('lista_observaciones')
 
+    def form_valid(self, form):
+        form.instance.creada_por = self.request.user
+        return super().form_valid(form)
 
 def comprobantes_view(request):
     return render(request, 'comprobantes.html')
@@ -228,7 +221,7 @@ def testimonios_publicos(request):
     return render(request, 'testimonios_publicos.html', {'testimonios': testimonios})
 
 
-@user_passes_test(lambda u: u.is_superuser or u.is_staff)
+
 def testimonios_lista(request):
     testimonios = Testimonio.objects.all().order_by('-fecha_envio')
     return render(request, 'dashboard/testimonios.html', {'testimonios': testimonios})

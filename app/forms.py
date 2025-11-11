@@ -86,32 +86,30 @@ class InformeForm(forms.ModelForm):
         }
 
 class ObservacionForm(forms.ModelForm):
-    # Personalizamos los campos ForeignKey para que usen la clase CSS de tu HTML
-    
+
     paciente = forms.ModelChoiceField(
         queryset=Paciente.objects.all(),
-        empty_label="— Seleccionar —", # El primer <option> de tu HTML
-        label="Paciente:",
-        widget=Select(attrs={'class': 'custom-select'}) 
+        empty_label="— Seleccionar —",
+        label="Paciente:"
     )
 
-    tipo_sesion = forms.ModelChoiceField(
-        queryset=Especialidades.objects.all(),
-        empty_label="— Seleccionar —",
-        label="Tipo de sesión:",
-        widget=Select(attrs={'class': 'custom-select'})
+    tipo_sesion = forms.ChoiceField(
+        choices=Observacion.TIPO_SESION,
+        label="Tipo de sesión:"
+    )
+
+    especialista = forms.ChoiceField(
+        choices=Observacion.ESPECIALISTAS,
+        label="Especialista:"
     )
 
     class Meta:
         model = Observacion
-        fields = ['paciente', 'fecha', 'tipo_sesion', 'observacion_clinica']
-        
-        # Asignar widgets para aplicar estilos y tipos HTML
+        fields = ['paciente', 'fecha', 'tipo_sesion', 'especialista', 'observacion_clinica']
         widgets = {
-            'fecha': DateInput(attrs={'type': 'date'}),
-            'observacion_clinica': Textarea(attrs={'rows': 5}), # Mantener el tamaño visible
+            'fecha': forms.DateInput(attrs={'type': 'date'}),
+            'observacion_clinica': forms.Textarea(attrs={'rows': 5})
         }
-        # forms.py
 
 from django import forms
 from .models import Turno, Paciente # Asegúrate de importar Paciente también

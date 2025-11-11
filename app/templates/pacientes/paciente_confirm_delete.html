@@ -1,21 +1,20 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block content %}
-
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/forms.css' %}">
 {% endblock %}
 
-<div class="form-card">
-    <h2>🗑️ Eliminar Paciente</h2>
+{% block content %}
+    <div class="form-card">
+        <h2>🗑️ Eliminar Paciente</h2>
 
-    <p>¿Seguro que querés eliminar a <strong>{{ paciente.nombre }} {{ paciente.apellido }}</strong>?</p>
+        <p>¿Seguro que querés eliminar a <strong>{{ paciente.nombre }} {{ paciente.apellido }}</strong>?</p>
 
-    <form method="post">
-        {% csrf_token %}
-        <button type="submit" class="btn-form btn-delete">🗑️ Sí, eliminar</button>
-        <a href="{% url 'pacientes_list' %}" class="btn-form btn-cancel">❌ Cancelar</a>
-    </form>
-</div>
-
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn-form btn-delete">🗑️ Sí, eliminar</button>
+            <a href="{% url 'pacientes_list' %}" class="btn-form btn-cancel">❌ Cancelar</a>
+        </form>
+    </div>
+{% endblock %}

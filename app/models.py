@@ -156,20 +156,36 @@ class Informe(models.Model):
         return self.titulo
     
 class Observacion(models.Model):
-    """Modelo para guardar el registro de una observación de sesión."""
-    
+
+    ESPECIALISTAS = [
+        ("sol_psico", "Lic. Sol Espasandin"),
+        ("carlos_kine", "Lic. Carlos Herrera"),
+        ("mailen_psico", "Lic. Mailen Danilowicz"),
+        ("silvina_psico", "Lic. Silvina Diaz"),
+        ("carolina_psicope", "Lic. Carolina Herrera"),
+        ("monica_fono", "Lic. Monica Palacios Cañizares"),
+        ("itati_psicope", "Lic. Itati Gordillo"),
+    ]
+
+    TIPO_SESION = [
+        ("psicologia", "Psicología"),
+        ("psicopedagogia", "Psicopedagogía"),
+        ("psicomotricidad", "Psicomotricidad"),
+        ("fonoaudiologia", "Fonoaudiología"),
+        ("kinesiologia", "Kinesiología"),
+    ]
+
     paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
     fecha = models.DateField()
-    tipo_sesion = models.ForeignKey(Especialidades, on_delete=models.PROTECT)
+    tipo_sesion = models.CharField(max_length=50, choices=TIPO_SESION)
+    especialista = models.CharField(max_length=100, choices=ESPECIALISTAS)
     observacion_clinica = models.TextField()
-    
-    # Datos de seguimiento
     creada_por = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     fecha_registro = models.DateTimeField(auto_now_add=True)
-    
+
     def __str__(self):
         return f"Obs. de {self.paciente.nombre} el {self.fecha}"
-    
+
 
 class Testimonio(models.Model):
     ESTADOS = [
