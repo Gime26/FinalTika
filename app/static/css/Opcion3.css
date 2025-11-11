@@ -318,6 +318,21 @@ p { /* Estilo del párrafo de cada contenedor*/
     margin: 0 auto;
 }
 
+.text-center.mt-4.mb-4 {
+  text-align: center;
+  margin: 25px 0;
+}
+
+#testimonios .btn-enviar-testimonio {
+  color: white !important;
+  font-size: 1.3rem !important;
+  font-weight: bold;
+  text-decoration: none !important;
+}
+
+#testimonios .btn-enviar-testimonio:hover {
+  color: #f8d7ff !important; /* un blanco rosado suave al pasar el mouse */
+}
 /* --- Sección Contacto --- */
 .content.contact { /* Estilo para la página de "Contacto" */
     height: 100vh !important;
