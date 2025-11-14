@@ -50,9 +50,10 @@
             <a href="#">Contacto</a>
             <a href="{%url 'testimonios_lista' %}"> <i class="bi bi-chat-quote"> </i> Testimonios </a>
         </div>
-
-        <a href="#"><i class="bi bi-robot"></i> TikaBot</a>
-    </div>
+         <a href="http://localhost:8501" target="_blank"> 
+             <i class="bi bi-robot"></i> TikaBot
+          </a>
+        </div>
     
 <form action="{% url 'logout' %}" method="post" style="display:inline;">
     {% csrf_token %}

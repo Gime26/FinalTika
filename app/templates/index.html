@@ -42,9 +42,12 @@
      <a href="#test">Test</a>
      <a href="#equipo">Equipo</a>
      <a href="#testimonios">Testimonios</a>
-  <a href="#contacto">Contacto</a>
+     <a href="#contacto">Contacto</a>
+     <a href="http://localhost:8501" target="_blank"> 
+        <i class="bi bi-robot"></i> TikaBot
+      </a>
+    
   <!-- Cambiado a ancla local para evitar 404; apunta a <section id="footer"> -->
-  <a href="#footer">Footer</a>
     </nav>
   </header>
   <main>
@@ -52,31 +55,19 @@
         <h2 class="title"> ¡BIENVENIDOS A TIKA! </h2>
         <p>Tu espacio para aprender y crecer.</p>
         <div class="btn-home">
-       <h3><button id="openModal" class="btn">INGRESAR</button></h3>
-
-<!-- 🟣 MODAL DE LOGIN -->
- <link rel="stylesheet" href="{% static 'css/modal.css' %}">
-
-<div id="loginModal" class="modal">
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <form method="POST" action="{% url 'login' %}">
-      {% csrf_token %}
-      {{ login_form.as_p }} 
-      <button type="submit" class="btn Ingresar-btn"> 
-        INGRESAR
-      </button>
-    </form>
-    <a href="{% url 'registro' %}" class="btn register-btn" >
-      Registrarse
-    </a>
-  </div>
-</div>
-
-          {% comment %} <h3><a href={% url 'register' %} class="btn">Registrarse</a></h3> {% endcomment %}
+          <h3>
+            <form method="POST" action="{% url 'dashboard' %}">
+              <a href="{% url 'login' %}" class="btn register-btn"> 
+                Ingresar
+              </a>
+            </form>
+            <a href="{% url 'registro' %}" class="btn register-btn" >
+             Registrarse
+            </a>
+          </h3>
         </div>
         
-    </section>
+      </section>
 
     <section id="nosotros"  class="content about">
         <h2 class="title">Nosotros</h2>
@@ -145,12 +136,11 @@
         </p>
 
 <div class="btn-home mt-4">
-        <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modalEntrevista">
+        <a href="{% url 'entrevista' %}" class="btn register-btn"> 
           Realizar Entrevista
-        </button>
+        </a>
 </button>
-  <!-- Incluimos el modal (partial) -->
-  {% include 'partials/entrevista_form.html' %}
+  
 </section>
     </section>
 
@@ -198,39 +188,30 @@
             </div>
         </div>
     </section>
-
-    <section id="testimonios" class="content testimonials">
-       <h2 class="title">Testimonios</h2>
-
-       <div class="text-center mt-4 mb-4">
-       <a href="{% url 'enviar_testimonio' %}" class="btn-enviar-testimonio">
-       💬 Enviar tu testimonio
-        </a>
+            <section id="testimonios" class="content testimonials">
+               <h2 class="title">Testimonios</h2>
+               <div class="testimonial-container">
+                  {% for t in testimonios %}
+                  <div class="testimonial">
+                   <p>"{{ t.contenido }}"</p>
+                   <h3>- {{ t.relacion }}</h3>
+                   {% if t.imagen %}
+                    <figure class="testimonio">
+                      <img src="{{ t.imagen.url }}" alt="Imagen del testimonio de {{ t.usuario.username }}" width="600" height="500">
+                   </figure>
+                   {% else %}
+                   <figure class="testimonio">
+                      <img src="{% static 'img/foto.png' %}" alt="Testimonio sin imagen" width="600" height="500">
+                   </figure>
+                   {% endif %}
+                 </div>
+                 {% empty %}
+                 <p>No hay testimonios publicados todavía.</p>
+                 {% endfor %}
+               </div>
+             </section>
        </div>
-
-       <div class="testimonial-container">
-            {% if testimonios %}
-            {% for t in testimonios %}
-             <div class="testimonial">
-          <p>"{{ t.contenido }}"</p>
-          <h3>- {{ t.relacion }}</h3>
-
-          {% if t.imagen %}
-            <figure class="testimonio">
-              <img src="{{ t.imagen.url }}" alt="Imagen del testimonio de {{ t.usuario.username }}" width="600" height="500">
-            </figure>
-          {% else %}
-            <figure class="testimonio">
-              <img src="{% static 'img/foto.png' %}" alt="Testimonio sin imagen" width="600" height="500">
-            </figure>
-          {% endif %}
-        </div>
-      {% endfor %}
-    {% else %}
-      <p>No hay testimonios publicados todavía.</p>
-    {% endif %}
-  </div>
-    </section>
+      </section>
 
     <section id="contacto" class="content contact">
         <h2 class="title">Contacto</h2>

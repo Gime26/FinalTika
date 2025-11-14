@@ -140,21 +140,7 @@ class Especialistas(models.Model):
     def __str__(self):
         return f"Especialista {self.dni or self.id_especialistas}"
     
-# 📑 INFORME
-class Informe(models.Model):
-    id_informe = models.IntegerField(primary_key=True)
-    titulo = models.CharField(max_length=255)
-    contenido = models.TextField()
-    fecha_creacion = models.DateField(auto_now_add=True)
-    # ... otros campos
-    
-    class Meta:
-        managed = False
-        # db_table = 'informes' 
-        
-    def __str__(self):
-        return self.titulo
-    
+
 class Observacion(models.Model):
 
     ESPECIALISTAS = [

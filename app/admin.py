@@ -1,8 +1,7 @@
 from django.contrib import admin
 from .models import (
     Paciente, Entrevista, Perfil, EstadoPaciente, HistorialPaciente, 
-    Turno, Centrosterapeuticos, Detallepagos, Especialidades, Especialistas, 
-    Informe, Observacion, Testimonio
+    Turno, Centrosterapeuticos, Detallepagos, Especialidades, Especialistas, Observacion, Testimonio
 )
 
 # ----------------------
@@ -91,11 +90,6 @@ class EspecialistasAdmin(admin.ModelAdmin):
 # ----------------------
 # INFORMES
 # ----------------------
-@admin.register(Informe)
-class InformeAdmin(admin.ModelAdmin):
-    list_display = ('id_informe', 'titulo', 'fecha_creacion')
-    search_fields = ('titulo',)
-    list_filter = ('fecha_creacion',)
 
 # ----------------------
 # OBSERVACIONES

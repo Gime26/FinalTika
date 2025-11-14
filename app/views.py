@@ -3,13 +3,14 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.models import User
 # Importar todas las clases de formularios desde forms.py
-from .forms import LoginForm, RegisterForm, EntrevistaForm, PacienteForm, InformeForm, ObservacionForm, TestimonioForm
-from .models import Entrevista, EstadoPaciente, Informe, Perfil, Paciente, Observacion, Testimonio
+from .forms import LoginForm, RegisterForm, EntrevistaForm, PacienteForm, ObservacionForm, TestimonioForm
+from .models import Entrevista, EstadoPaciente, Perfil, Paciente, Observacion, Testimonio
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.http import HttpResponse
 
 def base(request):
     return render(request, "base.html")
@@ -171,20 +172,14 @@ def estadistica_view(request):
     return render(request, 'estadistica.html', {'estados': estados})   
 
 
-def crear_informe(request):
-    if request.method == 'POST':
-        form = InformeForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('lista_informes')
-    else:
-        form = InformeForm()
-    return render(request, 'informes.html', {'form': form})
 
-def lista_informes(request):
-    informes = Informe.objects.all()
-    return render(request, 'lista_informes.html', {'informes': informes})
-# --- Vista para Listar (Historial) ---
+# 2. Vista para manejar el POST y guardar los datos
+
+        
+    # Si la solicitud no es POST (por ejemplo, alguien intenta acceder directamente),
+    # simplemente redirige al formulario o al dashboard.
+    return redirect('formulario_informe')
+
 
 class ListaObservacionesView(LoginRequiredMixin, ListView):
     model = Observacion
@@ -224,6 +219,7 @@ def testimonios_publicos(request):
         estado='aprobado', publicado=True
     ).order_by('-fecha_envio')
     return render(request, 'testimonios_publicos.html', {'testimonios': testimonios})
+
 
 
 def testimonios_lista(request):
