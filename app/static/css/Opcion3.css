@@ -399,6 +399,75 @@ p { /* Estilo del párrafo de cada contenedor*/
     color: #A99B72;
 }
 
+/* CSS para el Botón Flotante */
+
+/* PASO 1: Contenedor Principal (Ahora maneja la posición fija) */
+.chatbot-container {
+    position: fixed;
+    bottom: 25px; /* Misma posición 'bottom' que antes */
+    right: 25px;  /* Misma posición 'right' que antes */
+    z-index: 9999;
+    /* Opcional: Centra los elementos dentro de este contenedor */
+    display: flex;
+    flex-direction: column; /* Apila el cartel y el botón verticalmente */
+    align-items: flex-end; /* Alinea los elementos a la derecha del contenedor */
+}
+
+/* PASO 2: El Cartel de Ayuda */
+.help-label {
+    background-color: #555; /* Fondo oscuro (o el color que prefieras) */
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    margin-bottom: 10px; /* Espacio entre el cartel y el botón */
+    font-size: 14px;
+    white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+    
+    /* Opcional: Un pequeño triángulo (flecha) apuntando al botón */
+    position: relative;
+    right: 0; /* Lo alinea a la derecha del botón */
+}
+
+/* Opcional: Estilo de Flecha */
+.help-label::after {
+    content: '';
+    position: absolute;
+    bottom: -5px; /* Posiciona la flecha abajo del cartel */
+    right: 15px; /* Ajusta la posición de la flecha */
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent; /* Color de la flecha */
+}
+
+/* PASO 3: Tu Botón Flotante (Se simplifica la posición) */
+.chatbot-float-button {
+    /* **ELIMINA** position: fixed, bottom, y right de aquí */
+    
+    /* Estilo Circular y de Color Tika */
+    background: url("./../img/Asistente.png") no-repeat center;
+    background-size: contain; /* Para asegurar que se vea completa */
+    color: white;
+    border-radius: 50%; 
+    width: 100px; /* **RECOMENDADO:** Usar px para tamaño fijo de botones */
+    height: 100px; 
+    
+    /* Centrado del Ícono */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    /* Efectos */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    text-decoration: none; 
+    font-size: 28px; 
+    transition: background-color 0.3s ease;
+}
+
+.chatbot-float-button:hover {
+    background-color: #4b004b;
+}
+
 
 /* --- Estilos Generales (Aplicados a todas las resoluciones) --- */
 
@@ -745,4 +814,5 @@ img, video {
     .social-icons a {
         font-size: 1.2em;
     }
+
 }

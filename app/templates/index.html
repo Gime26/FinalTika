@@ -34,10 +34,6 @@
      <a href="#equipo">Equipo</a>
      <a href="#testimonios">Testimonios</a>
      <a href="#contacto">Contacto</a>
-  <!-- Cambiado a ancla local para evitar 404; apunta a <section id="footer"> -->
-      <a href="http://localhost:8501" target="_blank"> 
-        <i class="bi bi-robot"></i> TikaBot
-      </a>
     </nav>
   </header>
   <main>
@@ -246,5 +242,15 @@
 
   <script src="{% static 'js/entrevista.js' %}"></script>
   </script> 
+  <div class="chatbot-container">
+    <div class="help-label">
+        ¿Necesitas ayuda?
+    </div>
+    
+    <a href="http://localhost:8501" target="_blank" class="chatbot-float-button" 
+     title="Abrir TikaBot">
+     </a>
+</div>
+ 
 </body>
 </html>

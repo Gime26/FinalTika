@@ -8,15 +8,55 @@
 
         {
             "tag": "despedida",
-            "patterns":["Adios", "Hasta luego", "Nos vemos"],
+            "patterns":["Adios", "Hasta luego", "Nos vemos","Gracias"],
             "responses":["¡Adios!", "¡Esperamos verte pronto!", "¡Hasta luego!", 
                          "¡Gracias por visitarnos!", "¡Vuelve pronto!"]
 
         },
+
         {
-            "tag":"Obra social",
+            "tag":"Obra_social",
             "patterns":["¿Reciben obra social?", "¿Que obra social reciben?"], 
             "responses":["Recibimos las siguientes obras sociales: Sancor,Ospedym, PrevencionSalud, Swiss Medical"]
+        },
+
+        {
+            "tag":"Horario",
+            "patterns":["¿Cual es el horario de atención?"], 
+            "responses":["Nuestro horario de atención es de lunes a viernes de 9:00 a 20:00."]
+        },
+
+        {
+            "tag":"Consulta_pago",
+            "patterns":["¿Que métodos de pago reciben?", "¿Reciben tarjetas de credito?"], 
+            "responses":["Recibimos las siguientes obras sociales: Sancor,Ospedym, PrevencionSalud, Swiss Medical"]
+        },
+
+        {
+
+            "tag": "Consulta_servicios",
+            "patterns": [
+                "¿Qué servicios ofrecen?",
+                "¿Qué terapias ofrecen?",
+                "¿Tienen psicólogos?",
+                "¿Hacen evaluaciones?",
+                "¿Qué tipo de atención brindan?"
+            ],
+            "responses": ["Ofrecemos terapias psicológicas, evaluación neurocognitiva, psicopedagogía,kinesiología y fonoaudiología.",
+                "Nuestros servicios incluyen terapia psicológica, evaluación diagnóstica integral y programas de estimulación cognitiva y psicopedagógica."]
+        },
+
+        {
+            "tag": "Costo_sesion",
+            "patterns": [
+                "¿Cuánto cuesta una sesión?",
+                "¿Cuáles son las tarifas?",
+                "¿Precio de las terapias?"
+            ],
+            "responses": [
+                "El costo de la sesión varía según la obra social y el tipo de terapia. Por favor, contáctanos por teléfono o WhatsApp para darte una cotización personalizada.",
+                "Depende de tu cobertura. Si no tienes obra social, la tarifa particular es de $16.000 por sesión esto puede variar dependiendo lo que marque el nomenclador el dia de la fecha."
+            ]
         }
     ]
 }

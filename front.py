@@ -1,10 +1,8 @@
 import streamlit as st
 from tikabot import predict_class, get_response, intents
+import os , pathlib
 
-with open('tikabot.css') as f:
-    st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 st.title("TikaBot")
-
 if "messages" not in st.session_state:
     st.session_state.messages = []
 if "first_message" not in st.session_state:
