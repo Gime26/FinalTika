@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Panel Paciente{% endblock %}</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/Opcion3.css' %}">
+    <link rel="stylesheet" href="{% static 'css/pacientes.css' %}">
+
+<style>
+/* --- Botón de Cerrar Sesión en Sidebar --- */
+.sidebar-logout-btn {
+    display: block;
+    width: 85%;
+    margin: 20px auto;
+    padding: 10px 15px;
+    background-color: #d9534f; /* rojo suave */
+    color: white !important;
+    text-align: center;
+    border-radius: 8px;
+    font-weight: 600;
+    border: none;
+    transition: 0.3s ease;
+}
+
+.sidebar-logout-btn:hover {
+    background-color: #c9302c; /* rojo más fuerte */
+    transform: translateY(-2px);
+}
+
+.sidebar-logout-btn i {
+    margin-right: 6px;
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+    <div class="head">
+        <div class="logo">
+            <img src="{% static 'img/sinfondo.png' %}" alt="Tika" class="logo">
+        </div>
+    </div>
+</header>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <a href="{% url 'dashboard_pacientes' %}"><i class="bi bi-house"></i> Inicio</a>
+    <a href="{% url 'paciente_perfil' %}"><i class="bi bi-person'"></i> Mi Perfil</a>
+    <a href="{% url 'paciente_turnos' %}"><i class="bi bi-calendar-event"></i> Turnos</a>
+    <a href="{% url 'paciente_informes' %}"><i class="bi bi-file-text"></i> Informes</a>
+    <a href="{% url 'paciente_observaciones' %}"><i class="bi bi-bar-chart"></i> Observaciones</a>
+    <a href="{% url 'paciente_comprobantes' %}"><i class="bi bi-receipt"></i> Comprobantes</a>
+
+
+    <form action="{% url 'logout' %}" method="post">
+    {% csrf_token %}
+    <button type="submit" class="sidebar-logout-btn">
+        <i class="bi bi-box-arrow-right"></i> Cerrar sesión
+    </button>
+</form>
+
+</div>
+
+<main class="content">
+    {% block content %}
+    {% endblock %}
+</main>
+
+</body>
+</html>

@@ -1,0 +1,35 @@
+{% extends "pacientes/basepacientes.html" %}
+{% load static %}
+
+{% block title %}Mis turnos{% endblock %}
+
+{% block content %}
+<h3><i class="bi bi-calendar-event"></i> Mis Turnos</h3>
+<hr>
+
+{% if turnos %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Fecha</th>
+            <th>Horario</th>
+            <th>Profesional</th>
+            <th>Especialidad</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for t in turnos %}
+        <tr>
+            <td>{{ t.fecha }}</td>
+            <td>{{ t.hora }}</td>
+            <td>{{ t.terapeuta }}</td>
+            <td>{{ t.especialidad }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="text-muted">No tenés turnos cargados.</p>
+{% endif %}
+
+{% endblock %}

@@ -4,9 +4,12 @@ from django.forms import ModelForm, NumberInput
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User 
-from .models import Perfil, Entrevista, Paciente, Especialidades, Observacion, Testimonio, Turno
+from .models import Perfil, Entrevista, Paciente, Observacion, Testimonio, Turno, InformeInterdisciplinario, Especialistas
 from datetime import date
 from django.forms.widgets import DateInput, Select, Textarea
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class EntrevistaForm(forms.ModelForm):
     class Meta:
@@ -51,6 +54,12 @@ class RegisterForm(UserCreationForm):
 
         # 🟢 Eliminamos los widgets que referencian campos de Perfil.
         widgets = {}
+        
+    codigo_terapeuta = forms.CharField(
+    label="Código de terapeuta (si corresponde)",
+    max_length=50,
+    required=False
+)
 
 class LoginForm(forms.Form):
     # Asegúrate de que los nombres sean 'username' y 'password'
@@ -125,4 +134,35 @@ class TestimonioForm(forms.ModelForm):
             }),
             'contenido': forms.Textarea(attrs={'rows': 4, 'class': 'form-control'}),
             'titulo': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+class InformeInterdisciplinarioForm(forms.ModelForm):
+    fecha = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    especialistas = forms.ModelMultipleChoiceField(
+        queryset=Especialistas.objects.all(),
+        widget=forms.SelectMultiple(attrs={'class': 'form-multiselect'})
+    )
+
+    class Meta:
+        model = InformeInterdisciplinario
+        fields = ['fecha', 'asunto', 'especialistas', 'cuerpo']
+
+class PerfilUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Perfil
+        fields = [
+            'nombre', 'apellido', 'dni', 'nacionalidad',
+            'domicilio', 'telefono', 'cp', 'email', 'especialidad', 'matricula'
+        ]
+        widgets = {
+            'nombre': forms.TextInput(attrs={'readonly': True, 'class': 'form-control'}),
+            'apellido': forms.TextInput(attrs={'readonly': True, 'class': 'form-control'}),
+            'dni': forms.TextInput(attrs={'readonly': True, 'class': 'form-control'}),
+            'nacionalidad': forms.TextInput(attrs={'class': 'form-control'}),
+            'domicilio': forms.TextInput(attrs={'class': 'form-control'}),
+            'telefono': forms.TextInput(attrs={'class': 'form-control'}),
+            'cp': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'especialidad': forms.TextInput(attrs={'readonly': True, 'class': 'form-control'}),
+            'matricula': forms.TextInput(attrs={'class': 'form-control'}),
         }

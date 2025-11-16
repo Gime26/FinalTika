@@ -138,3 +138,5 @@ import os
 MEDIA_URL='/media/'
 MEDIA_ROOT= os.path.join(BASE_DIR, 'media')
 
+CODIGO_SECRETO_TERAPEUTA = "TIKA-2025"
+

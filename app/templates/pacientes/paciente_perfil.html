@@ -1,0 +1,26 @@
+{% extends "pacientes/basepacientes.html" %}
+{% load static %}
+
+{% block title %}Mi Perfil{% endblock %}
+
+{% block content %}
+<h3><i class="bi bi-person-circle"></i> Mi Perfil</h3>
+<hr>
+
+<div class="card p-4">
+    <h5 class="mb-3">Información del usuario</h5>
+
+    <p><strong>Nombre:</strong> {{ request.user.first_name }} {{ request.user.last_name }}</p>
+    <p><strong>Usuario:</strong> {{ request.user.username }}</p>
+    <p><strong>Email:</strong> {{ request.user.email }}</p>
+
+    {% if request.user.perfil %}
+        <p><strong>DNI:</strong> {{ request.user.perfil.dni }}</p>
+        <p><strong>Teléfono:</strong> {{ request.user.perfil.telefono }}</p>
+        <p><strong>Dirección:</strong> {{ request.user.perfil.direccion }}</p>
+        <p><strong>Obra social:</strong> {{ request.user.perfil.obra_social }}</p>
+    {% else %}
+        <p class="text-muted">No hay datos adicionales cargados.</p>
+    {% endif %}
+</div>
+{% endblock %}

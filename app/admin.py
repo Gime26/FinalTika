@@ -9,10 +9,30 @@ from .models import (
 # ----------------------
 @admin.register(Paciente)
 class PacienteAdmin(admin.ModelAdmin):
-    list_display = ('dni_paciente', 'nombre', 'apellido', 'fecha_nacimiento', 'genero', 'telefono', 'email')
+    # Esto define los campos que se muestran en el formulario "Agregar paciente"
+    fields = [
+        'dni_paciente', 
+        'nombre', 
+        'apellido', 
+        'fecha_nacimiento', 
+        'genero', 
+        'telefono', 
+        'email'
+    ]
+    
+    # Esto define las columnas que se muestran en la lista de pacientes
+    list_display = (
+        'dni_paciente', 
+        'nombre', 
+        'apellido', 
+        'fecha_nacimiento', 
+        'genero', 
+        'telefono', 
+        'email'
+    )
+    
     search_fields = ('nombre', 'apellido', 'dni_paciente', 'email')
     list_filter = ('genero',)
-
 # ----------------------
 # ENTREVISTAS
 # ----------------------
@@ -27,9 +47,10 @@ class EntrevistaAdmin(admin.ModelAdmin):
 # ----------------------
 @admin.register(Perfil)
 class PerfilAdmin(admin.ModelAdmin):
-    list_display = ('user', 'numero_documento', 'fecha_nacimiento', 'domicilio', 'telefono')
-    search_fields = ('user__username', 'numero_documento')
-
+    list_display = [
+        'user', 'nombre', 'apellido', 'dni', 'nacionalidad', 
+        'domicilio', 'telefono', 'cp', 'email', 'especialidad', 'matricula']
+    search_fields = ['nombre', 'apellido', 'dni', 'matricula', 'email']
 # ----------------------
 # ESTADO PACIENTE
 # ----------------------
@@ -71,22 +92,17 @@ class DetallepagosAdmin(admin.ModelAdmin):
     list_display = ('codigo_pago', 'monto', 'observaciones')
     search_fields = ('codigo_pago',)
 
-# ----------------------
-# ESPECIALIDADES
-# ----------------------
+# Para Especialidades
 @admin.register(Especialidades)
 class EspecialidadesAdmin(admin.ModelAdmin):
     list_display = ('id_especialidades', 'id_especialista', 'nombre', 'matricula')
     search_fields = ('nombre',)
 
-# ----------------------
-# ESPECIALISTAS
-# ----------------------
+# Para Especialistas
 @admin.register(Especialistas)
 class EspecialistasAdmin(admin.ModelAdmin):
     list_display = ('id_especialistas', 'id_especialidad_especialista', 'dni', 'matricula', 'email', 'telefono')
     search_fields = ('dni', 'email')
-
 # ----------------------
 # INFORMES
 # ----------------------
@@ -108,3 +124,5 @@ class TestimonioAdmin(admin.ModelAdmin):
     list_display = ('titulo', 'usuario', 'relacion', 'fecha_envio', 'estado', 'publicado')
     search_fields = ('titulo', 'usuario__username', 'contenido')
     list_filter = ('estado', 'publicado')
+
+

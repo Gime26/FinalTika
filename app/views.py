@@ -1,69 +1,154 @@
-from django.shortcuts import render, redirect,get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.models import User
 # Importar todas las clases de formularios desde forms.py
-from .forms import LoginForm, RegisterForm, EntrevistaForm, PacienteForm, ObservacionForm, TestimonioForm
-from .models import Entrevista, EstadoPaciente, Perfil, Paciente, Observacion, Testimonio
+from .forms import LoginForm, RegisterForm, EntrevistaForm, PacienteForm, ObservacionForm, TestimonioForm, PerfilUpdateForm, InformeInterdisciplinarioForm
+from .models import Entrevista, EstadoPaciente, Perfil, Paciente, Observacion, Testimonio, Turno
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponse
+from django.contrib.auth import get_user_model 
+from .decorators import solo_terapeutas, solo_pacientes
+from django.conf import settings
+
+@login_required
+def mi_perfil(request):
+    perfil = request.user.perfil
+    advertencia = not perfil.matricula   # Si falta la matrícula, mostramos el aviso
+
+    if request.method == 'POST':
+        form = PerfilUpdateForm(request.POST, instance=perfil)
+        if form.is_valid():
+            form.save()
+            return redirect('mi_perfil')
+    else:
+        form = PerfilUpdateForm(instance=perfil)
+
+    return render(request, 'mi_perfil.html', {
+        'form': form,
+        'advertencia': advertencia,
+        'perfil': perfil
+    })
 
 def base(request):
-    return render(request, "base.html")
+    return render(request, "base.html")  # o el template que corresponda
 
 def inicio(request):
-    # Instanciar ambos formularios para los modales en index.html
-    login_form = LoginForm()
-    entrevista_form = EntrevistaForm() 
-    testimonios = Testimonio.objects.filter(estado='aprobado', publicado=True).order_by('-fecha_envio')
-    
-    # Usamos nombres específicos en el contexto para evitar conflictos
-    context = {
-        'login_form': login_form, 
-        'entrevista_form': entrevista_form,
-         'testimonios': testimonios,
-    }
-    
-    return render(request, 'index.html', context)
+    return render(request, "index.html")  # O el template que uses de inicio
 
+@solo_terapeutas
+def dashboard_terapeutas(request):
+    return render(request, 'dashboard.html')
+
+# DASHBOARD PACIENTES
+
+@login_required
+def dashboard_pacientes(request):
+    
+    try:
+        perfil_del_usuario = request.user.perfil
+        
+        # 🛑 CORRECCIÓN: Evitar que los especialistas ejecuten esta lógica
+        if perfil_del_usuario.rol != 'paciente':
+            messages.warning(request, "Acceso denegado. Solo pacientes pueden ver este dashboard.")
+            return redirect('dashboard') # Redirigir al dashboard correcto
+            
+        # ... El resto del código solo se ejecuta si el rol es 'paciente' ...
+        
+        # Paso 2: OBTENER EL PACIENTE ASOCIADO A ESE PERFIL (¡Esto sigue siendo correcto para PACIENTES!)
+        paciente_perfil = perfil_del_usuario.paciente 
+        
+        # ... (Validación de paciente_perfil is None, que ya tienes) ...
+        if paciente_perfil is None:
+            messages.error(request, "Error: Tu perfil de paciente no está completamente asociado. Contacta a un administrador.")
+            return redirect('login') 
+            
+        # Paso 3: FILTRAR LOS TURNOS 
+        turnos = Turno.objects.filter(paciente=paciente_perfil).order_by('fecha')
+
+    except AttributeError:
+        # El usuario no tiene un objeto 'perfil' asociado.
+        messages.error(request, "Error: Tu cuenta no tiene un perfil asociado.")
+        return redirect('login') 
+        
+    except Exception as e:
+        # Si hay un error en el filtro de Turnos 
+        messages.error(request, f"Error al filtrar turnos. Revisa el modelo Turno y su campo de relación. Mensaje: {e}")
+        return redirect('login')
+
+
+    context = {
+        'turnos': turnos,
+        'paciente': paciente_perfil,
+        'perfil': perfil_del_usuario,
+    }
+    return render(request, 'pacientes/dashboard_pacientes.html', context)
+
+
+@login_required
+def paciente_turnos(request):
+    return render(request, "pacientes/paciente_turnos.html")
+
+@login_required
+def paciente_informes(request):
+    return render(request, "pacientes/paciente_informes.html")
+
+@login_required
+def paciente_observaciones(request):
+    return render(request, "pacientes/paciente_observaciones.html")
+
+@login_required
+def paciente_comprobantes(request):
+    return render(request, "pacientes/paciente_comprobantes.html")
+
+@login_required
+def paciente_perfil(request):
+    return render(request, "pacientes/paciente_perfil.html")
 
 # Vista para mostrar el modal/login
 def login_view(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = LoginForm(request.POST)
-        
         if form.is_valid():
-            # 1. Los datos se obtienen SOLO si el formulario es válido
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            
-            # 2. Intenta autenticar
+            username = form.cleaned_data["username"]
+            password = form.cleaned_data["password"]
+
             user = authenticate(request, username=username, password=password)
-            
-            # 3. La comprobación del usuario se hace DENTRO de form.is_valid()
+
             if user is not None:
                 login(request, user)
-                # Si Django pasa un parámetro 'next', redirige ahí
-                next_url = request.POST.get('next') or 'dashboard' 
-                return redirect(next_url) 
+
+                # 🚨 VALIDACIÓN Y REDIRECCIÓN
+                try:
+                    perfil = user.perfil
+                # CAMBIA la captura de la excepción a la que siempre está disponible:
+                except user.perfil.RelatedObjectDoesNotExist: # Usamos la excepción a nivel de descriptor de campo
+                    messages.error(request, "Tu cuenta no tiene un perfil asociado. Contacta al administrador.")
+                    return redirect("login")
+
+                # 🛑 CORRECCIÓN 1: Usar 'especialista' en lugar de 'terapeuta'
+                if perfil.rol == "especialista":
+                    return redirect("dashboard") # Dashboard del Especialista
+
+                # 🛑 CORRECCIÓN 2: Usar 'elif' para ser explícito
+                elif perfil.rol == "paciente": 
+                    return redirect("dashboard_pacientes")
+                
+                else:
+                    messages.error(request, "Rol de usuario desconocido.")
+                    return redirect("login")
+
             else:
-                messages.error(request, "Usuario o contraseña incorrectos.")
-        
-        # Si el formulario no es válido, o si la autenticación falla,
-        # el código continúa ejecutándose hasta el return final.
-        
+                form.add_error(None, "Usuario o contraseña incorrectos")
+
     else:
         form = LoginForm()
 
-    # Si se accede directamente a /login/ o si el POST falla, 
-    # se renderiza la plantilla de login dedicada con el formulario y mensajes.
-    return render(request, 'login.html', {'form': form})
-
-
+    return render(request, "login.html", {"form": form})
 # Vista para cerrar sesión
 def logout_view(request):
     logout(request)
@@ -97,33 +182,38 @@ def entrevista_view(request):
 
 # Vista de registro
 def register_view(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = RegisterForm(request.POST)
         if form.is_valid():
-            # 1. Guarda el objeto User
             user = form.save()
-            
-            # 2. Crea el objeto Perfil y asocia el User
-            Perfil.objects.create(
+
+            perfil = Perfil.objects.create(
                 user=user,
-                numero_documento=form.cleaned_data.get('numero_documento'),
-                fecha_nacimiento=form.cleaned_data.get('fecha_nacimiento'),
-                domicilio=form.cleaned_data.get('domicilio'),
-                telefono=form.cleaned_data.get('telefono'),
+                nombre=form.cleaned_data["nombre"],
+                apellido=form.cleaned_data["apellido"],
+                dni=form.cleaned_data["dni"],
+                telefono=form.cleaned_data["telefono"],
+                email=form.cleaned_data["email"],
+                rol="paciente"
             )
-            
-            messages.success(request, "¡Registro exitoso! Ya puedes iniciar sesión.")
-            return redirect('login') 
-        else:
-             # Si el registro falla
-            messages.error(request, "Error en el formulario de registro. Por favor, verifica los datos.")
+
+            Paciente.objects.create(
+                dni_paciente=perfil.dni,
+                nombre=perfil.nombre,
+                apellido=perfil.apellido,
+                telefono=perfil.telefono,
+                email=perfil.email
+            )
+
+            return redirect("login")
+
     else:
         form = RegisterForm()
-        
-    return render(request, 'register.html', {'form': form}) 
+
+    return render(request, "registro.html", {"form": form})
 
 @login_required
-def dashboard_view(request):
+def dashboard(request): 
     return render(request, 'dashboard.html')
 
 def turnos_view(request):
@@ -135,7 +225,8 @@ def gestionturnos(request):
 
 def pacientes_list(request):
     pacientes = Paciente.objects.all()
-    return render(request, 'pacientes/pacientes_list.html', {'pacientes': pacientes})
+    return render(request, "pacientes/pacientes_list.html", {"pacientes": pacientes})
+
 
 def paciente_create(request):
     if request.method == 'POST':
@@ -256,3 +347,14 @@ def testimonios_inicio(request):
         publicado=True, estado='aprobado'
     ).order_by('-fecha_envio')
     return render(request, 'testimonio/test_public.html', {'testimonios': testimonios})
+
+
+def crear_informe_interdisciplinario(request):
+    if request.method == 'POST':
+        form = InformeInterdisciplinarioForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('home')  # Cambia 'home' por el nombre de la vista a la que querés volver luego de crear un informe
+    else:
+        form = InformeInterdisciplinarioForm()
+    return render(request, 'salud/crear_informe_interdisciplinario.html', {'form': form})

@@ -1,0 +1,166 @@
+/* FONDO GENERAL */
+body {
+    background: linear-gradient(135deg, #e2c8ef 0%, #fff0fc 100%);
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 10;
+    min-height: 100vh;
+}
+
+
+.sidebar ul {
+    list-style-type: none;
+    margin: 15px 0;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin-bottom: 18px;
+}
+
+.sidebar ul li a {
+    display: block;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 12px 25px;
+    border-radius: 8px 0 0 8px;
+    background-color: transparent;
+    transition: background 0.2s, color 0.2s;
+}
+
+.sidebar ul li a:hover, .sidebar ul li .active {
+    background: #fff0fc;
+    color: #7a3fcf;
+}
+
+/* HEADER / TITLE */
+.perfil-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 18px 0 6px 0;
+    font-weight: bold;
+    font-size: 22px;
+    color: #7a3fcf;
+    
+}
+
+.user-id {
+    display: block;
+    font-size: 15px;
+    color: #6b4a8e;
+    margin-top: 8px;
+    margin-bottom: 25px;
+}
+
+/* CONTENIDO DEL PERFIL */
+.perfil-wrapper {
+    margin-left: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.perfil-card {
+    background: rgba(126, 38, 138, 0.397); /* Lila translucido */
+    border-radius: 26px;
+    box-shadow: 0 4px 18px 0 rgba(128, 85, 203, 0.17);
+    padding: 32px 48px;
+    width: 570px;
+    max-width: 95vw;
+    margin-top: 42px;
+}
+
+/* FORMULARIO Y CAMPOS */
+form label {
+    font-weight: 600;
+    color: #000000;
+    margin-bottom: 6px;
+    display: block;
+    letter-spacing: 0.03em;
+}
+
+form input {
+    width: 100%;
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: 1.5px solid #d1b0e8;
+    background: #faf4fe;
+    margin-bottom: 18px;
+    font-size: 16px;
+    outline: none;
+    transition: border 0.2s;
+}
+
+form input:focus {
+    border: 1.5px solid #ad70d7;
+    background: #fff;
+}
+
+/* BOTÓN GUARDAR */
+button.btn, input[type="submit"].btn {
+    background: #4a0058;
+    color: #fff;
+    border-radius: 8px;
+    border: none;
+    font-size: 18px;
+    padding: 10px 26px;
+    font-weight: bold;
+    margin-top: 8px;
+    transition: background 0.2s, color 0.2s;
+    box-shadow: 0 3px 8px 0 #e0c6f4a1;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+}
+
+button.btn:hover, input[type="submit"].btn:hover {
+    background: linear-gradient(90deg, #7a3fcf 60%, #cbb1eb 100%);
+    color: #fff0fc;
+}
+
+/* ALERTA ADVERTENCIA */
+.alert {
+    border-radius: 8px;
+    border-left: 6px solid #c463fc;
+    background: #ffe0f7;
+    color: #ad2da4;
+    font-size: 15.5px;
+    padding: 11px 24px;
+    margin-bottom: 22px;
+}
+
+/* LAYOUT de filas y columnas tipo form-row */
+.form-row {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 4px;
+}
+.form-group {
+    flex: 1 1 48%;
+    min-width: 180px;
+}
+
+/* Para pantallas muy pequeñas (mobile) */
+@media (max-width: 710px) {
+    .sidebar {
+        display: none;
+    }
+    .perfil-wrapper {
+        margin: 0;
+        padding-top: 16px;
+    }
+    .perfil-card {
+        padding: 19px 8px;
+        width: 99vw;
+    }
+    .form-row {
+        flex-direction: column;
+        gap: 2px;
+    }
+    .form-group {
+        min-width: 100%;
+    }
+}

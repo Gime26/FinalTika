@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/mi_perfil.css' %}">
+
+
+<div class="perfil-wrapper">
+    <div class="card perfil-card">
+        <div class="perfil-header">
+            <span class="user-id"><b>{{ user.username }}</b></span>
+        </div>
+        {% if advertencia %}
+        <div class="alert alert-warning" style="margin: 15px 0;">
+            ⚠️ Debes completar la <b>matrícula profesional (MP)</b> para continuar usando la plataforma.
+        </div>
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="form-group col-md-6">{{ form.nombre.label_tag }}{{ form.nombre }}</div>
+                <div class="form-group col-md-6">{{ form.dni.label_tag }}{{ form.dni }}</div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">{{ form.apellido.label_tag }}{{ form.apellido }}</div>
+                <div class="form-group col-md-6">{{ form.nacionalidad.label_tag }}{{ form.nacionalidad }}</div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">{{ form.domicilio.label_tag }}{{ form.domicilio }}</div>
+                <div class="form-group col-md-6">{{ form.cp.label_tag }}{{ form.cp }}</div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">{{ form.telefono.label_tag }}{{ form.telefono }}</div>
+                <div class="form-group col-md-6">{{ form.email.label_tag }}{{ form.email }}</div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">{{ form.especialidad.label_tag }}{{ form.especialidad }}</div>
+                <div class="form-group col-md-6">{{ form.matricula.label_tag }}{{ form.matricula }}</div>
+            </div>
+            <button type="submit" class="btn btn-primary">Actualizar Perfil</button>
+        </form>
+        <form method="POST">
+    {% csrf_token %}  {{ form.as_p }}
+    
+    <button type="submit">Guardar Rol</button>
+</form>
+    </div>
+</div>
+{% endblock %}

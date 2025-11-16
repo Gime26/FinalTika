@@ -1,5 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class Paciente(models.Model):
     dni_paciente = models.CharField(max_length=20, unique=True, verbose_name="DNI del Paciente")
@@ -34,15 +37,38 @@ class Entrevista(models.Model):
         return f"Entrevista {self.id_entrevista} - Paciente {self.paciente}"
 
 # 👤 PERFIL DE USUARIO
+# models.py
 class Perfil(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil')
-    numero_documento = models.IntegerField(verbose_name='DNI', null=True, blank=True)
-    fecha_nacimiento = models.DateField(verbose_name='Fecha de Nacimiento', null=True, blank=True)
-    domicilio = models.CharField(verbose_name='Domicilio', max_length=255, blank=True)
-    telefono = models.CharField(verbose_name='Teléfono', max_length=20, blank=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    nombre = models.CharField(max_length=100, default="", blank=True)
+    apellido = models.CharField(max_length=100, default="Desconocido", blank=True)
+    dni = models.CharField(max_length=11, default="SinDNI", blank=True)
+    nacionalidad = models.CharField(max_length=50, default="", blank=True)
+    domicilio = models.CharField(max_length=100, default="", blank=True)
+    telefono = models.CharField(max_length=20, default="", blank=True)
+    cp = models.CharField(max_length=10, default="", blank=True)
+    email = models.EmailField(default="", blank=True)
+
+    especialidad = models.CharField(max_length=80, default="", blank=True)
+    matricula = models.CharField(max_length=20, default="", blank=True)
+
+    rol = models.CharField(
+        max_length=20,
+        choices=[('paciente', 'Paciente'), ('especialista', 'Especialista')],
+        default='paciente'
+    )
+
+    # 👉 Relación con Paciente
+    paciente = models.OneToOneField(
+        'Paciente',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
 
     def __str__(self):
-        return self.user.username
+        return f"{self.user.username} - {self.rol}"
+
 
 # 📊 ESTADO DEL PACIENTE
 class EstadoPaciente(models.Model):
@@ -137,8 +163,19 @@ class Especialistas(models.Model):
 
     class Meta:
         db_table = 'especialistas'
+
     def __str__(self):
         return f"Especialista {self.dni or self.id_especialistas}"
+
+class InformeInterdisciplinario(models.Model):
+    fecha = models.DateField()
+    asunto = models.CharField(max_length=255)
+    especialistas = models.ManyToManyField('Especialistas')
+    cuerpo = models.TextField(blank=True, null=True)  # campo opcional para contenido del informe
+
+    def __str__(self):
+        return f"{self.fecha} - {self.asunto}"
+
     
 
 class Observacion(models.Model):
@@ -191,4 +228,5 @@ class Testimonio(models.Model):
 
     def __str__(self):
         return f"{self.titulo} - {self.usuario.username}"
+    
     
