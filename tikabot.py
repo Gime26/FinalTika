@@ -4,12 +4,24 @@ from nltk.stem import WordNetLemmatizer
 from keras.models import load_model
 
 
-lemmatizer = WordNetLemmatizer()
-intents = json.loads(open('intents_spanish.json', 'r', encoding='utf-8').read())
+data_file = open('intents_spanish.json', 'r', encoding='utf-8').read()
+intents = json.loads(data_file)
+try:
+    model = load_model('chatbot_model.h5')
+except FileNotFoundError:
+    print("ADVERTENCIA: No se encontró 'chatbot_model.h5'. ¡Ejecuta entrenamiento.py primero!")
+    model = None
 
-words= pickle.load(open('words.pkl', 'rb'))
-classes= pickle.load(open('classes.pkl','rb'))
-model= load_model('chatbot_model.h5')
+try:
+    words = pickle.load(open('words.pkl', 'rb'))
+    classes = pickle.load(open('classes.pkl', 'rb'))
+except FileNotFoundError:
+    print("ADVERTENCIA: No se encontraron los archivos .pkl. ¡Ejecuta entrenamiento.py primero!")
+    words = []
+    classes = []
+
+lemmatizer = WordNetLemmatizer()
+
 
 def clean_up_sentence(sentence):
     sentence_words = nltk.word_tokenize(sentence)
@@ -26,6 +38,8 @@ def bag_of_words(sentence):
     return np.array(bag)
 
 def predict_class(sentence):
+    if not model or not words or not classes:
+        return [{'intent': 'saludo', 'probability': 1.0}] 
     bow= bag_of_words(sentence)
     res= model.predict(np.array([bow])) [0]
     ERROR_THRESHOLD= 0.25
@@ -37,6 +51,8 @@ def predict_class(sentence):
     return return_list
 
 def get_response(intents_list, intents_json):
+    if not intents_list:
+        return "Disculpa, no entendí tu pregunta. ¿Podrías reformularla?"
     tag= intents_list[0]['intent']
     list_of_intents = intents_json['intents']
     result="Disculpa, no puedo procesar esa solicitud"
