@@ -176,7 +176,23 @@ class InformeInterdisciplinario(models.Model):
     def __str__(self):
         return f"{self.fecha} - {self.asunto}"
 
-    
+class EstadisticaPaciente(models.Model):
+    ESPECIALIDADES = [
+        ("Psicología", "Psicología"),
+        ("Fonoaudiología", "Fonoaudiología"),
+        ("Kinesiología", "Kinesiología"),
+        ("Psicomotricidad", "Psicomotricidad"),
+        ("Psicopedagogía", "Psicopedagogía"),
+    ]
+
+    nombre = models.CharField(max_length=100)
+    edad = models.IntegerField()
+    especialidad = models.CharField(max_length=50, choices=ESPECIALIDADES)
+
+    fecha_registro = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.nombre} ({self.especialidad})"
 
 class Observacion(models.Model):
 

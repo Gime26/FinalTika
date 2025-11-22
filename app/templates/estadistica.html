@@ -1,69 +1,204 @@
-<html>
-<html lang="es">
-<head>
-<meta charset="utf-8">
-<title>Reporte Analitico</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<style>
-  body{font-family:Arial;margin:20px;background:rgb(213, 165, 202)}
-  input{margin:4px;padding:6px}
-  button{margin:6px;padding:6px 12px;background:#a78bfa;color:#fff;border:0;border-radius:6px;cursor:pointer}
-  #info{margin-top:10px;font-weight:bold}
-  canvas{max-width:250px;max-height:200px;margin-top:10px}
-  table{margin-top:10px;border-collapse:collapse;width:100%;max-width:400px;background:#fff}
-  th,td{border:1px solid #ccc;padding:6px;text-align:left}
-  th{background:#eee}
-</style>
-</head>
-<body>
-<h2>Centro Terapéutico TIKA</h2>
-<input id="n" placeholder="Nombre">
-<input id="e" type="number" min="0" max="16" placeholder="Edad">
-<input id="d" placeholder="Diagnóstico">
-<button onclick="agregar()">Agregar</button>
+{% extends "dashboard.html" %}
 
-<div id="info">Total: 0 | Promedio: —</div>
-<canvas id="pie"></canvas>
-
-<table id="tabla">
-  <thead>
-    <tr><th>Nombre</th><th>Edad</th><th>Diagnóstico</th></tr>
-  </thead>
-  <tbody></tbody>
-</table>
+{% block content %}
 
 <script>
-let pacientes=[], pie;
-function agregar(){
-  const n=document.getElementById('n').value.trim();
-  const e=Number(document.getElementById('e').value);
-  const d=document.getElementById('d').value.trim();
-  // validación: nombre, diagnóstico no vacíos y edad válida entre 0 y 16
-  if(!n||!d||isNaN(e)||e<0||e>16) return;
-  pacientes.push({n,e,d});
-  document.getElementById('n').value=document.getElementById('e').value=document.getElementById('d').value="";
-  mostrar();
-}
-function mostrar(){
-  const total=pacientes.length;
-  const prom=(pacientes.reduce((s,p)=>s+p.e,0)/total).toFixed(1);
-  document.getElementById('info').textContent=`Total: ${total} | Promedio: ${prom} años`;
 
-  // actualizar tabla
-  const tbody=document.querySelector("#tabla tbody");
-  tbody.innerHTML=pacientes.map(p=>`<tr><td>${p.n}</td><td>${p.e}</td><td>${p.d}</td></tr>`).join("");
+async function agregar() {
 
-  // actualizar gráfico
-  const conteo={}; pacientes.forEach(p=>conteo[p.d]=(conteo[p.d]||0)+1);
-  const labels=Object.keys(conteo), data=Object.values(conteo);
-  const colores=["#ddd6fe","#fbcfe8","#bbf7d0","#a5f3fc"];
-  if(pie) pie.destroy();
-  pie=new Chart(document.getElementById('pie'),{
-    type:'pie',
-    data:{labels,datasets:[{data,backgroundColor:colores}]},
-    options:{plugins:{legend:{position:'bottom'}}}
-  });
+    const nombre = document.getElementById("nombre").value.trim();
+    const edad = document.getElementById("edad").value.trim();
+    const especialidad = document.getElementById("especialidad").value;
+
+    if (!nombre || !edad || !especialidad) {
+        alert("Completa todos los campos.");
+        return;
+    }
+
+    // Validar edad 1–18 sin caracteres especiales
+    const regexEdad = /^(1[0-8]|[1-9])$/;
+    if (!regexEdad.test(edad)) {
+        alert("La edad debe ser un número entre 1 y 18.");
+        return;
+    }
+
+    let response = await fetch("/dashboard/estadistica/agregar/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            nombre: nombre,
+            edad: edad,
+            especialidad: especialidad
+        })
+    });
+
+    let data = await response.json();
+
+    if (data.status === "ok") {
+        location.reload();  
+    }
 }
 </script>
-</body>
-</html>
+
+
+<style>
+.estadistica-container { padding: 20px; }
+
+/* Tarjetas */
+.card-data {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* Formulario */
+.form-row {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+.form-row input,
+.form-row select {
+    flex: 1;
+    height: 42px;
+}
+
+/* Botón */
+.btn-agregar {
+    background: #3CB371;
+    color: white;
+    border-radius: 8px;
+    padding: 10px 15px;
+    font-weight: bold;
+    border: none;
+}
+
+/* Tabla */
+.table-container {
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    margin-top: 20px;
+}
+
+/* Gráfico */
+.chart-box {
+    background: white;
+    height: 300px;
+    padding: 15px;
+    border-radius: 12px;
+}
+</style>
+
+
+<h2 class="mt-3">📊 Estadísticas del Centro Terapéutico</h2>
+
+<div class="estadistica-container">
+
+    <!-- FORM -->
+    <div class="card-data">
+        <h4>➕ Agregar Paciente</h4>
+
+        <div class="form-row">
+
+            <input id="nombre" placeholder="Nombre" class="form-control">
+
+            <input id="edad" type="number" min="1" max="18"
+                  placeholder="Edad (1 a 18)" 
+                  oninput="this.value=this.value.replace(/[^0-9]/g,'')" 
+                  class="form-control">
+
+            <select id="especialidad" class="form-control">
+                <option value="" disabled selected>Seleccionar especialidad</option>
+                <option>Psicología</option>
+                <option>Fonoaudiología</option>
+                <option>Kinesiología</option>
+                <option>Psicomotricidad</option>
+                <option>Psicopedagogía</option>
+            </select>
+
+            <button onclick="agregar()" class="btn-agregar">AGREGAR</button>
+
+        </div>
+
+        <p>Total: <strong>{{ total }}</strong> |
+           Promedio edad: <strong>{{ promedio }}</strong></p>
+    </div>
+
+    <!-- GRAFICO -->
+    <div class="chart-box">
+        <canvas id="grafico"></canvas>
+    </div>
+
+    <!-- FILTRO -->
+    <div class="card-data">
+        <label><strong>🔎 Filtrar por especialidad</strong></label>
+        <select id="filtro" class="form-control" onchange="filtrarEspecialidad()">
+            <option value="Todas">Todas</option>
+            <option>Psicología</option>
+            <option>Fonoaudiología</option>
+            <option>Kinesiología</option>
+            <option>Psicomotricidad</option>
+            <option>Psicopedagogía</option>
+        </select>
+    </div>
+
+    <!-- TABLA -->
+    <div class="table-container">
+        <h4>📋 Lista de Pacientes</h4>
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Edad</th>
+                <th>Especialidad</th>
+            </tr>
+            </thead>
+            <tbody id="tabla">
+            {% for p in pacientes %}
+            <tr>
+                <td>{{ p.nombre }}</td>
+                <td>{{ p.edad }}</td>
+                <td>{{ p.especialidad }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+// GRAFICO DE BARRAS
+const ctx = document.getElementById("grafico");
+
+new Chart(ctx, {
+    type: "bar",
+    data: {
+        labels: [{% for c in conteo %}"{{ c.especialidad }}",{% endfor %}],
+        datasets: [{
+            label: 'Cantidad de Pacientes',
+            data: [{% for c in conteo %}{{ c.total }},{% endfor %}],
+            backgroundColor: ["#E28CD7", "#A68BD5", "#86C4FF", "#F7B7A3", "#B0E6A9"]
+        }]
+    },
+    options: { responsive: true, maintainAspectRatio: false }
+});
+
+// FILTRO
+function filtrarEspecialidad() {
+    const filtro = document.getElementById("filtro").value;
+    const filas = document.querySelectorAll("#tabla tr");
+
+    filas.forEach(fila => {
+        const esp = fila.children[2].innerText;
+        fila.style.display = (filtro === "Todas" || filtro === esp) ? "" : "none";
+    });
+}
+</script>
+
+{% endblock %}
