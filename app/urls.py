@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import ListaObservacionesView, CrearObservacionView 
+from .views import ListaObservacionesView, CrearObservacionView, Gestionturnos
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
@@ -13,9 +13,7 @@ urlpatterns = [
     path("registro/", views.register_view, name="registro"),
     path('dashboard/', views.dashboard, name='dashboard'), #dash especialistas
 
-    path("turnos/", views.turnos_view, name="turnos"),
     path("estadistica/", views.estadistica_view, name="estadistica"),
-    path("gestionturnos/", views.gestionturnos, name="gestionturnos"),
     path('observaciones/', ListaObservacionesView.as_view(), name='lista_observaciones'),
     path('observaciones/nueva/', CrearObservacionView.as_view(), name='crear_observacion'),
     path('comprobantes/', views.comprobantes_view, name='comprobantes'),   
@@ -44,8 +42,13 @@ urlpatterns = [
     path("dashboard/testimonios/restringir/<int:id>/", views.restringir_testimonio, name="restringir_testimonio"),
     path("testimonios/publicos/", views.testimonios_publicos, name="testimonios_publicos"),
     path("dashboard/testimonios/eliminar/<int:id>/", views.eliminar_testimonio, name="eliminar_testimonio"),
-    
-    
+
+    #CRUD Turnos
+    path("turnos/", Gestionturnos.as_view(), name="gestion_turnos"),
+    path("turnos/editar/<int:pk>/", views.edit_turno, name="edit_turno"),
+    path("turnos/confirmar/<int:pk>/", views.confirm_turno, name="confirm_turno"),
+    path("turnos/cancelar/<int:pk>/", views.cancel_turno, name="cancel_turno"),
+
     
 ]    
     
