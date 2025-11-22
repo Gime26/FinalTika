@@ -3,8 +3,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.models import User
 # Importar todas las clases de formularios desde forms.py
-from .forms import LoginForm, RegisterForm, EntrevistaForm, PacienteForm, ObservacionForm, TestimonioForm, PerfilUpdateForm, InformeInterdisciplinarioForm
-from .models import Entrevista, EstadoPaciente, Perfil, Paciente, Observacion, Testimonio, Turno
+from .forms import LoginForm, RegisterForm, EntrevistaForm, PacienteForm, EstadisticaPacienteForm, ObservacionForm, TestimonioForm, PerfilUpdateForm, InformeInterdisciplinarioForm
+from .models import Entrevista, EstadoPaciente, Perfil, Paciente, Observacion, Testimonio, Turno, EstadisticaPaciente
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView
@@ -14,6 +14,10 @@ from django.http import HttpResponse
 from django.contrib.auth import get_user_model 
 from .decorators import solo_terapeutas, solo_pacientes
 from django.conf import settings
+from django.db.models import Count, Avg
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
 
 @login_required
 def mi_perfil(request):
@@ -38,8 +42,14 @@ def base(request):
     return render(request, "base.html")  # o el template que corresponda
 
 def inicio(request):
-    return render(request, "index.html")  # O el template que uses de inicio
+    testimonios = Testimonio.objects.filter(
+        estado='aprobado',
+        publicado=True
+    ).order_by('-fecha_envio')
 
+    return render(request, "index.html", {
+        "testimonios": testimonios
+    })
 @solo_terapeutas
 def dashboard_terapeutas(request):
     return render(request, 'dashboard.html')
@@ -259,16 +269,38 @@ def paciente_delete(request, pk):
     return render(request, 'pacientes/paciente_confirm_delete.html', {'paciente': paciente})
 
 def estadistica_view(request):
-    estados = EstadoPaciente.objects.all()
-    return render(request, 'estadistica.html', {'estados': estados})   
 
+    pacientes = EstadisticaPaciente.objects.all().order_by("-fecha_registro")
+    total = pacientes.count()
+    promedio_edad = pacientes.aggregate(prom=Avg("edad"))["prom"] or 0
 
+    conteo = EstadisticaPaciente.objects.values("especialidad").annotate(total=Count("id"))
 
-# 2. Vista para manejar el POST y guardar los datos
+    return render(request, "estadistica.html", {
+        "pacientes": pacientes,
+        "total": total,
+        "promedio": round(promedio_edad, 1),
+        "conteo": list(conteo)
+    })
 
-        
-    # Si la solicitud no es POST (por ejemplo, alguien intenta acceder directamente),
-    # simplemente redirige al formulario o al dashboard.
+@csrf_exempt
+def estadistica_agregar(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+
+        nombre = data.get("nombre")
+        edad = data.get("edad")
+        especialidad = data.get("especialidad")
+
+        nuevo = EstadisticaPaciente.objects.create(
+            nombre=nombre,
+            edad=edad,
+            especialidad=especialidad
+        )
+
+        return JsonResponse({"status": "ok", "id": nuevo.id})
+
+    return JsonResponse({"error": "Método no permitido"}, status=400)
     return redirect('formulario_informe')
 
 
@@ -297,35 +329,33 @@ def enviar_testimonio(request):
         if form.is_valid():
             testimonio = form.save(commit=False)
             testimonio.usuario = request.user if request.user.is_authenticated else None
+            testimonio.estado = "pendiente"     
+            testimonio.publicado = False
             testimonio.save()
             return redirect('index')
     else:
         form = TestimonioForm()
+
     return render(request, 'testimonio/enviar_testimonio.html', {'form': form})
 
-
-#  Mostrar testimonios públicos (solo los aprobados y publicados)
 def testimonios_publicos(request):
     testimonios = Testimonio.objects.filter(
-        estado='aprobado', publicado=True
+        estado='aprobado',   
+        publicado=True
     ).order_by('-fecha_envio')
+
     return render(request, 'testimonios_publicos.html', {'testimonios': testimonios})
-
-
 
 def testimonios_lista(request):
     testimonios = Testimonio.objects.all().order_by('-fecha_envio')
     return render(request, 'dashboard/testimonios.html', {'testimonios': testimonios})
 
-
-# ✅ Acciones del panel de administración
 def aprobar_testimonio(request, id):
     testimonio = get_object_or_404(Testimonio, id=id)
-    testimonio.estado = 'aprobado'
+    testimonio.estado = 'aprobado'   # ✔ CORRECTO SEGÚN EL MODELO
     testimonio.publicado = True
     testimonio.save()
     return redirect('testimonios_lista')
-
 
 def restringir_testimonio(request, id):
     testimonio = get_object_or_404(Testimonio, id=id)
@@ -334,27 +364,26 @@ def restringir_testimonio(request, id):
     testimonio.save()
     return redirect('testimonios_lista')
 
-
 def eliminar_testimonio(request, id):
     testimonio = get_object_or_404(Testimonio, id=id)
     testimonio.delete()
     return redirect('testimonios_lista')
 
-
-# ✅ Página de inicio que muestra los testimonios públicos
 def testimonios_inicio(request):
     testimonios = Testimonio.objects.filter(
-        publicado=True, estado='aprobado'
+        estado='aprobado',   
+        publicado=True
     ).order_by('-fecha_envio')
-    return render(request, 'testimonio/test_public.html', {'testimonios': testimonios})
 
+    return render(request, 'testimonio/test_public.html', {'testimonios': testimonios})
 
 def crear_informe_interdisciplinario(request):
     if request.method == 'POST':
         form = InformeInterdisciplinarioForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('home')  # Cambia 'home' por el nombre de la vista a la que querés volver luego de crear un informe
+            return redirect('home')  
     else:
         form = InformeInterdisciplinarioForm()
+
     return render(request, 'salud/crear_informe_interdisciplinario.html', {'form': form})

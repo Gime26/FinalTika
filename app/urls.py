@@ -44,7 +44,8 @@ urlpatterns = [
     path("dashboard/testimonios/restringir/<int:id>/", views.restringir_testimonio, name="restringir_testimonio"),
     path("testimonios/publicos/", views.testimonios_publicos, name="testimonios_publicos"),
     path("dashboard/testimonios/eliminar/<int:id>/", views.eliminar_testimonio, name="eliminar_testimonio"),
-    
+    path("dashboard/estadistica/", views.estadistica_view, name="estadistica"),
+    path("dashboard/estadistica/agregar/", views.estadistica_agregar, name="estadistica_agregar"),
     
     
 ]    

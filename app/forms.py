@@ -2,7 +2,7 @@ from django.forms import ModelForm, NumberInput
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User 
-from .models import Perfil, Entrevista, Paciente, Observacion, Testimonio, Turno, InformeInterdisciplinario, Especialistas
+from .models import Perfil, Entrevista, Paciente, EstadisticaPaciente, Observacion, Testimonio, Turno, InformeInterdisciplinario, Especialistas
 from datetime import date
 from django.forms.widgets import DateInput, Select, Textarea
 from django.contrib.auth import get_user_model
@@ -76,7 +76,15 @@ class PacienteForm(forms.ModelForm):
             'email': forms.EmailInput(attrs={'class': 'form-input'}),
         }
 
-
+class EstadisticaPacienteForm(forms.ModelForm):
+    class Meta:
+        model = EstadisticaPaciente
+        fields = ["nombre", "edad", "especialidad"]
+        widgets = {
+            "nombre": forms.TextInput(attrs={"class": "form-control"}),
+            "edad": forms.NumberInput(attrs={"class": "form-control", "min": 1, "max": 18}),
+            "especialidad": forms.Select(attrs={"class": "form-control"}),
+        }
 class ObservacionForm(forms.ModelForm):
 
     paciente = forms.ModelChoiceField(
