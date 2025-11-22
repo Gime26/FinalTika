@@ -2,10 +2,14 @@ from django.forms import ModelForm, NumberInput
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User 
+<<<<<<< HEAD
 # 🛑 CORRECCIÓN: Importar el modelo 'Especialista' en singular si la relación de Turno lo usa.
 # Si el usuario insiste en 'Especialistas', usaremos el plural. 
 # Asumo que el modelo se llama 'Especialista' para consistencia con 'Paciente'.
 from .models import Perfil, Entrevista, Paciente, Observacion, Testimonio, Turno, InformeInterdisciplinario, Especialista # Cambiado Especialistas a Especialista
+=======
+from .models import Perfil, Entrevista, Paciente, EstadisticaPaciente, Observacion, Testimonio, Turno, InformeInterdisciplinario, Especialistas
+>>>>>>> a2569c1 (Testimonio index, Estadistica)
 from datetime import date
 from django.forms.widgets import DateInput, Select, Textarea
 from django.contrib.auth import get_user_model
@@ -101,7 +105,15 @@ class PacienteForm(forms.ModelForm):
             'email': forms.EmailInput(attrs={'class': 'form-input'}),
         }
 
-
+class EstadisticaPacienteForm(forms.ModelForm):
+    class Meta:
+        model = EstadisticaPaciente
+        fields = ["nombre", "edad", "especialidad"]
+        widgets = {
+            "nombre": forms.TextInput(attrs={"class": "form-control"}),
+            "edad": forms.NumberInput(attrs={"class": "form-control", "min": 1, "max": 18}),
+            "especialidad": forms.Select(attrs={"class": "form-control"}),
+        }
 class ObservacionForm(forms.ModelForm):
     """Formulario para la creación de Observaciones Clínicas."""
 
