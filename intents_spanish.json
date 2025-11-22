@@ -2,48 +2,84 @@
     "intents": [
         {
             "tag": "saludo",
-            "patterns": ["Hola", "Buenos dias", "Buenas tardes"],
-            "responses":["¡Hola! ¿ cómo puedo ayudarte hoy?", "¡Buenas!, ¿Que necesitas?"]
+            "patterns": ["Hola", "Buenos días", "Buenas tardes", "Qué tal", "¿Cómo están?", "Saludos", "Hola, necesito ayuda", "Hola, me comunico con Tika", "Que tal", "Buen dia", "Buenas noches"],
+            "responses":["¡Hola! Bienvenido/a al Centro Tika. ¿Cómo puedo ayudarte hoy?", "¡Buenas! ¿En qué puedo asistirte?", "Hola, estoy aquí para responder tus consultas.", "¡Saludos! ¿Qué necesitas saber sobre el centro?"]
         },
 
         {
             "tag": "despedida",
-            "patterns":["Adios", "Hasta luego", "Nos vemos","Gracias"],
-            "responses":["¡Adios!", "¡Esperamos verte pronto!", "¡Hasta luego!", 
-                         "¡Gracias por visitarnos!", "¡Vuelve pronto!"]
+            "patterns":["Adiós", "Hasta luego", "Nos vemos", "Gracias", "Chau", "Listo, muchas gracias", "Me voy", "Terminé", "Gracias por la info", "Adios", "Genial, adios", "Ok, gracias"],
+            "responses":["¡Adiós! ¡Esperamos verte pronto!", "¡Que tengas un excelente día!", "¡Hasta luego!", 
+                          "¡Gracias por comunicarte!", "¡Vuelve cuando necesites!"]
 
         },
 
         {
-            "tag":"Obra_social",
-            "patterns":["¿Reciben obra social?", "¿Que obra social reciben?"], 
-            "responses":["Recibimos las siguientes obras sociales: Sancor,Ospedym, PrevencionSalud, Swiss Medical"]
+            "tag": "Obra_social",
+            "patterns":["¿Reciben obra social?", "¿Que obras sociales reciben?", "¿Trabajan con prepagas?", "¿Aceptan mi cobertura?", "¿Qué convenios tienen?", "¿Aceptan Sancor?", "¿Tienen convenio con Ospedym?", "¿Mi prepaga está incluida?", "¿Costo con obra social?", "¿Es con copago?", "¿Necesito autorización de la obra social?", "Obras sociales aceptadas", "Lista de prepagas", "Reciben os", "Que obra social", "Tienen cobertura", "prepaga", "que seguros aceptan", "tienen acuerdos"], 
+            "responses":["Recibimos las siguientes obras sociales y prepagas: Sancor Salud, Ospedym, Prevención Salud, Swiss Medical y tenemos convenios con varias más. Consulta por tu cobertura específica por WhatsApp.",
+                         "Sí, trabajamos con varias. Las principales son: Sancor, Ospedym, Prevención Salud, y Swiss Medical. Te recomendamos verificar tu plan al solicitar el turno."]
         },
 
         {
-            "tag":"Horario",
-            "patterns":["¿Cual es el horario de atención?"], 
-            "responses":["Nuestro horario de atención es de lunes a viernes de 9:00 a 20:00."]
+            "tag": "Horario",
+            "patterns":[
+                "¿Cuál es el horario de atención?", 
+                "¿A qué hora abren?", 
+                "¿Hasta qué hora atienden?", 
+                "¿Trabajan los fines de semana?", 
+                "¿Qué días están abiertos?", 
+                "¿Horario de funcionamiento?", 
+                "¿Puedo ir a la tarde?", 
+                "¿Horario de oficina?",
+                "Horario", 
+                "Horarios", 
+                "Horas de atencion", 
+                "A que hora atienden",
+                "Horario de consultas",
+                "A que hora cierran",
+                "Dias de atencion",
+                "Horas de apertura",
+                "Que dias abren",
+                "Horario de Tika",
+                "a que hora es la atencion",
+                "horario del centro"
+            ], 
+            "responses":["Nuestro horario de atención es de **lunes a viernes de 9:00 a 20:00**. Los fines de semana solo se realizan actividades o talleres especiales, consulta la agenda.",
+                          "Atendemos de lunes a viernes, de 9 de la mañana a 8 de la noche (20:00 hs)."]
         },
 
         {
-            "tag":"Consulta_pago",
-            "patterns":["¿Que métodos de pago reciben?", "¿Reciben tarjetas de credito?"], 
-            "responses":["Recibimos las siguientes obras sociales: Sancor,Ospedym, PrevencionSalud, Swiss Medical"]
+            "tag": "Consulta_pago",
+            "patterns":["¿Qué métodos de pago reciben?", "¿Reciben tarjetas de crédito?", "¿Se puede pagar con débito?", "¿Aceptan efectivo?", "¿Cómo puedo pagar las sesiones?", "¿Formas de pago?", "¿Aceptan transferencia?", "¿Puedo pagar online?", "metodos de pago", "pago con tarjeta", "efectivo o tarjeta", "pago con QR"], 
+            "responses":["Aceptamos pagos con tarjeta de débito, crédito (Visa y Mastercard), transferencia bancaria y efectivo. También puedes abonar con la cobertura de tu obra social o prepaga, si aplica."]
         },
 
         {
-
             "tag": "Consulta_servicios",
             "patterns": [
                 "¿Qué servicios ofrecen?",
                 "¿Qué terapias ofrecen?",
                 "¿Tienen psicólogos?",
                 "¿Hacen evaluaciones?",
-                "¿Qué tipo de atención brindan?"
+                "¿Qué tipo de atención brindan?",
+                "¿Hacen psicopedagogía?",
+                "¿Tienen fonoaudiólogos?",
+                "¿Qué es la kinesiología?",
+                "¿Qué especialidades tienen?",
+                "¿Ofrecen tratamiento para dislexia?",
+                "¿Hacen diagnóstico de TDAH?",
+                "¿Tienen terapia ocupacional?",
+                "Servicios para niños",
+                "Tratan problemas de lenguaje",
+                "que hacen",
+                "lista de terapias",
+                "terapia infantil",
+                "hay psicopedagogo",
+                "que tratamientos ofrecen"
             ],
-            "responses": ["Ofrecemos terapias psicológicas, evaluación neurocognitiva, psicopedagogía,kinesiología y fonoaudiología.",
-                "Nuestros servicios incluyen terapia psicológica, evaluación diagnóstica integral y programas de estimulación cognitiva y psicopedagógica."]
+            "responses": ["Ofrecemos terapias psicológicas especializadas para niños y adolescentes, evaluación neurocognitiva, psicopedagogía, kinesiología y fonoaudiología.",
+                "Nuestros servicios incluyen terapia psicológica, evaluación diagnóstica integral y programas de estimulación cognitiva y psicopedagógica, todo enfocado en la población infanto-juvenil."]
         },
 
         {
@@ -51,11 +87,152 @@
             "patterns": [
                 "¿Cuánto cuesta una sesión?",
                 "¿Cuáles son las tarifas?",
-                "¿Precio de las terapias?"
+                "¿Precio de las terapias?",
+                "¿Tienen descuentos?",
+                "¿Hay costo por la primera consulta?",
+                "¿Cuánto sale cada sesión?",
+                "¿Precio sin obra social?",
+                "Tarifa particular",
+                "Costo de la evaluación",
+                "Precio",
+                "costo",
+                "valor de la sesion",
+                "cuanto es la tarifa"
             ],
             "responses": [
                 "El costo de la sesión varía según la obra social y el tipo de terapia. Por favor, contáctanos por teléfono o WhatsApp para darte una cotización personalizada.",
-                "Depende de tu cobertura. Si no tienes obra social, la tarifa particular es de $16.000 por sesión esto puede variar dependiendo lo que marque el nomenclador el dia de la fecha."
+                "Depende de tu cobertura. Si no tienes obra social, la tarifa particular es de $16.000 por sesión, pero te recomendamos consultar el nomenclador actual, ya que el precio puede variar."
+            ]
+        },
+        
+        {
+            "tag": "Ubicacion",
+            "patterns": [
+                "¿Dónde están ubicados?",
+                "¿Cuál es la dirección del centro?",
+                "¿Cómo llego a Tika?",
+                "¿Tienen varias sedes?",
+                "¿En qué ciudad están?",
+                "Ubicación exacta",
+                "¿Tienen estacionamiento?",
+                "¿Alguna referencia para llegar?",
+                "Donde queda",
+                "Direccion de Tika",
+                "Mapa para llegar",
+                "donde se encuentran",
+                "ubicacion del centro"
+            ],
+            "responses": [
+                "Estamos ubicados en [Dirección Completa, Ej: Av. San Martín 1500, Piso 3, Salta Capital]. Puedes encontrarnos fácilmente buscando 'Centro Tika' en Google Maps.",
+                "Nuestra única sede se encuentra en [Dirección Corta, Ej: Av. San Martín 1500]. Te esperamos de lunes a viernes."
+            ]
+        },
+
+        {
+            "tag": "Primer_turno",
+            "patterns": [
+                "¿Cómo saco un turno?",
+                "¿Cómo pido una primera cita?",
+                "Quiero agendar una sesión",
+                "¿Qué necesito para pedir un turno?",
+                "Quiero reservar una hora",
+                "Teléfono para sacar turno",
+                "¿Se pide turno por WhatsApp?",
+                "¿Cómo es el proceso para empezar?",
+                "Turno con psicóloga para mi hijo",
+                "pedir turno",
+                "sacar hora",
+                "quiero turno",
+                "como inicio el tratamiento",
+                "solicitar turno",
+                "cita para mi hijo"
+            ],
+            "responses": [
+                "Para agendar tu primer turno, puedes llamarnos al [Número de Teléfono] o enviarnos un mensaje por WhatsApp al [Número de WhatsApp]. Te pediremos tus datos y el motivo de consulta.",
+                "El primer paso es comunicarte con nuestra área de administración por teléfono. Ellos te guiarán con la disponibilidad y los requisitos iniciales."
+            ]
+        },
+
+        {
+            "tag": "Edades_atencion",
+            "patterns": [
+                "¿A qué edad atienden?",
+                "¿Tienen terapeutas para niños?",
+                "¿Atienden adolescentes?",
+                "¿Es solo para niños y adolescentes?",
+                "¿Tienen límite de edad?",
+                "¿Atienden bebés?",
+                "¿Desde qué edad reciben pacientes?",
+                "¿Hasta qué edad es la atención?",
+                "Para que edades",
+                "rango de edad",
+                "solo infanto juvenil"
+            ],
+            "responses": [
+                "En el Centro Tika brindamos atención especializada a **niños y adolescentes**.",
+                "Nuestra atención está enfocada en la población **infanto-juvenil**.",
+                "Atendemos pacientes desde la infancia hasta los 17-18 años. Estamos especializados en el desarrollo de niños y adolescentes."
+            ]
+        },
+
+        {
+            "tag": "Documentacion",
+            "patterns": [
+                "¿Qué documentación debo llevar?",
+                "¿Necesito receta médica?",
+                "¿Qué papeles son necesarios para el primer turno?",
+                "Documentos para la obra social",
+                "¿Qué llevo a la primera consulta?",
+                "¿Tengo que llevar el DNI?",
+                "¿Se necesita orden médica?",
+                "Documentacion necesaria",
+                "papeles para el turno",
+                "que informes llevo"
+            ],
+            "responses": [
+                "Para el primer turno, por favor, trae el DNI del niño o adolescente, la credencial de la obra social (si aplica) y cualquier informe médico o estudios previos que tengas.",
+                "Si la consulta es con cobertura, trae el DNI y la credencial. Si tienes una derivación o receta médica, ¡es muy útil traerla!"
+            ]
+        },
+        
+        {
+            "tag": "Contacto",
+            "patterns": [
+                "¿Cuál es el teléfono de contacto?",
+                "Número de WhatsApp",
+                "Correo electrónico de Tika",
+                "¿Cómo los contacto?",
+                "Quiero hablar con alguien",
+                "Datos de contacto",
+                "Mandar un mail",
+                "Quiero el numero",
+                "numero de telefono",
+                "contacto de whatsapp",
+                "enviar mail"
+            ],
+            "responses": [
+                "Puedes contactarnos por teléfono al [Número de Teléfono] o enviarnos un WhatsApp al [Número de WhatsApp]. Nuestro email es [Email de Contacto].",
+                "Para una respuesta rápida, te recomendamos el WhatsApp al [Número de WhatsApp]. ¡Estamos listos para ayudarte!"
+            ]
+        },
+
+        {
+            "tag": "Equipo_profesional",
+            "patterns": [
+                "¿Quiénes son los profesionales?",
+                "¿Tienen un listado de terapeutas?",
+                "¿Quién es el psicólogo?",
+                "¿Qué experiencia tienen los profesionales?",
+                "¿Es un equipo interdisciplinario?",
+                "¿Quién me va a atender?",
+                "Quien atiende",
+                "Que titulos tienen",
+                "nombres de los profesionales",
+                "equipo de trabajo"
+            ],
+            "responses": [
+                "Contamos con un equipo de profesionales matriculados y especializados en desarrollo infanto-juvenil: psicólogos, psicopedagogos, fonoaudiólogos y kinesiólogos. Todos trabajan de forma interdisciplinaria.",
+                "Nuestro equipo está formado por especialistas en las áreas clave para el desarrollo de niños y adolescentes. Trabajamos en conjunto para ofrecer la mejor atención."
             ]
         }
     ]
