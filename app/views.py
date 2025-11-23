@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.db import transaction, IntegrityError
 # Importar todas las clases de formularios desde forms.py
 from .forms import LoginForm, RegisterForm, EntrevistaForm, PacienteForm, EstadisticaPacienteForm, ObservacionForm, TestimonioForm, PerfilUpdateForm, InformeInterdisciplinarioForm
 from .models import Entrevista, EstadoPaciente, Perfil, Paciente, Observacion, Testimonio, Turno, EstadisticaPaciente
@@ -21,14 +22,28 @@ import json
 
 @login_required
 def mi_perfil(request):
-    perfil = request.user.perfil
+    try:
+        perfil = request.user.perfil
+    except Perfil.DoesNotExist:
+        messages.error(request, "Error: Tu cuenta no tiene un perfil asociado. Contacta a un administrador.")
+        return redirect('login')
+    
     advertencia = not perfil.matricula   # Si falta la matrícula, mostramos el aviso
 
     if request.method == 'POST':
         form = PerfilUpdateForm(request.POST, instance=perfil)
         if form.is_valid():
-            form.save()
-            return redirect('mi_perfil')
+            try:
+                with transaction.atomic():
+                    form.save()
+                messages.success(request, "Perfil actualizado correctamente.")
+                return redirect('mi_perfil')
+            except IntegrityError:
+                messages.error(request, "Error: El DNI ingresado ya está asociado a otra cuenta.")
+            except Exception as e:
+                messages.error(request, f"Error al actualizar perfil: {str(e)}")
+        else:
+            messages.error(request, "Por favor, verifica los datos ingresados.")
     else:
         form = PerfilUpdateForm(instance=perfil)
 
@@ -195,27 +210,61 @@ def register_view(request):
     if request.method == "POST":
         form = RegisterForm(request.POST)
         if form.is_valid():
-            user = form.save()
+            user = None
+            try:
+                with transaction.atomic():
+                    # Crear el usuario
+                    user = form.save()
 
-            perfil = Perfil.objects.create(
-                user=user,
-                nombre=form.cleaned_data["nombre"],
-                apellido=form.cleaned_data["apellido"],
-                dni=form.cleaned_data["dni"],
-                telefono=form.cleaned_data["telefono"],
-                email=form.cleaned_data["email"],
-                rol="paciente"
-            )
+                    # Crear perfil con los datos del formulario
+                    perfil = Perfil.objects.create(
+                        user=user,
+                        nombre=form.cleaned_data.get("first_name", ""),
+                        apellido=form.cleaned_data.get("last_name", ""),
+                        dni=form.cleaned_data.get("dni") or form.cleaned_data.get("numero_documento", ""),
+                        telefono=form.cleaned_data.get("telefono", ""),
+                        email=form.cleaned_data.get("email", ""),
+                        rol="paciente"
+                    )
 
-            Paciente.objects.create(
-                dni_paciente=perfil.dni,
-                nombre=perfil.nombre,
-                apellido=perfil.apellido,
-                telefono=perfil.telefono,
-                email=perfil.email
-            )
+                    # Crear paciente asociado
+                    Paciente.objects.create(
+                        dni_paciente=perfil.dni,
+                        nombre=perfil.nombre,
+                        apellido=perfil.apellido,
+                        telefono=perfil.telefono,
+                        email=perfil.email
+                    )
 
-            return redirect("login")
+                messages.success(request, "Cuenta creada exitosamente. Por favor, inicia sesión.")
+                return redirect("login")
+            
+            except IntegrityError as e:
+                # Si hay error de integridad (DNI duplicado, etc.), eliminar el usuario creado
+                if user and user.id:
+                    try:
+                        user.delete()
+                    except:
+                        pass
+                
+                if "dni" in str(e).lower() or "unique" in str(e).lower():
+                    messages.error(request, "Ya existe un usuario con ese DNI. Por favor, intenta con otro.")
+                else:
+                    messages.error(request, f"Error al crear la cuenta: {str(e)}")
+            
+            except Exception as e:
+                # Cleanup en caso de error inesperado
+                if user and user.id:
+                    try:
+                        user.delete()
+                    except:
+                        pass
+                messages.error(request, f"Error inesperado: {str(e)}")
+        else:
+            # Mostrar errores del formulario
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
 
     else:
         form = RegisterForm()

@@ -42,7 +42,7 @@ class Perfil(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     nombre = models.CharField(max_length=100, default="", blank=True)
     apellido = models.CharField(max_length=100, default="Desconocido", blank=True)
-    dni = models.CharField(max_length=11, default="SinDNI", blank=True)
+    dni = models.CharField(max_length=20, default="", blank=True, unique=True)
     nacionalidad = models.CharField(max_length=50, default="", blank=True)
     domicilio = models.CharField(max_length=100, default="", blank=True)
     telefono = models.CharField(max_length=20, default="", blank=True)

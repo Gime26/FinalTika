@@ -15,7 +15,10 @@ class EntrevistaForm(forms.ModelForm):
         fields = '__all__'
 
 class RegisterForm(UserCreationForm):
-    numero_documento = forms.IntegerField(label='DNI', required=False)
+    # Usamos campo de texto para permitir ceros a la izquierda y variantes
+    numero_documento = forms.CharField(label='DNI', required=False)
+    # Alias 'dni' para compatibilidad con vistas que esperan 'dni'
+    dni = forms.CharField(label='DNI', required=False)
     fecha_nacimiento = forms.DateField(label='Fecha de Nacimiento', 
                                        widget=NumberInput(attrs={'type': 'date'}), 
                                        required=False)
@@ -51,6 +54,16 @@ class RegisterForm(UserCreationForm):
     max_length=50,
     required=False
 )
+
+    def clean(self):
+        cleaned = super().clean()
+        dni_val = cleaned.get('dni') or cleaned.get('numero_documento')
+        if dni_val:
+            # Normalizar a str
+            dni_str = str(dni_val).strip()
+            if Perfil.objects.filter(dni=dni_str).exists():
+                self.add_error('dni', 'Ya existe un usuario con ese DNI.')
+        return cleaned
 
 class LoginForm(forms.Form):
     username = forms.CharField(label="Nombre de usuario", max_length=150)
@@ -164,3 +177,14 @@ class PerfilUpdateForm(forms.ModelForm):
             'especialidad': forms.TextInput(attrs={'readonly': True, 'class': 'form-control'}),
             'matricula': forms.TextInput(attrs={'class': 'form-control'}),
         }
+
+        def clean_dni(self):
+            dni = self.cleaned_data.get('dni')
+            if not dni:
+                return dni
+            qs = Perfil.objects.filter(dni=dni)
+            if self.instance and self.instance.pk:
+                qs = qs.exclude(pk=self.instance.pk)
+            if qs.exists():
+                raise forms.ValidationError("Ya existe un usuario con ese DNI.")
+            return dni
