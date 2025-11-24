@@ -1,0 +1,35 @@
+{% extends "pacientes/basepacientes.html" %}
+{% load static %}
+
+{% block title %}Comprobantes{% endblock %}
+
+{% block content %}
+<h3><i class="bi bi-receipt"></i> Comprobantes</h3>
+<hr>
+
+{% if comprobantes %}
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Fecha</th>
+            <th>Monto</th>
+            <th>Concepto</th>
+            <th>Descargar</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for c in comprobantes %}
+        <tr>
+            <td>{{ c.fecha }}</td>
+            <td>${{ c.monto }}</td>
+            <td>{{ c.detalle }}</td>
+            <td><a href="{{ c.archivo.url }}" class="btn btn-primary btn-sm">PDF</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="text-muted">No hay comprobantes disponibles.</p>
+{% endif %}
+
+{% endblock %}

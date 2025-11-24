@@ -1,0 +1,25 @@
+{% extends "pacientes/basepacientes.html" %}
+{% load static %}
+
+{% block title %}Informes Interdisciplinarios{% endblock %}
+
+{% block content %}
+<h3><i class="bi bi-file-text"></i> Informes Interdisciplinarios</h3>
+<hr>
+
+{% if informes %}
+<ul class="list-group">
+    {% for inf in informes %}
+    <li class="list-group-item">
+        <strong>{{ inf.titulo }}</strong>  
+        <br>
+        <small class="text-muted">Fecha: {{ inf.fecha }}</small>
+        <p>{{ inf.resumen }}</p>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p class="text-muted">No tenés informes cargados.</p>
+{% endif %}
+
+{% endblock %}

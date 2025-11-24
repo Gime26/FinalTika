@@ -1,0 +1,25 @@
+{% extends "pacientes/basepacientes.html" %}
+{% load static %}
+
+{% block title %}Observaciones{% endblock %}
+
+{% block content %}
+<h3><i class="bi bi-chat-left-dots"></i> Observaciones</h3>
+<hr>
+
+{% if observaciones %}
+<div class="list-group">
+    {% for o in observaciones %}
+    <div class="list-group-item">
+        <strong>{{ o.terapeuta }}</strong>
+        <br>
+        <small class="text-muted">{{ o.fecha }}</small>
+        <p>{{ o.texto }}</p>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p class="text-muted">No hay observaciones disponibles.</p>
+{% endif %}
+
+{% endblock %}
