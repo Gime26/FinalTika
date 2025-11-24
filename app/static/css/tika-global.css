@@ -1,0 +1,537 @@
+/* ========================================
+   TIKA - SISTEMA DE ESTILOS GLOBALES
+   Colores: Lilas y Morados
+   ======================================== */
+
+:root {
+    /* Colores principales lilas/morados */
+    --color-primary: #8b5a9e;
+    --color-primary-light: #a77bb8;
+    --color-primary-dark: #610455;
+    --color-primary-hover: #9d6eb3;
+    
+    /* Backgrounds lilas */
+    --bg-sidebar: #e1b9eb;
+    --bg-card-light: #f6e8fa;
+    --bg-hover: #ec99ecee;
+    --bg-accent: #e478e4;
+    
+    /* Colores semánticos con toque lila */
+    --color-success: #8b5a9e;
+    --color-success-hover: #7a4d8a;
+    --color-warning: #c77dff;
+    --color-warning-hover: #b45fff;
+    --color-danger: #d946a6;
+    --color-danger-hover: #c23594;
+    --color-info: #9d4edd;
+    --color-info-hover: #8934d4;
+    
+    /* Colores de texto */
+    --text-dark: #2d1b35;
+    --text-medium: #4a2f52;
+    --text-light: #6c5a75;
+    --text-muted: #8e7a95;
+    
+    /* Borders */
+    --border-primary: #610455;
+    --border-light: #d4b5e0;
+    --border-accent: #e478e4;
+    
+    /* Sombras */
+    --shadow-sm: 0 2px 4px rgba(139, 90, 158, 0.1);
+    --shadow-md: 0 4px 8px rgba(139, 90, 158, 0.15);
+    --shadow-lg: 0 6px 12px rgba(139, 90, 158, 0.2);
+    --shadow-hover: 0 8px 16px rgba(139, 90, 158, 0.25);
+    
+    /* Espaciado */
+    --spacing-xs: 8px;
+    --spacing-sm: 12px;
+    --spacing-md: 20px;
+    --spacing-lg: 30px;
+    --spacing-xl: 40px;
+    
+    /* Border radius */
+    --radius-sm: 5px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    
+    /* Transiciones */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.4s ease;
+}
+
+/* ========================================
+   BOTONES GLOBALES
+   ======================================== */
+
+.btn-tika {
+    padding: 12px 24px;
+    border: none;
+    border-radius: var(--radius-md);
+    font-weight: 500;
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all var(--transition-normal);
+    text-decoration: none;
+}
+
+.btn-tika-primary {
+    background: var(--color-primary);
+    color: white;
+}
+
+.btn-tika-primary:hover {
+    background: var(--color-primary-hover);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+}
+
+.btn-tika-success {
+    background: var(--color-success);
+    color: white;
+}
+
+.btn-tika-success:hover {
+    background: var(--color-success-hover);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+}
+
+.btn-tika-warning {
+    background: var(--color-warning);
+    color: white;
+}
+
+.btn-tika-warning:hover {
+    background: var(--color-warning-hover);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+}
+
+.btn-tika-danger {
+    background: var(--color-danger);
+    color: white;
+}
+
+.btn-tika-danger:hover {
+    background: var(--color-danger-hover);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+}
+
+.btn-tika-info {
+    background: var(--color-info);
+    color: white;
+}
+
+.btn-tika-info:hover {
+    background: var(--color-info-hover);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+}
+
+.btn-tika-outline {
+    background: transparent;
+    color: var(--color-primary);
+    border: 2px solid var(--color-primary);
+}
+
+.btn-tika-outline:hover {
+    background: var(--color-primary);
+    color: white;
+}
+
+.btn-tika-sm {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+}
+
+.btn-tika-lg {
+    padding: 14px 32px;
+    font-size: 1.05rem;
+}
+
+/* ========================================
+   CARDS GLOBALES
+   ======================================== */
+
+.tika-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-normal);
+    border: 1px solid var(--border-light);
+}
+
+.tika-card:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-2px);
+}
+
+.tika-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 2px solid var(--bg-card-light);
+}
+
+.tika-card-header h2,
+.tika-card-header h3 {
+    color: var(--color-primary-dark);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tika-card-header i {
+    color: var(--color-primary);
+}
+
+.tika-card-body {
+    color: var(--text-medium);
+    line-height: 1.6;
+}
+
+.tika-card-footer {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--border-light);
+    margin-top: var(--spacing-md);
+}
+
+/* ========================================
+   FORMULARIOS GLOBALES
+   ======================================== */
+
+.tika-form-container {
+    max-width: 900px;
+    margin: 100px auto 40px;
+    padding: 0 20px;
+}
+
+.tika-form-group {
+    margin-bottom: var(--spacing-md);
+}
+
+.tika-form-group label {
+    display: block;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: var(--spacing-xs);
+    font-size: 0.95rem;
+}
+
+.tika-form-group input[type="text"],
+.tika-form-group input[type="email"],
+.tika-form-group input[type="number"],
+.tika-form-group input[type="date"],
+.tika-form-group select,
+.tika-form-group textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid var(--border-light);
+    border-radius: var(--radius-md);
+    font-size: 0.95rem;
+    transition: all var(--transition-fast);
+    background: white;
+    color: var(--text-dark);
+}
+
+.tika-form-group input:focus,
+.tika-form-group select:focus,
+.tika-form-group textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(139, 90, 158, 0.1);
+}
+
+.tika-form-group textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.tika-form-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--border-light);
+}
+
+/* ========================================
+   BADGES Y ETIQUETAS
+   ======================================== */
+
+.tika-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.tika-badge-primary {
+    background: var(--color-primary);
+    color: white;
+}
+
+.tika-badge-info {
+    background: var(--color-info);
+    color: white;
+}
+
+.tika-badge-success {
+    background: var(--color-success);
+    color: white;
+}
+
+.tika-badge-warning {
+    background: var(--color-warning);
+    color: white;
+}
+
+.tika-badge-danger {
+    background: var(--color-danger);
+    color: white;
+}
+
+.tika-badge-light {
+    background: var(--bg-card-light);
+    color: var(--text-dark);
+    border: 1px solid var(--border-light);
+}
+
+/* ========================================
+   ALERTAS Y MENSAJES
+   ======================================== */
+
+.tika-alert {
+    padding: 15px 20px;
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-md);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-left: 4px solid;
+}
+
+.tika-alert i {
+    font-size: 1.3rem;
+}
+
+.tika-alert-success {
+    background: rgba(139, 90, 158, 0.1);
+    border-color: var(--color-success);
+    color: var(--color-success-hover);
+}
+
+.tika-alert-warning {
+    background: rgba(199, 125, 255, 0.1);
+    border-color: var(--color-warning);
+    color: #8b5a00;
+}
+
+.tika-alert-danger {
+    background: rgba(217, 70, 166, 0.1);
+    border-color: var(--color-danger);
+    color: #8b1456;
+}
+
+.tika-alert-info {
+    background: rgba(157, 78, 221, 0.1);
+    border-color: var(--color-info);
+    color: var(--color-info-hover);
+}
+
+/* ========================================
+   TABLAS
+   ======================================== */
+
+.tika-table-container {
+    background: white;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+}
+
+.tika-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tika-table thead {
+    background: var(--bg-card-light);
+}
+
+.tika-table thead th {
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--color-primary-dark);
+    border-bottom: 2px solid var(--border-primary);
+}
+
+.tika-table tbody tr {
+    transition: background var(--transition-fast);
+    border-bottom: 1px solid var(--border-light);
+}
+
+.tika-table tbody tr:hover {
+    background: rgba(225, 185, 235, 0.1);
+}
+
+.tika-table tbody td {
+    padding: 15px;
+    color: var(--text-medium);
+}
+
+/* ========================================
+   ESTADOS VACÍOS
+   ======================================== */
+
+.tika-empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    border: 2px dashed var(--border-light);
+}
+
+.tika-empty-state i {
+    font-size: 4rem;
+    color: var(--border-accent);
+    margin-bottom: var(--spacing-md);
+    opacity: 0.6;
+}
+
+.tika-empty-state p {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    margin-bottom: var(--spacing-md);
+}
+
+/* ========================================
+   HEADERS DE PÁGINA
+   ======================================== */
+
+.tika-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 3px solid var(--bg-card-light);
+}
+
+.tika-page-header h1,
+.tika-page-header h2 {
+    color: var(--color-primary-dark);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.8rem;
+}
+
+.tika-page-header i {
+    color: var(--color-primary);
+}
+
+/* ========================================
+   MODALES DE CONFIRMACIÓN
+   ======================================== */
+
+.tika-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(45, 27, 53, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.tika-modal {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-xl);
+    max-width: 600px;
+    width: 90%;
+    box-shadow: 0 10px 40px rgba(139, 90, 158, 0.3);
+    border-top: 4px solid var(--color-primary);
+}
+
+.tika-modal-header {
+    text-align: center;
+    margin-bottom: var(--spacing-lg);
+}
+
+.tika-modal-header i {
+    font-size: 4rem;
+    margin-bottom: var(--spacing-md);
+}
+
+.tika-modal-header h3 {
+    color: var(--color-primary-dark);
+    margin: 0;
+}
+
+/* ========================================
+   UTILIDADES
+   ======================================== */
+
+.text-primary { color: var(--color-primary) !important; }
+.text-success { color: var(--color-success) !important; }
+.text-warning { color: var(--color-warning) !important; }
+.text-danger { color: var(--color-danger) !important; }
+.text-info { color: var(--color-info) !important; }
+.text-muted { color: var(--text-muted) !important; }
+
+.bg-primary { background: var(--color-primary) !important; }
+.bg-light { background: var(--bg-card-light) !important; }
+
+.border-primary { border-color: var(--border-primary) !important; }
+.border-light { border-color: var(--border-light) !important; }
+
+.shadow-sm { box-shadow: var(--shadow-sm) !important; }
+.shadow-md { box-shadow: var(--shadow-md) !important; }
+.shadow-lg { box-shadow: var(--shadow-lg) !important; }
+
+.rounded-sm { border-radius: var(--radius-sm) !important; }
+.rounded-md { border-radius: var(--radius-md) !important; }
+.rounded-lg { border-radius: var(--radius-lg) !important; }
+
+.mt-sm { margin-top: var(--spacing-sm) !important; }
+.mt-md { margin-top: var(--spacing-md) !important; }
+.mt-lg { margin-top: var(--spacing-lg) !important; }
+
+.mb-sm { margin-bottom: var(--spacing-sm) !important; }
+.mb-md { margin-bottom: var(--spacing-md) !important; }
+.mb-lg { margin-bottom: var(--spacing-lg) !important; }
+
+.p-sm { padding: var(--spacing-sm) !important; }
+.p-md { padding: var(--spacing-md) !important; }
+.p-lg { padding: var(--spacing-lg) !important; }

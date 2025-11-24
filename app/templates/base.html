@@ -20,52 +20,75 @@
 <body>
     <header>
       <div class="head">
+         <a href="{% url 'index' %}" class="logo-link">
          <div class="logo">
               <img src="{% static 'img/sinfondo.png' %}" alt="Tika" class="logo">
            </div>
+         </a>
       </div>
+      <a href="{% url 'mi_perfil' %}" class="user-info">
+          <i class="bi bi-person-circle"></i>
+          <span>{{ request.user.get_full_name|default:request.user.username }}</span>
+      </a>
    </header>
-    <div class="text-white">
-      <i class="bi bi-person-circle"></i> USERNAME
-      <i class="bi bi-bell ms-3"></i>
-    </div>
 
     <!-- Sidebar lateral -->
 <div class="sidebar">
-  <a href="{% url 'mi_perfil' %}"><i class="bi bi-display"></i> Mi Perfil</a>
-  <a href="{% url 'Gestionturnos' %}"><i class="bi bi-calendar-event"></i> Turnos</a>
-  <a href="{% url 'pacientes_list' %}"><i class="bi bi-people"></i> Pacientes</a>
-  <a href="{% url 'crear_informe_interdisciplinario' %}"><i class="bi bi-file-text"></i> Informes Interdisciplinarios</a>
-  <a href="{% url 'estadistica' %}"><i class="bi bi-bar-chart"></i> Estadísticas</a>
-  <a href="{% url 'lista_observaciones' %}"><i class="bi bi-bar-chart"></i> Observaciones</a>
-  <a href="{% url 'comprobantes' %}"><i class="bi bi-bar-chart"></i> Comprobantes</a>
+  <a href="{% url 'mi_perfil' %}" class="sidebar-link {% if request.resolver_match.url_name == 'mi_perfil' %}active{% endif %}">
+    <i class="bi bi-person-circle"></i> Mi Perfil
+  </a>
+  <a href="{% url 'pacientes_list' %}" class="sidebar-link {% if 'pacientes' in request.path %}active{% endif %}">
+    <i class="bi bi-people"></i> Pacientes
+  </a>
+  <a href="{% url 'lista_informes' %}" class="sidebar-link {% if 'informes' in request.path %}active{% endif %}">
+    <i class="bi bi-file-text"></i> Informes Interdisciplinarios
+  </a>
+  <a href="{% url 'estadistica' %}" class="sidebar-link {% if 'estadistica' in request.path %}active{% endif %}">
+    <i class="bi bi-bar-chart"></i> Estadísticas
+  </a>
+  <a href="{% url 'lista_observaciones' %}" class="sidebar-link {% if 'observaciones' in request.path %}active{% endif %}">
+    <i class="bi bi-journal-medical"></i> Observaciones
+  </a>
+  <a href="{% url 'comprobantes' %}" class="sidebar-link {% if 'comprobantes' in request.path %}active{% endif %}">
+    <i class="bi bi-receipt"></i> Comprobantes
+  </a>
 
   
         <!-- Desplegable -->
         <button class="dropdown-btn">
-            <span class="btn-text"><i class="bi bi-bar-chart"></i> Plataforma</span>
+            <span class="btn-text"><i class="bi bi-gear"></i> Plataforma</span>
             <i class="bi bi-caret-down-fill btn-caret"></i>
         </button>
         <div class="dropdown-container">
             <a href="#">Contacto</a>
-            <a href="{%url 'testimonios_lista' %}"> <i class="bi bi-chat-quote"> </i> Testimonios </a>
+            <a href="{% url 'testimonios_lista' %}" class="{% if 'testimonios' in request.path %}active{% endif %}"> 
+              <i class="bi bi-chat-quote"></i> Testimonios 
+            </a>
         </div>
-         <a href="http://localhost:8501" target="_blank"> 
+         <a href="http://localhost:8501" target="_blank" class="sidebar-link"> 
              <i class="bi bi-robot"></i> TikaBot
           </a>
+          
+          <hr class="sidebar-divider">
+          
+          <form action="{% url 'logout' %}" method="post" style="margin-top: 20px;">
+            {% csrf_token %}
+            <button type="submit" class="logout-btn">
+              <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+            </button>
+          </form>
         </div>
     
 
         
-<form action="{% url 'logout' %}" method="post" style="display:inline;">
-    {% csrf_token %}
-
-</form>
+<!-- Form vacío eliminado -->
     <!-- Contenido dinámico -->
     <main class="content">
+        <div class="content-wrapper">
         {% block content %}
 
         {% endblock %}
+        </div>
     </main>
 
     <!-- Scripts -->
@@ -79,6 +102,81 @@
             caret.classList.toggle("rotate");
         });
     </script>
+    
+    <style>
+        /* Wrapper para todo el contenido - evita superposición con navbar */
+        .content-wrapper {
+            padding-top: 30px;
+            min-height: calc(100vh - 100px);
+        }
+        
+        /* Títulos más visibles */
+        .content-wrapper h1,
+        .content-wrapper h2,
+        .content-wrapper h3 {
+            color: #2d1b35 !important;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Estilo para link activo en sidebar */
+        .sidebar-link.active {
+            background: linear-gradient(135deg, #8b5a9e 0%, #a77bb8 100%);
+            border-left: 5px solid #610455;
+            font-weight: 600;
+            box-shadow: 0 4px 8px rgba(139, 90, 158, 0.3);
+        }
+        
+        .dropdown-container a.active {
+            background: linear-gradient(135deg, #8b5a9e 0%, #a77bb8 100%);
+            border-left: 5px solid #610455;
+            font-weight: 600;
+        }
+        
+        .logo-link {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            height: 80px;
+            transition: opacity 0.3s;
+        }
+        
+        .logo-link:hover {
+            opacity: 0.8;
+        }
+        
+        .logout-btn {
+            width: 100%;
+            background: #dc3545;
+            border: none;
+            color: white;
+            padding: 12px 20px;
+            text-align: left;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-radius: 5px;
+            font-weight: 500;
+            margin-top: 10px;
+        }
+        
+        .logout-btn:hover {
+            background: #c82333;
+            transform: translateX(5px);
+        }
+        
+        .logout-btn i {
+            font-size: 18px;
+        }
+        
+        .sidebar-divider {
+            border: 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            margin: 20px 0;
+        }
+    </style>
 </body>
 
 </html>

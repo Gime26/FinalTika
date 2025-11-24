@@ -15,18 +15,19 @@
       background-repeat: no-repeat; /* evita que se repita */
       background-attachment: fixed; /* hace que la imagen quede fija al hacer scroll */
       background-position: center; /* centra la imagen */
-      opacity: 0.5; /* 🔹 Transparencia del fondo */
+      opacity: 0.25; /* 🔹 Transparencia del fondo - MÁS OSCURO */
       z-index: -1; /* 🔹 Envía la imagen detrás del contenido */
     }
  
     .sidebar {
-      top: 60px; /* igual a la altura del navbar */
-      height: calc(100vh - 60px); /* para que no se pase de la pantalla */
+      top: 80px; /* ajustado a la altura del header */
+      height: calc(100vh - 80px); /* para que no se pase de la pantalla */
       background-color: #e1b9eb;
       border-right: 1px solid #dee2e6;
       padding-top: 20px;
       position: fixed;
       width: 220px;
+      z-index: 100; /* asegurar que esté sobre el logo */
     }
     .sidebar a {
     display: flex;

@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Editar Informe{% endblock %}
+
+{% block content %}
+<style>
+    .edit-container {
+        max-width: 900px;
+        margin: 30px auto 40px;
+        padding: 0 20px;
+    }
+    
+    .form-card {
+        background: white;
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .form-header {
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 3px solid #ffc107;
+    }
+    
+    .form-header h2 {
+        color: #333;
+        font-size: 1.8rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .form-header i {
+        color: #ffc107;
+    }
+    
+    .form-group {
+        margin-bottom: 20px !important;
+    }
+    
+    .form-group label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 8px;
+        display: block;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        font-size: 1rem;
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        border-color: #ffc107;
+        outline: none;
+        box-shadow: 0 0 0 0.2rem rgba(255,193,7,0.1);
+    }
+    
+    .form-group textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+    
+    .form-actions {
+        display: flex;
+        gap: 15px;
+        justify-content: flex-end;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #dee2e6;
+    }
+    
+    .btn-guardar {
+        background: #ffc107;
+        color: #212529;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 5px;
+        font-weight: 500;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s;
+    }
+    
+    .btn-guardar:hover {
+        background: #e0a800;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(255,193,7,0.3);
+    }
+    
+    .btn-cancelar {
+        background: #6c757d;
+        color: white;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 5px;
+        font-weight: 500;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s;
+    }
+    
+    .btn-cancelar:hover {
+        background: #5a6268;
+        color: white;
+    }
+    
+    .especialistas-container {
+        max-height: 180px;
+        overflow-y: auto;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        padding: 10px;
+    }
+    
+    .especialistas-container label {
+        font-weight: normal !important;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+</style>
+
+<div class="form-container">
+    <div class="form-card">
+        <div class="form-header">
+            <h2><i class="bi bi-pencil-square"></i> Editar Informe Interdisciplinario</h2>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="{{ form.paciente.id_for_label }}">Paciente *</label>
+                {{ form.paciente }}
+                {% if form.paciente.errors %}
+                    <div class="text-danger mt-1">{{ form.paciente.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.asunto.id_for_label }}">Asunto del Informe *</label>
+                {{ form.asunto }}
+                {% if form.asunto.errors %}
+                    <div class="text-danger mt-1">{{ form.asunto.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.fecha_informe.id_for_label }}">Fecha del Informe *</label>
+                {{ form.fecha_informe }}
+                {% if form.fecha_informe.errors %}
+                    <div class="text-danger mt-1">{{ form.fecha_informe.errors }}</div>
+                {% endif %}
+                <small class="text-muted">Formato: DD/MM/AAAA (años 2020-2030)</small>
+            </div>
+
+            <div class="form-group">
+                <label>Especialistas Colaboradores *</label>
+                <div class="especialistas-container">
+                    {{ form.especialistas }}
+                </div>
+                {% if form.especialistas.errors %}
+                    <div class="text-danger mt-1">{{ form.especialistas.errors }}</div>
+                {% endif %}
+                <small class="text-muted">Selecciona los especialistas que participarán</small>
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.descripcion_general.id_for_label }}">Descripción General (Opcional)</label>
+                {{ form.descripcion_general }}
+                {% if form.descripcion_general.errors %}
+                    <div class="text-danger mt-1">{{ form.descripcion_general.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-actions">
+                <a href="{% url 'detalle_informe' informe.id %}" class="btn-cancelar">
+                    <i class="bi bi-x-circle"></i> Cancelar
+                </a>
+                <button type="submit" class="btn-guardar">
+                    <i class="bi bi-check-circle"></i> Guardar Cambios
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

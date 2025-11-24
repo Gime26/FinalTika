@@ -2,49 +2,336 @@
 {% load static %}
 
 {% block content %}
-
-<link rel="stylesheet" href="{% static 'css/mi_perfil.css' %}">
-
-
-<div class="perfil-wrapper">
-    <div class="card perfil-card">
-        <div class="perfil-header">
-            <span class="user-id"><b>{{ user.username }}</b></span>
-        </div>
-        {% if advertencia %}
-        <div class="alert alert-warning" style="margin: 15px 0;">
-            ⚠️ Debes completar la <b>matrícula profesional (MP)</b> para continuar usando la plataforma.
-        </div>
-        {% endif %}
-        <form method="post">
-            {% csrf_token %}
-            <div class="form-row">
-                <div class="form-group col-md-6">{{ form.nombre.label_tag }}{{ form.nombre }}</div>
-                <div class="form-group col-md-6">{{ form.dni.label_tag }}{{ form.dni }}</div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-6">{{ form.apellido.label_tag }}{{ form.apellido }}</div>
-                <div class="form-group col-md-6">{{ form.nacionalidad.label_tag }}{{ form.nacionalidad }}</div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-6">{{ form.domicilio.label_tag }}{{ form.domicilio }}</div>
-                <div class="form-group col-md-6">{{ form.cp.label_tag }}{{ form.cp }}</div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-6">{{ form.telefono.label_tag }}{{ form.telefono }}</div>
-                <div class="form-group col-md-6">{{ form.email.label_tag }}{{ form.email }}</div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-6">{{ form.especialidad.label_tag }}{{ form.especialidad }}</div>
-                <div class="form-group col-md-6">{{ form.matricula.label_tag }}{{ form.matricula }}</div>
-            </div>
-            <button type="submit" class="btn btn-primary">Actualizar Perfil</button>
-        </form>
-        <form method="POST">
-    {% csrf_token %}  {{ form.as_p }}
+<style>
+    .perfil-container {
+        max-width: 1200px;
+        margin: 100px auto 40px;
+        padding: 0 30px;
+    }
     
-    <button type="submit">Guardar Rol</button>
-</form>
+    .page-title {
+        color: white;
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+    
+    /* SECCIÓN DE DATOS */
+    .data-section {
+        background: white;
+        border-radius: 12px;
+        padding: 0;
+        margin-bottom: 25px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+    
+    .section-header {
+        background: #005EA2;
+        color: white;
+        padding: 15px 25px;
+        font-weight: 600;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .section-body {
+        padding: 25px;
+    }
+    
+    /* GRID DE DATOS */
+    .data-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px 30px;
+        margin-bottom: 20px;
+    }
+    
+    .data-item {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .data-label {
+        font-size: 0.75rem;
+        color: #666;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+        font-weight: 600;
+    }
+    
+    .data-value {
+        font-size: 1rem;
+        color: #333;
+        font-weight: 500;
+        padding: 8px 0;
+    }
+    
+    .data-value.empty {
+        color: #999;
+        font-style: italic;
+    }
+    
+    /* ALERTAS */
+    .alert-box {
+        background: #FFF3CD;
+        border-left: 4px solid #FFC107;
+        padding: 15px 20px;
+        margin: 20px 0;
+        border-radius: 6px;
+        display: flex;
+        align-items: start;
+        gap: 15px;
+    }
+    
+    .alert-box i {
+        color: #FFC107;
+        font-size: 1.5rem;
+        margin-top: 2px;
+    }
+    
+    .alert-content {
+        flex: 1;
+    }
+    
+    .alert-title {
+        font-weight: 600;
+        color: #856404;
+        margin-bottom: 5px;
+        font-size: 0.95rem;
+    }
+    
+    .alert-text {
+        color: #856404;
+        font-size: 0.9rem;
+        margin: 0;
+    }
+    
+    .alert-success {
+        background: #D4EDDA;
+        border-left-color: #28A745;
+    }
+    
+    .alert-success i {
+        color: #28A745;
+    }
+    
+    .alert-success .alert-title,
+    .alert-success .alert-text {
+        color: #155724;
+    }
+    
+    /* VERIFICACIÓN */
+    .verified-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: #D4EDDA;
+        color: #155724;
+        padding: 4px 12px;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-top: 5px;
+    }
+    
+    .verified-badge i {
+        font-size: 0.9rem;
+    }
+    
+    /* BOTÓN MODIFICAR */
+    .btn-modificar {
+        background: #005EA2;
+        color: white;
+        padding: 12px 40px;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+    
+    .btn-modificar:hover {
+        background: #004578;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 94, 162, 0.3);
+        color: white;
+    }
+    
+    .btn-modificar i {
+        font-size: 1.1rem;
+    }
+    
+    .button-container {
+        text-align: center;
+        margin-top: 30px;
+        padding: 20px 0;
+    }
+    
+    /* NOTA INFORMATIVA */
+    .info-note {
+        background: #E7F3FF;
+        border-left: 4px solid #005EA2;
+        padding: 15px 20px;
+        margin-top: 20px;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        color: #004578;
+        line-height: 1.6;
+    }
+    
+    @media (max-width: 992px) {
+        .data-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .data-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .perfil-container {
+            padding: 0 15px;
+        }
+    }
+</style>
+
+<div class="perfil-container">
+    <h1 class="page-title">Información Personal y de Contacto</h1>
+    
+    {% if not perfil.matricula or not perfil.telefono or not perfil.email %}
+    <div class="alert-box">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <div class="alert-content">
+            <div class="alert-title">Datos incompletos</div>
+            <p class="alert-text">
+                Para continuar usando la plataforma es necesario que completes tu información personal. 
+                Por favor, actualiza los siguientes datos: 
+                {% if not perfil.matricula %}Matrícula Profesional{% endif %}
+                {% if not perfil.telefono %}{% if not perfil.matricula %}, {% endif %}Teléfono{% endif %}
+                {% if not perfil.email %}{% if not perfil.matricula or not perfil.telefono %}, {% endif %}Email{% endif %}.
+            </p>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- INFORMACIÓN PERSONAL -->
+    <div class="data-section">
+        <div class="section-header">
+            INFORMACIÓN PERSONAL
+        </div>
+        <div class="section-body">
+            <div class="data-grid">
+                <div class="data-item">
+                    <div class="data-label">Nombre</div>
+                    <div class="data-value">{{ perfil.nombre|default:"No especificado" }}</div>
+                </div>
+                
+                <div class="data-item">
+                    <div class="data-label">Apellido</div>
+                    <div class="data-value">{{ perfil.apellido|default:"No especificado" }}</div>
+                </div>
+                
+                <div class="data-item">
+                    <div class="data-label">DNI</div>
+                    <div class="data-value">{{ perfil.dni|default:"No especificado" }}</div>
+                </div>
+                
+                <div class="data-item">
+                    <div class="data-label">Nacionalidad</div>
+                    <div class="data-value">{{ perfil.nacionalidad|default:"No especificado" }}</div>
+                </div>
+                
+                <div class="data-item">
+                    <div class="data-label">Especialidad</div>
+                    <div class="data-value">{{ perfil.especialidad|default:"No especificado" }}</div>
+                </div>
+                
+                <div class="data-item">
+                    <div class="data-label">Matrícula Profesional</div>
+                    <div class="data-value {% if not perfil.matricula %}empty{% endif %}">
+                        {{ perfil.matricula|default:"Pendiente de completar" }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- UBICACIÓN -->
+    <div class="data-section">
+        <div class="section-header">
+            UBICACIÓN
+        </div>
+        <div class="section-body">
+            <div class="data-grid">
+                <div class="data-item">
+                    <div class="data-label">Domicilio</div>
+                    <div class="data-value">{{ perfil.domicilio|default:"No especificado" }}</div>
+                </div>
+                
+                <div class="data-item">
+                    <div class="data-label">Código Postal</div>
+                    <div class="data-value">{{ perfil.cp|default:"No especificado" }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- CONTACTO -->
+    <div class="data-section">
+        <div class="section-header">
+            CONTACTO
+        </div>
+        <div class="section-body">
+            <div class="data-grid">
+                <div class="data-item">
+                    <div class="data-label">Teléfono</div>
+                    <div class="data-value {% if not perfil.telefono %}empty{% endif %}">
+                        {{ perfil.telefono|default:"Pendiente de completar" }}
+                    </div>
+                    {% if perfil.telefono %}
+                    <span class="verified-badge">
+                        <i class="bi bi-check-circle-fill"></i>
+                        Verificado
+                    </span>
+                    {% endif %}
+                </div>
+                
+                <div class="data-item">
+                    <div class="data-label">Email</div>
+                    <div class="data-value {% if not perfil.email %}empty{% endif %}">
+                        {{ perfil.email|default:"Pendiente de completar" }}
+                    </div>
+                    {% if perfil.email %}
+                    <span class="verified-badge">
+                        <i class="bi bi-check-circle-fill"></i>
+                        Verificado
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="info-note">
+                <strong>IMPORTANTE:</strong> Para recibir notificaciones de TIKA es necesario que tengas actualizados tu teléfono celular y correo electrónico.
+            </div>
+        </div>
+    </div>
+    
+    <!-- BOTÓN MODIFICAR -->
+    <div class="button-container">
+        <a href="{% url 'editar_perfil' %}" class="btn-modificar">
+            <i class="bi bi-pencil-square"></i>
+            MODIFICAR
+        </a>
     </div>
 </div>
+
 {% endblock %}

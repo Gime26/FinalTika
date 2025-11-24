@@ -3,20 +3,298 @@
 
 {% block content %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/forms.css' %}">
-{% endblock %}
+<style>
+    .form-container {
+        max-width: 800px;
+        margin: 100px auto 40px;
+        padding: 0 20px;
+    }
+    
+    .form-card {
+        background: white;
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: 0 2px 20px rgba({% if form.instance.pk %}255, 193, 7, 0.08{% else %}40, 167, 69, 0.08{% endif %});
+        border-top: 3px solid {% if form.instance.pk %}#ffc107{% else %}#28a745{% endif %};
+    }
+    
+    .form-header {
+        text-align: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .form-avatar {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, {% if form.instance.pk %}#ffc107 0%, #ffca2c 100%{% else %}#28a745 0%, #20c997 100%{% endif %});
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 15px;
+        box-shadow: 0 4px 12px rgba({% if form.instance.pk %}255, 193, 7, 0.2{% else %}40, 167, 69, 0.2{% endif %});
+    }
+    
+    .form-avatar i {
+        font-size: 2.5rem;
+        color: white;
+    }
+    
+    .form-header h2 {
+        color: {% if form.instance.pk %}#856404{% else %}#155724{% endif %};
+        margin: 0 0 5px 0;
+        font-size: 1.6rem;
+        font-weight: 600;
+    }
+    
+    .form-subtitle {
+        color: {% if form.instance.pk %}#ffc107{% else %}#28a745{% endif %};
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+    
+    .info-section {
+        margin-bottom: 25px;
+    }
+    
+    .section-title {
+        color: {% if form.instance.pk %}#ffc107{% else %}#28a745{% endif %};
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-bottom: 12px;
+    }
+    
+    .form-row.full-width {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .form-group label {
+        font-weight: 500;
+        color: #555;
+        margin-bottom: 6px;
+        font-size: 0.85rem;
+    }
+    
+    .form-group input,
+    .form-group select {
+        padding: 10px 12px;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+        background: #fafafa;
+        color: #2d1b35;
+    }
+    
+    .form-group input:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: {% if form.instance.pk %}#ffc107{% else %}#28a745{% endif %};
+        background: white;
+        box-shadow: 0 0 0 3px rgba({% if form.instance.pk %}255, 193, 7, 0.08{% else %}40, 167, 69, 0.08{% endif %});
+    }
+    
+    .form-actions {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #f0f0f0;
+    }
+    
+    .btn-guardar {
+        background: {% if form.instance.pk %}#ffc107{% else %}#28a745{% endif %};
+        color: {% if form.instance.pk %}#212529{% else %}white{% endif %};
+        padding: 12px 40px;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-guardar:hover {
+        background: {% if form.instance.pk %}#e0a800{% else %}#218838{% endif %};
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba({% if form.instance.pk %}255, 193, 7, 0.25{% else %}40, 167, 69, 0.25{% endif %});
+    }
+    
+    .btn-cancelar {
+        background: #6c757d;
+        color: white;
+        padding: 12px 40px;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-cancelar:hover {
+        background: #5a6268;
+        color: white;
+    }
+    
+    .text-danger {
+        color: #dc3545;
+        font-size: 0.8rem;
+        margin-top: 4px;
+    }
+    
+    @media (max-width: 768px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+        
+        .form-container {
+            margin-top: 80px;
+            padding: 0 15px;
+        }
+        
+        .form-card {
+            padding: 20px;
+        }
+    }
+</style>
 
-<div class="form-card">
-    <h2>{% if form.instance.pk %}✏️ Editar Paciente{% else %}➕ Nuevo Paciente{% endif %}</h2>
-
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-
-        <button type="submit" class="btn-form btn-save">💾 Guardar</button>
-        <a href="{% url 'pacientes_list' %}" class="btn-form btn-cancel">❌ Cancelar</a>
-    </form>
+<div class="form-container">
+    <div class="form-card">
+        <div class="form-header">
+            <div class="form-avatar">
+                <i class="bi bi-{% if form.instance.pk %}pencil-square{% else %}person-plus{% endif %}-fill"></i>
+            </div>
+            <h2>{% if form.instance.pk %}Editar Paciente{% else %}Nuevo Paciente{% endif %}</h2>
+            <div class="form-subtitle">
+                <i class="bi bi-person-badge"></i> Registro de Paciente
+            </div>
+        </div>
+        
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="info-section">
+                <div class="section-title">
+                    <i class="bi bi-card-text"></i>
+                    Identificación
+                </div>
+                
+                <div class="form-row full-width">
+                    <div class="form-group">
+                        {{ form.dni.label_tag }}
+                        {{ form.dni }}
+                        {% if form.dni.errors %}
+                            <span class="text-danger">{{ form.dni.errors }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="info-section">
+                <div class="section-title">
+                    <i class="bi bi-person"></i>
+                    Datos Personales
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form.nombre.label_tag }}
+                        {{ form.nombre }}
+                        {% if form.nombre.errors %}
+                            <span class="text-danger">{{ form.nombre.errors }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.apellido.label_tag }}
+                        {{ form.apellido }}
+                        {% if form.apellido.errors %}
+                            <span class="text-danger">{{ form.apellido.errors }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form.fecha_nacimiento.label_tag }}
+                        {{ form.fecha_nacimiento }}
+                        {% if form.fecha_nacimiento.errors %}
+                            <span class="text-danger">{{ form.fecha_nacimiento.errors }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.genero.label_tag }}
+                        {{ form.genero }}
+                        {% if form.genero.errors %}
+                            <span class="text-danger">{{ form.genero.errors }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="info-section">
+                <div class="section-title">
+                    <i class="bi bi-telephone"></i>
+                    Información de Contacto
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form.telefono.label_tag }}
+                        {{ form.telefono }}
+                        {% if form.telefono.errors %}
+                            <span class="text-danger">{{ form.telefono.errors }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.email.label_tag }}
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                            <span class="text-danger">{{ form.email.errors }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn-guardar">
+                    <i class="bi bi-check-circle-fill"></i>
+                    Guardar Paciente
+                </button>
+                <a href="{% url 'pacientes_list' %}" class="btn-cancelar">
+                    <i class="bi bi-x-circle-fill"></i>
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
 </div>
 
 {% endblock %}

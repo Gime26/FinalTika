@@ -2,144 +2,754 @@
 {% load static %}
 
 {% block content %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Emisión de Comprobante</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <style>
-    body {
-      background-color: #fdf6fb;
-      font-family: Arial, sans-serif;
+<style>
+    .comprobantes-container {
+        max-width: 1500px;
+        margin: 30px auto 40px;
+        padding: 0 30px;
     }
-    .form-container {
-      background: #fff;
-      padding: 30px;
-      border-radius: 15px;
-      width: 450px;
-      margin: 40px auto;
-      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15);
+    
+    .page-header {
+        text-align: center;
+        margin-bottom: 40px;
+        background: white;
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 4px 25px rgba(139, 90, 158, 0.12);
     }
-    h2 {
-      text-align: center;
-      color: #4b2e83;
-      margin-bottom: 25px;
+    
+    .page-header h1 {
+        color: #2d1b35;
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
     }
-    label {
-      display: block;
-      margin-top: 10px;
+    
+    .page-header h1 i {
+        color: #8b5a9e;
+        font-size: 2.8rem;
     }
-    input, select {
-      width: 100%;
-      padding: 8px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      margin-top: 5px;
+    
+    .two-column-layout {
+        display: grid;
+        grid-template-columns: 480px 1fr;
+        gap: 35px;
+        align-items: stretch;
     }
-    button {
-      background-color: #d79ce7;
-      border: none;
-      padding: 10px 15px;
-      border-radius: 8px;
-      color: #fff;
-      cursor: pointer;
-      margin-top: 15px;
+    
+    .form-card {
+        background: white;
+        border-radius: 20px;
+        padding: 35px;
+        box-shadow: 0 8px 30px rgba(139, 90, 158, 0.15);
+        border: 1px solid rgba(139, 90, 158, 0.1);
+        border-top: 4px solid #8b5a9e;
+        transition: all 0.3s ease;
+        height: fit-content;
     }
-    button:hover {
-      background-color: #c078d6;
+    
+    .form-card:hover {
+        box-shadow: 0 12px 40px rgba(139, 90, 158, 0.2);
     }
-    .comprobante-box {
-      margin-top: 30px;
-      padding: 20px;
-      border: 2px solid #d79ce7;
-      border-radius: 10px;
-      background-color: #fff;
+    
+    .form-header {
+        text-align: center;
+        margin-bottom: 25px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #f0f0f0;
     }
-  </style>
-</head>
-<body>
-  <div class="form-container">
-    <h2>Emisión de Comprobante</h2>
+    
+    .form-header h2 {
+        color: #2d1b35;
+        margin: 0;
+        font-size: 1.3rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+    
+    .form-header h2 i {
+        color: #8b5a9e;
+    }
+    
+    .info-section {
+        margin-bottom: 20px;
+    }
+    
+    .section-title {
+        color: #8b5a9e;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 10px;
+    }
+    
+    .form-row.full-width {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .form-group label {
+        font-weight: 500;
+        color: #555;
+        margin-bottom: 6px;
+        font-size: 0.85rem;
+    }
+    
+    .form-group input,
+    .form-group select {
+        padding: 10px 12px;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+        background: #fafafa;
+        color: #2d1b35;
+    }
+    
+    .form-group input:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: #8b5a9e;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(139, 90, 158, 0.08);
+    }
+    
+    .form-actions {
+        margin-top: 25px;
+        padding-top: 20px;
+        border-top: 1px solid #f0f0f0;
+    }
+    
+    .btn-emitir {
+        background: #8b5a9e;
+        color: white;
+        padding: 12px;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+    
+    .btn-emitir:hover {
+        background: #7a4d8a;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(139, 90, 158, 0.25);
+    }
+    
+    /* HISTORIAL */
+    .historial-section {
+        background: white;
+        border-radius: 20px;
+        padding: 35px;
+        box-shadow: 0 8px 30px rgba(139, 90, 158, 0.15);
+        border: 1px solid rgba(139, 90, 158, 0.1);
+        border-top: 4px solid #8b5a9e;
+        min-height: 600px;
+        transition: all 0.3s ease;
+    }
+    
+    .historial-section:hover {
+        box-shadow: 0 12px 40px rgba(139, 90, 158, 0.2);
+    }
+    
+    .historial-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #f0f0f0;
+    }
+    
+    .historial-header h2 {
+        color: #2d1b35;
+        margin: 0;
+        font-size: 1.3rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .historial-header h2 i {
+        color: #8b5a9e;
+    }
+    
+    .historial-count {
+        background: linear-gradient(135deg, #8b5a9e 0%, #a77bb8 100%);
+        color: white;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+    
+    .comprobante-item {
+        background: linear-gradient(135deg, #ffffff 0%, #faf8fc 100%);
+        border: 2px solid #e8d4f0;
+        border-left: 5px solid #8b5a9e;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+        position: relative;
+        box-shadow: 0 3px 15px rgba(139, 90, 158, 0.08);
+    }
+    
+    .comprobante-item:hover {
+        border-left-color: #610455;
+        border-color: #d4b5e0;
+        box-shadow: 0 8px 25px rgba(139, 90, 158, 0.2);
+        transform: translateY(-3px);
+        background: linear-gradient(135deg, #ffffff 0%, #f6e8fa 100%);
+    }
+    
+    .comprobante-numero {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #8b5a9e 0%, #a77bb8 100%);
+        color: white;
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        box-shadow: 0 3px 10px rgba(139, 90, 158, 0.3);
+        letter-spacing: 0.5px;
+    }
+    
+    .comprobante-item h3 {
+        color: #610455;
+        margin: 0 0 18px 0;
+        font-size: 1.2rem;
+        font-weight: 700;
+        padding-right: 100px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .comprobante-item h3 i {
+        font-size: 1.3rem;
+    }
+    
+    .comprobante-details {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+    
+    .comprobante-detail {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.9rem;
+    }
+    
+    .comprobante-detail i {
+        color: #8b5a9e;
+        font-size: 1rem;
+    }
+    
+    .comprobante-detail strong {
+        color: #610455;
+        font-weight: 600;
+        min-width: 70px;
+    }
+    
+    .comprobante-monto {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        padding: 15px 20px;
+        border-radius: 12px;
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: 800;
+        margin: 18px 0;
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.25);
+        letter-spacing: 1px;
+    }
+    
+    .comprobante-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid #e8d4f0;
+    }
+    
+    .btn-descargar {
+        background: #28a745;
+        color: white;
+        padding: 8px 20px;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-descargar:hover {
+        background: #218838;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(40, 167, 69, 0.25);
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #8b5a9e;
+    }
+    
+    .empty-state i {
+        font-size: 4rem;
+        opacity: 0.3;
+        margin-bottom: 20px;
+    }
+    
+    .empty-state p {
+        font-size: 1.1rem;
+        margin: 0;
+    }
+    
+    @media (max-width: 1200px) {
+        .two-column-layout {
+            grid-template-columns: 1fr;
+        }
+        
+        .form-card {
+            position: relative;
+            top: 0;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .comprobantes-container {
+            margin-top: 80px;
+            padding: 0 15px;
+        }
+        
+        .form-card,
+        .historial-section {
+            padding: 20px;
+        }
+        
+        .form-row,
+        .comprobante-details {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    @keyframes slideIn {
+        from { transform: translateX(400px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(400px); opacity: 0; }
+    }
+</style>
 
-    <form id="formComprobante">
-      <label>Paciente:</label>
-      <input type="text" id="paciente" required>
+<div class="comprobantes-container">
+    <div class="page-header">
+        <h1>
+            <i class="bi bi-receipt-cutoff"></i>
+            Comprobantes de Pago
+        </h1>
+    </div>
+    
+    <div class="two-column-layout">
+        <!-- COLUMNA IZQUIERDA: FORMULARIO -->
+        <div class="form-card">
+            <div class="form-header">
+                <h2>
+                    <i class="bi bi-plus-circle"></i>
+                    Nuevo Comprobante
+                </h2>
+            </div>
+            
+            <form id="formComprobante">
+                <div class="info-section">
+                    <div class="section-title">
+                        <i class="bi bi-person"></i>
+                        Paciente
+                    </div>
+                    
+                    <div class="form-row full-width">
+                        <div class="form-group">
+                            <label for="paciente">Seleccionar paciente *</label>
+                            <select id="paciente" required>
+                                <option value="">— Seleccionar paciente —</option>
+                                {% for paciente in pacientes %}
+                                <option value="{{ paciente.id }}" data-nombre="{{ paciente.nombre }} {{ paciente.apellido }}" data-dni="{{ paciente.dni }}">
+                                    {{ paciente.apellido }}, {{ paciente.nombre }} (DNI: {{ paciente.dni }})
+                                </option>
+                                {% endfor %}
+                            </select>
+                            {% if not pacientes %}
+                            <small style="color: #dc3545; font-size: 0.8rem; margin-top: 4px;">
+                                <i class="bi bi-exclamation-triangle"></i> No hay pacientes registrados. 
+                                <a href="{% url 'pacientes_create' %}" style="color: #28a745; font-weight: 600;">Crear paciente</a>
+                            </small>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-section">
+                    <div class="section-title">
+                        <i class="bi bi-file-text"></i>
+                        Detalles
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="concepto">Concepto *</label>
+                            <input type="text" id="concepto" placeholder="Ej: Sesión terapéutica" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="fecha">Fecha *</label>
+                            <input type="date" id="fecha" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-section">
+                    <div class="section-title">
+                        <i class="bi bi-currency-dollar"></i>
+                        Pago
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="monto">Monto *</label>
+                            <input type="number" id="monto" placeholder="0.00" required min="0" step="0.01">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="metodo">Método *</label>
+                            <select id="metodo" required>
+                                <option value="">— Seleccionar —</option>
+                                <option value="Efectivo">Efectivo</option>
+                                <option value="Tarjeta de Débito">Débito</option>
+                                <option value="Tarjeta de Crédito">Crédito</option>
+                                <option value="Transferencia Bancaria">Transferencia</option>
+                                <option value="MercadoPago">MercadoPago</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn-emitir">
+                        <i class="bi bi-check-circle-fill"></i>
+                        Emitir Comprobante
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- COLUMNA DERECHA: HISTORIAL -->
+        <div class="historial-section">
+            <div class="historial-header">
+                <h2>
+                    <i class="bi bi-clock-history"></i>
+                    Historial
+                </h2>
+                <span class="historial-count" id="historialCount">0</span>
+            </div>
+            
+            <div id="historialComprobantes">
+                <div class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <p>No hay comprobantes emitidos aún</p>
+                    <small style="color: #999;">Los comprobantes emitidos aparecerán aquí</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-      <label>Concepto:</label>
-      <input type="text" id="concepto" required>
-
-      <label>Monto:</label>
-      <input type="number" id="monto" required>
-
-      <label>Fecha:</label>
-      <input type="date" id="fecha" required>
-
-      <label>Método de pago:</label>
-      <select id="metodo" required>
-        <option value="">Seleccionar</option>
-        <option value="Efectivo">Efectivo</option>
-        <option value="Tarjeta">Tarjeta</option>
-        <option value="Transferencia">Transferencia</option>
-      </select>
-
-      <button type="submit">Emitir Comprobante</button>
-    </form>
-
-    <div id="resultado"></div>
-  </div>
-
-  <script>
+<script>
     const { jsPDF } = window.jspdf;
     const form = document.getElementById("formComprobante");
-    const resultado = document.getElementById("resultado");
+    const historial = document.getElementById("historialComprobantes");
+    const historialCount = document.getElementById("historialCount");
+    
+    let comprobantes = JSON.parse(localStorage.getItem('comprobantes_tika') || '[]');
+    
+    // Establecer fecha actual por defecto
+    document.getElementById('fecha').valueAsDate = new Date();
+    
+    // Cargar historial al inicio
+    cargarHistorial();
 
     form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const data = {
-        paciente: form.paciente.value,
-        concepto: form.concepto.value,
-        monto: form.monto.value,
-        fecha: form.fecha.value,
-        metodo: form.metodo.value,
-      };
-      resultado.innerHTML = `
-        <div class="comprobante-box">
-          <h3 style="color:#4b2e83">Comprobante Emitido</h3>
-          <p><strong>Paciente:</strong> ${data.paciente}</p>
-          <p><strong>Concepto:</strong> ${data.concepto}</p>
-          <p><strong>Monto:</strong> $${data.monto}</p>
-          <p><strong>Fecha:</strong> ${data.fecha}</p>
-          <p><strong>Método de pago:</strong> ${data.metodo}</p>
-          <button id="descargar">Descargar PDF</button>
-        </div>`;
-
-      document.getElementById("descargar").addEventListener("click", () => generarPDF(data));
+        e.preventDefault();
+        
+        const pacienteSelect = form.paciente;
+        const selectedOption = pacienteSelect.options[pacienteSelect.selectedIndex];
+        const pacienteNombre = selectedOption.getAttribute('data-nombre');
+        const pacienteDni = selectedOption.getAttribute('data-dni');
+        
+        const data = {
+            id: Date.now(),
+            pacienteId: form.paciente.value,
+            paciente: pacienteNombre,
+            pacienteDni: pacienteDni,
+            concepto: form.concepto.value.trim(),
+            monto: parseFloat(form.monto.value).toFixed(2),
+            fecha: form.fecha.value,
+            metodo: form.metodo.value,
+            timestamp: new Date().toISOString()
+        };
+        
+        // Agregar al historial
+        comprobantes.unshift(data);
+        localStorage.setItem('comprobantes_tika', JSON.stringify(comprobantes));
+        
+        // Recargar historial
+        cargarHistorial();
+        
+        // Limpiar formulario
+        form.reset();
+        document.getElementById('fecha').valueAsDate = new Date();
+        
+        // Mostrar mensaje de éxito
+        mostrarMensaje('Comprobante emitido exitosamente', 'success');
     });
-
-    function generarPDF(data) {
-      const doc = new jsPDF();
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(18);
-      doc.text("Comprobante de Pago - TIKA", 105, 20, { align: "center" });
-
-      doc.setFontSize(12);
-      doc.text(`Paciente: ${data.paciente}`, 20, 40);
-      doc.text(`Concepto: ${data.concepto}`, 20, 50);
-      doc.text(`Monto: $${data.monto}`, 20, 60);
-      doc.text(`Fecha: ${data.fecha}`, 20, 70);
-      doc.text(`Método de pago: ${data.metodo}`, 20, 80);
-
-      doc.text("TIKA Espacio Terapéutico - Bolívar 142, Salta", 20, 100);
-      doc.text("Tel: +54 9 387 582 7499", 20, 108);
-      doc.save(`Comprobante_TIKA_${data.paciente}.pdf`);
+    
+    function cargarHistorial() {
+        historialCount.textContent = comprobantes.length;
+        
+        if (comprobantes.length === 0) {
+            historial.innerHTML = `
+                <div class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <p>No hay comprobantes emitidos aún</p>
+                    <small style="color: #999;">Los comprobantes emitidos aparecerán aquí</small>
+                </div>`;
+            return;
+        }
+        
+        historial.innerHTML = comprobantes.map((comp, index) => {
+            const fechaObj = new Date(comp.fecha + 'T00:00:00');
+            const fechaFormateada = fechaObj.toLocaleDateString('es-AR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+            
+            return `
+                <div class="comprobante-item">
+                    <span class="comprobante-numero">#${comprobantes.length - index}</span>
+                    <h3><i class="bi bi-person-circle"></i> ${comp.paciente}</h3>
+                    
+                    <div class="comprobante-details">
+                        <div class="comprobante-detail">
+                            <i class="bi bi-card-text"></i>
+                            <div><strong>DNI:</strong> ${comp.pacienteDni}</div>
+                        </div>
+                        <div class="comprobante-detail">
+                            <i class="bi bi-calendar"></i>
+                            <div><strong>Fecha:</strong> ${fechaFormateada}</div>
+                        </div>
+                        <div class="comprobante-detail">
+                            <i class="bi bi-file-text"></i>
+                            <div><strong>Concepto:</strong> ${comp.concepto}</div>
+                        </div>
+                        <div class="comprobante-detail">
+                            <i class="bi bi-credit-card"></i>
+                            <div><strong>Método:</strong> ${comp.metodo}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="comprobante-monto">
+                        <i class="bi bi-cash-stack"></i> $${comp.monto}
+                    </div>
+                    
+                    <div class="comprobante-actions">
+                        <button class="btn-descargar" onclick="generarPDF(${index})">
+                            <i class="bi bi-download"></i>
+                            Descargar PDF
+                        </button>
+                    </div>
+                </div>`;
+        }).join('');
     }
-  </script>
-</body>
-</html>
+    
+    function generarPDF(index) {
+        const data = comprobantes[index];
+        const fechaObj = new Date(data.fecha + 'T00:00:00');
+        const fechaFormateada = fechaObj.toLocaleDateString('es-AR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+        
+        const doc = new jsPDF();
+        
+        // Encabezado
+        doc.setFillColor(139, 90, 158);
+        doc.rect(0, 0, 210, 30, 'F');
+        
+        doc.setTextColor(255, 255, 255);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(20);
+        doc.text("TIKA", 105, 12, { align: "center" });
+        doc.setFontSize(12);
+        doc.text("Espacio Terapéutico Interdisciplinario", 105, 20, { align: "center" });
+        
+        // Título del comprobante
+        doc.setTextColor(97, 4, 85);
+        doc.setFontSize(16);
+        doc.text("COMPROBANTE DE PAGO", 105, 45, { align: "center" });
+        
+        // Línea divisoria
+        doc.setDrawColor(139, 90, 158);
+        doc.setLineWidth(0.5);
+        doc.line(20, 50, 190, 50);
+        
+        // Información del comprobante
+        doc.setTextColor(0, 0, 0);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(12);
+        
+        let y = 65;
+        const lineHeight = 12;
+        
+        doc.text("Paciente:", 20, y);
+        doc.setFont("helvetica", "normal");
+        doc.text(data.paciente, 70, y);
+        
+        y += lineHeight;
+        doc.setFont("helvetica", "bold");
+        doc.text("DNI:", 20, y);
+        doc.setFont("helvetica", "normal");
+        doc.text(data.pacienteDni, 70, y);
+        
+        y += lineHeight;
+        doc.setFont("helvetica", "bold");
+        doc.text("Concepto:", 20, y);
+        doc.setFont("helvetica", "normal");
+        doc.text(data.concepto, 70, y);
+        
+        y += lineHeight;
+        doc.setFont("helvetica", "bold");
+        doc.text("Monto:", 20, y);
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(14);
+        doc.text("$" + data.monto, 70, y);
+        
+        y += lineHeight;
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "bold");
+        doc.text("Fecha:", 20, y);
+        doc.setFont("helvetica", "normal");
+        doc.text(fechaFormateada, 70, y);
+        
+        y += lineHeight;
+        doc.setFont("helvetica", "bold");
+        doc.text("Método de pago:", 20, y);
+        doc.setFont("helvetica", "normal");
+        doc.text(data.metodo, 70, y);
+        
+        // Línea divisoria
+        y += 20;
+        doc.setDrawColor(200, 200, 200);
+        doc.line(20, y, 190, y);
+        
+        // Footer con información de contacto
+        y += 15;
+        doc.setFontSize(10);
+        doc.setTextColor(100, 100, 100);
+        doc.text("TIKA Espacio Terapéutico", 105, y, { align: "center" });
+        y += 6;
+        doc.text("Bolívar 142, Salta Capital", 105, y, { align: "center" });
+        y += 6;
+        doc.text("Tel: +54 9 387 582 7499", 105, y, { align: "center" });
+        y += 6;
+        doc.text("Email: contacto@tika.com.ar", 105, y, { align: "center" });
+        
+        // Sello/Firma
+        y += 30;
+        doc.setDrawColor(139, 90, 158);
+        doc.setLineWidth(0.3);
+        doc.line(130, y, 180, y);
+        doc.setFontSize(9);
+        doc.setTextColor(0, 0, 0);
+        doc.text("Firma y Sello", 155, y + 5, { align: "center" });
+        
+        // Número de comprobante
+        doc.setFontSize(8);
+        doc.setTextColor(150, 150, 150);
+        doc.text(`N° ${data.id}`, 105, 285, { align: "center" });
+        
+        // Guardar PDF
+        doc.save(`Comprobante_TIKA_${data.paciente.replace(/\s+/g, '_')}_${data.fecha}.pdf`);
+    }
+    
+    function mostrarMensaje(mensaje, tipo) {
+        const alert = document.createElement('div');
+        alert.style.cssText = `
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: ${tipo === 'success' ? '#28a745' : '#dc3545'};
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 9999;
+            animation: slideIn 0.3s ease;
+        `;
+        alert.innerHTML = `<i class="bi bi-check-circle-fill"></i> ${mensaje}`;
+        document.body.appendChild(alert);
+        
+        setTimeout(() => {
+            alert.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => alert.remove(), 300);
+        }, 3000);
+    }
+</script>
 
 {% endblock %}
- 
-

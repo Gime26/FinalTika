@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Informes Interdisciplinarios{% endblock %}
+
+{% block content %}
+<style>
+    .informes-lista-container {
+        padding: 0 20px;
+    }
+    
+    .informes-header-wrapper {
+        padding-top: 20px;
+        margin-bottom: 1.5rem;
+    }
+</style>
+
+<div class="container informes-lista-container">
+    <div class="informes-header-wrapper">
+        <div class="d-flex justify-content-between align-items-center">
+        <h2><i class="bi bi-file-text"></i> Informes Interdisciplinarios</h2>
+        {% if request.user.perfil.rol == 'especialista' %}
+        <a href="{% url 'crear_informe_interdisciplinario' %}" class="btn btn-crear">
+            <i class="bi bi-plus-circle"></i> Nuevo Informe
+        </a>
+        {% endif %}
+        </div>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    {% if informes %}
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>Fecha</th>
+                    <th>Paciente</th>
+                    <th>Asunto</th>
+                    <th>Especialistas</th>
+                    <th>Secciones</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for informe in informes %}
+                <tr>
+                    <td>{{ informe.fecha_informe|date:"d/m/Y" }}</td>
+                    <td>
+                        <strong>{{ informe.paciente.nombre }} {{ informe.paciente.apellido }}</strong>
+                        <br><small class="text-muted">DNI: {{ informe.paciente.dni }}</small>
+                    </td>
+                    <td>{{ informe.asunto }}</td>
+                    <td>
+                        <span class="badge bg-info">{{ informe.especialistas.count }} colaborador{% if informe.especialistas.count != 1 %}es{% endif %}</span>
+                    </td>
+                    <td>
+                        <span class="badge bg-success">{{ informe.secciones.count }} de {{ informe.especialistas.count }}</span>
+                    </td>
+                    <td>
+                        <a href="{% url 'detalle_informe' informe.id %}" class="btn btn-sm btn-ver" title="Ver detalle">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                        {% if request.user == informe.creado_por %}
+                        <a href="{% url 'editar_informe' informe.id %}" class="btn btn-sm btn-editar" title="Editar informe">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                        <a href="{% url 'eliminar_informe' informe.id %}" class="btn btn-sm btn-eliminar" title="Eliminar informe">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle"></i> 
+        {% if request.user.perfil.rol == 'especialista' %}
+            No hay informes creados aún. Crea el primer informe haciendo clic en "Nuevo Informe".
+        {% else %}
+            No tienes informes asociados en este momento.
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .table {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    
+    .table thead {
+        font-weight: 600;
+    }
+    
+    .badge {
+        padding: 0.5em 0.75em;
+    }
+    
+    /* Colores tradicionales para botones CRUD */
+    .btn-crear {
+        background: #28a745;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-weight: 500;
+        transition: all 0.3s;
+    }
+    
+    .btn-crear:hover {
+        background: #218838;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+    }
+    
+    .btn-ver {
+        background: #17a2b8;
+        color: white;
+        border: none;
+        transition: all 0.3s;
+    }
+    
+    .btn-ver:hover {
+        background: #138496;
+        color: white;
+        transform: scale(1.1);
+    }
+    
+    .btn-editar {
+        background: #ffc107;
+        color: #212529;
+        border: none;
+        transition: all 0.3s;
+    }
+    
+    .btn-editar:hover {
+        background: #e0a800;
+        color: #212529;
+        transform: scale(1.1);
+    }
+    
+    .btn-eliminar {
+        background: #dc3545;
+        color: white;
+        border: none;
+        transition: all 0.3s;
+    }
+    
+    .btn-eliminar:hover {
+        background: #c82333;
+        color: white;
+        transform: scale(1.1);
+    }
+</style>
+{% endblock %}

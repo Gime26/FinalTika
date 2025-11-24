@@ -1,0 +1,484 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ informe.asunto }}{% endblock %}
+
+{% block content %}
+<style>
+    .informe-container {
+        max-width: 1400px;
+        margin: 30px auto 40px;
+        padding: 0 30px;
+    }
+    
+    .informe-header {
+        background: white;
+        border-radius: 16px 16px 0 0;
+        padding: 25px 30px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        border-top: 4px solid #005EA2;
+    }
+    
+    .informe-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    
+    .informe-title h1 {
+        color: #005EA2;
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    
+    .informe-title h1 i {
+        font-size: 2rem;
+    }
+    
+    .btn-actions {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .btn-action {
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+    }
+    
+    .btn-editar {
+        background: #ffc107;
+        color: #212529;
+    }
+    
+    .btn-editar:hover {
+        background: #e0a800;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+    }
+    
+    .btn-eliminar {
+        background: #dc3545;
+        color: white;
+    }
+    
+    .btn-eliminar:hover {
+        background: #c82333;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+    }
+    
+    .btn-volver {
+        background: #6c757d;
+        color: white;
+    }
+    
+    .btn-volver:hover {
+        background: #5a6268;
+        color: white;
+    }
+    
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px 40px;
+        padding: 20px 0;
+        border-bottom: 2px solid #f0f0f0;
+    }
+    
+    .info-item {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .info-label {
+        font-size: 0.8rem;
+        color: #666;
+        text-transform: uppercase;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+    
+    .info-value {
+        font-size: 1.05rem;
+        color: #333;
+        font-weight: 500;
+    }
+    
+    .descripcion-section {
+        background: linear-gradient(135deg, #E7F3FF 0%, #F0F8FF 100%);
+        border-left: 4px solid #005EA2;
+        padding: 20px 25px;
+        margin: 25px 0;
+        border-radius: 8px;
+    }
+    
+    .descripcion-section h6 {
+        color: #005EA2;
+        font-weight: 700;
+        margin-bottom: 12px;
+        font-size: 1.1rem;
+    }
+    
+    .descripcion-section p {
+        color: #004578;
+        line-height: 1.7;
+        margin: 0;
+        font-size: 1rem;
+    }
+    
+    .especialistas-section {
+        padding: 20px 0;
+    }
+    
+    .especialistas-section h6 {
+        color: #333;
+        font-weight: 700;
+        margin-bottom: 15px;
+        font-size: 1.05rem;
+    }
+    
+    .especialistas-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+    
+    .badge-especialista {
+        background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+        color: white;
+        padding: 10px 18px;
+        border-radius: 25px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        box-shadow: 0 3px 10px rgba(23, 162, 184, 0.2);
+    }
+    
+    .btn-agregar-seccion {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        padding: 12px 25px;
+        border-radius: 10px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s ease;
+        margin: 25px 0;
+        font-size: 1rem;
+    }
+    
+    .btn-agregar-seccion:hover {
+        background: linear-gradient(135deg, #218838 0%, #1ea87a 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(40, 167, 69, 0.3);
+        color: white;
+    }
+    
+    .btn-editar-seccion {
+        background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+        color: #212529;
+    }
+    
+    .btn-editar-seccion:hover {
+        background: linear-gradient(135deg, #e0a800 0%, #e68900 100%);
+        box-shadow: 0 6px 16px rgba(255, 193, 7, 0.3);
+        color: #212529;
+    }
+    
+    .secciones-container {
+        margin-top: 30px;
+    }
+    
+    .secciones-title {
+        color: #2d1b35;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .seccion-card {
+        background: white;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        border-left: 5px solid #8b5a9e;
+    }
+    
+    .seccion-header {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        padding: 18px 25px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 2px solid #dee2e6;
+    }
+    
+    .seccion-author {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .seccion-author i {
+        font-size: 1.5rem;
+        color: #8b5a9e;
+    }
+    
+    .author-info h6 {
+        margin: 0;
+        color: #2d1b35;
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+    
+    .author-info small {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+    
+    .seccion-meta {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    
+    .seccion-date {
+        color: #6c757d;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+    
+    .btn-delete-seccion {
+        background: #dc3545;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    
+    .btn-delete-seccion:hover {
+        background: #c82333;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+        color: white;
+    }
+    
+    .seccion-body {
+        padding: 25px 30px;
+        font-size: 1.05rem;
+        line-height: 1.8;
+        color: #333;
+    }
+    
+    .empty-state {
+        background: #fff3cd;
+        border-left: 4px solid #ffc107;
+        padding: 20px 25px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-top: 20px;
+    }
+    
+    .empty-state i {
+        font-size: 2rem;
+        color: #856404;
+    }
+    
+    .empty-state p {
+        margin: 0;
+        color: #856404;
+        font-weight: 500;
+    }
+    
+    @media (max-width: 768px) {
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .informe-title {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .btn-actions {
+            width: 100%;
+            justify-content: stretch;
+        }
+        
+        .btn-action {
+            flex: 1;
+        }
+    }
+</style>
+
+<div class="informe-container">
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="informe-header">
+        <div class="informe-title">
+            <h1>
+                <i class="bi bi-file-text-fill"></i>
+                {{ informe.asunto }}
+            </h1>
+            <div class="btn-actions">
+                {% if request.user == informe.creado_por %}
+                <a href="{% url 'editar_informe' informe.id %}" class="btn-action btn-editar">
+                    <i class="bi bi-pencil-square"></i> Editar
+                </a>
+                <a href="{% url 'eliminar_informe' informe.id %}" class="btn-action btn-eliminar">
+                    <i class="bi bi-trash"></i> Eliminar
+                </a>
+                {% endif %}
+                <a href="{% url 'lista_informes' %}" class="btn-action btn-volver">
+                    <i class="bi bi-arrow-left"></i> Volver
+                </a>
+            </div>
+        </div>
+        
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="info-label"><i class="bi bi-person"></i> Paciente</div>
+                <div class="info-value">{{ informe.paciente.nombre }} {{ informe.paciente.apellido }}</div>
+            </div>
+            
+            <div class="info-item">
+                <div class="info-label"><i class="bi bi-calendar"></i> Fecha del Informe</div>
+                <div class="info-value">{{ informe.fecha_informe|date:"d/m/Y" }}</div>
+            </div>
+            
+            <div class="info-item">
+                <div class="info-label"><i class="bi bi-card-text"></i> DNI del Paciente</div>
+                <div class="info-value">{{ informe.paciente.dni }}</div>
+            </div>
+            
+            <div class="info-item">
+                <div class="info-label"><i class="bi bi-person-badge"></i> Creado Por</div>
+                <div class="info-value">{{ informe.creado_por.username }}</div>
+            </div>
+            
+            <div class="info-item">
+                <div class="info-label"><i class="bi bi-clock-history"></i> Última Modificación</div>
+                <div class="info-value">{{ informe.fecha_modificacion|date:"d/m/Y H:i" }}</div>
+            </div>
+        </div>
+
+        {% if informe.descripcion_general %}
+        <div class="descripcion-section">
+            <h6><i class="bi bi-file-earmark-text"></i> Descripción General</h6>
+            <p>{{ informe.descripcion_general|linebreaks }}</p>
+        </div>
+        {% endif %}
+
+        <div class="especialistas-section">
+            <h6><i class="bi bi-people"></i> Especialistas Colaboradores</h6>
+            <div class="especialistas-badges">
+                {% for especialista in informe.especialistas.all %}
+                <span class="badge-especialista">
+                    <i class="bi bi-person-check"></i>
+                    {{ especialista.nombre }} {{ especialista.apellido }}
+                    {% if especialista.especialidad %}
+                        - {{ especialista.especialidad }}
+                    {% endif %}
+                </span>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Botón para agregar/editar sección -->
+    {% if es_colaborador %}
+    <div>
+        <a href="{% url 'agregar_seccion_informe' informe.id %}" class="btn-agregar-seccion {% if tiene_seccion %}btn-editar-seccion{% endif %}">
+            <i class="bi bi-{% if tiene_seccion %}pencil-square{% else %}plus-circle-fill{% endif %}"></i>
+            {% if tiene_seccion %}
+                Editar mi sección
+            {% else %}
+                Agregar mi sección
+            {% endif %}
+        </a>
+    </div>
+    {% endif %}
+
+    <!-- Secciones de los especialistas -->
+    <div class="secciones-container">
+        <h2 class="secciones-title">
+            <i class="bi bi-clipboard2-check"></i>
+            Evaluaciones por Especialista
+        </h2>
+        
+        {% if secciones %}
+            {% for seccion in secciones %}
+            <div class="seccion-card">
+                <div class="seccion-header">
+                    <div class="seccion-author">
+                        <i class="bi bi-person-circle"></i>
+                        <div class="author-info">
+                            <h6>{{ seccion.especialista.nombre }} {{ seccion.especialista.apellido }}</h6>
+                            {% if seccion.especialista.especialidad %}
+                                <small>{{ seccion.especialista.especialidad }}</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="seccion-meta">
+                        <span class="seccion-date">
+                            <i class="bi bi-clock"></i>
+                            {{ seccion.fecha_modificacion|date:"d/m/Y H:i" }}
+                        </span>
+                        {% if request.user.perfil == seccion.especialista %}
+                        <a href="{% url 'eliminar_seccion_informe' seccion.id %}" class="btn-delete-seccion">
+                            <i class="bi bi-trash"></i> Eliminar
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="seccion-body">
+                    {{ seccion.contenido|linebreaks }}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <p>Aún no hay secciones agregadas por los especialistas colaboradores.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

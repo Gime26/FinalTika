@@ -1,0 +1,211 @@
+{% extends "dashboard.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/tika-global.css' %}">
+
+<style>
+    .form-container {
+        max-width: 900px;
+        margin: 50px auto 40px;
+        padding: 0 20px;
+    }
+    
+    .form-card {
+        background: white;
+        border-radius: 12px;
+        padding: 35px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        border-top: 4px solid #ffc107;
+    }
+    
+    .form-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #f0f0f0;
+    }
+    
+    .form-header i {
+        font-size: 2.5rem;
+        color: #ffc107;
+    }
+    
+    .form-header h2 {
+        color: #333;
+        margin: 0;
+        font-size: 1.8rem;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #dee2e6;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+    }
+    
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #ffc107;
+        box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.1);
+    }
+    
+    .form-group textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+    
+    .current-image {
+        margin-top: 10px;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+    }
+    
+    .current-image img {
+        max-width: 200px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .form-actions {
+        display: flex;
+        gap: 15px;
+        justify-content: flex-end;
+        margin-top: 30px;
+        padding-top: 25px;
+        border-top: 1px solid #dee2e6;
+    }
+    
+    .btn-guardar {
+        background: #ffc107;
+        color: #212529;
+        padding: 14px 35px;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-guardar:hover {
+        background: #e0a800;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(255, 193, 7, 0.3);
+    }
+    
+    .btn-cancelar {
+        background: #6c757d;
+        color: white;
+        padding: 14px 35px;
+        border-radius: 8px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        font-size: 1rem;
+    }
+    
+    .btn-cancelar:hover {
+        background: #5a6268;
+        color: white;
+        transform: translateY(-2px);
+    }
+</style>
+
+<div class="form-container">
+    <div class="form-card">
+        <div class="form-header">
+            <i class="bi bi-pencil-square"></i>
+            <h2>Editar Testimonio</h2>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="{{ form.titulo.id_for_label }}">Título</label>
+                {{ form.titulo }}
+                {% if form.titulo.errors %}
+                    <div class="text-danger mt-1">{{ form.titulo.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.relacion.id_for_label }}">Relación con Tika</label>
+                {{ form.relacion }}
+                {% if form.relacion.errors %}
+                    <div class="text-danger mt-1">{{ form.relacion.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.contenido.id_for_label }}">Contenido del Testimonio</label>
+                {{ form.contenido }}
+                {% if form.contenido.errors %}
+                    <div class="text-danger mt-1">{{ form.contenido.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.imagen.id_for_label }}">Imagen</label>
+                {{ form.imagen }}
+                {% if form.imagen.errors %}
+                    <div class="text-danger mt-1">{{ form.imagen.errors }}</div>
+                {% endif %}
+                {% if testimonio.imagen %}
+                <div class="current-image">
+                    <p><strong>Imagen actual:</strong></p>
+                    <img src="{{ testimonio.imagen.url }}" alt="Imagen actual">
+                    <p class="text-muted mt-2"><small>Sube una nueva imagen si deseas cambiarla</small></p>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="form-actions">
+                <a href="{% url 'testimonios_lista' %}" class="btn-cancelar">
+                    <i class="bi bi-x-circle"></i> Cancelar
+                </a>
+                <button type="submit" class="btn-guardar">
+                    <i class="bi bi-check-circle"></i> Guardar Cambios
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

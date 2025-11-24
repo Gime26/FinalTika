@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    .delete-container {
+        max-width: 650px;
+        margin: 120px auto 40px;
+        padding: 0 20px;
+    }
+    
+    .delete-card {
+        background: white;
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        border-top: 4px solid #dc3545;
+    }
+    
+    .delete-header {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+    
+    .delete-header i {
+        font-size: 4rem;
+        color: #dc3545;
+        margin-bottom: 15px;
+    }
+    
+    .delete-header h2 {
+        color: #dc3545;
+        font-size: 1.5rem;
+        margin: 0;
+    }
+    
+    .seccion-detalle {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px 0;
+    }
+    
+    .detalle-item {
+        margin-bottom: 10px;
+        display: flex;
+        gap: 10px;
+    }
+    
+    .detalle-item strong {
+        color: #495057;
+        min-width: 120px;
+    }
+    
+    .detalle-contenido {
+        background: white;
+        padding: 15px;
+        border-radius: 5px;
+        margin-top: 15px;
+        border-left: 3px solid #007bff;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+    
+    .warning-text {
+        background: #fff3cd;
+        border-left: 4px solid #ffc107;
+        padding: 15px;
+        margin: 20px 0;
+        border-radius: 5px;
+    }
+    
+    .warning-text i {
+        color: #ffc107;
+        margin-right: 10px;
+    }
+    
+    .warning-text p {
+        margin: 0;
+        color: #856404;
+    }
+    
+    .form-acciones {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 30px;
+    }
+    
+    .btn-accion {
+        padding: 12px 30px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 1rem;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s;
+        border: none;
+        cursor: pointer;
+    }
+    
+    .btn-confirmar {
+        background: #dc3545;
+        color: white;
+    }
+    
+    .btn-confirmar:hover {
+        background: #c82333;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(220,53,69,0.3);
+    }
+    
+    .btn-cancelar {
+        background: #6c757d;
+        color: white;
+    }
+    
+    .btn-cancelar:hover {
+        background: #5a6268;
+        color: white;
+    }
+</style>
+
+<div class="delete-container">
+    <div class="delete-card">
+        <div class="delete-header">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <h2>¿Eliminar Tu Sección?</h2>
+        </div>
+
+        <div class="seccion-detalle">
+            <div class="detalle-item">
+                <strong><i class="bi bi-file-text"></i> Informe:</strong>
+                <span>{{ seccion.informe.asunto }}</span>
+            </div>
+            <div class="detalle-item">
+                <strong><i class="bi bi-person"></i> Paciente:</strong>
+                <span>{{ seccion.informe.paciente.nombre }} {{ seccion.informe.paciente.apellido }}</span>
+            </div>
+            <div class="detalle-item">
+                <strong><i class="bi bi-person-badge"></i> Especialista:</strong>
+                <span>{{ seccion.especialista.nombre }} {{ seccion.especialista.apellido }}</span>
+            </div>
+            <div class="detalle-item">
+                <strong><i class="bi bi-calendar3"></i> Última edición:</strong>
+                <span>{{ seccion.fecha_modificacion|date:"d/m/Y H:i" }}</span>
+            </div>
+            <div class="detalle-contenido">
+                <strong>Contenido de tu sección:</strong><br><br>
+                {{ seccion.contenido|linebreaks }}
+            </div>
+        </div>
+
+        <div class="warning-text">
+            <i class="bi bi-exclamation-circle-fill"></i>
+            <p><strong>¡Atención!</strong> Esta acción eliminará permanentemente tu evaluación de este informe. Si deseas volver a participar, deberás crear una nueva sección.</p>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-acciones">
+                <a href="{% url 'detalle_informe' seccion.informe.id %}" class="btn-accion btn-cancelar">
+                    <i class="bi bi-x-circle"></i> Cancelar
+                </a>
+                <button type="submit" class="btn-accion btn-confirmar">
+                    <i class="bi bi-trash-fill"></i> Sí, Eliminar Mi Sección
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

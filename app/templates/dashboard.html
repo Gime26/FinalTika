@@ -9,25 +9,34 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
   <link rel="stylesheet" href="{% static 'css/Opcion3.css' %}">
+  <style>
+    /* Resetear el padding-top del body para dashboard */
+    body {
+      padding-top: 0 !important;
+    }
+  </style>
 </head>
 
 <body>
   <header>
     <div class="head">
+      <a href="{% url 'dashboard' %}" class="logo-link">
       <div class="logo">
         <img src="{% static 'img/sinfondo.png' %}" alt="Tika" class="logo">
       </div>
+      </a>
     </div>
-    <div class="menu-toggle" onclick="toggleMenu()">
-      <span></span><span></span><span></span>
-    </div>
+    <a href="{% url 'mi_perfil' %}" class="user-info">
+      <i class="bi bi-person-circle"></i>
+      <span>{{ request.user.get_full_name|default:request.user.username }}</span>
+    </a>
   </header>
 
 <div class="sidebar">
   <a href="{% url 'mi_perfil' %}"><i class="bi bi-display"></i> Mi Perfil</a>
-  <a href="{% url 'gestionturnos' %}"><i class="bi bi-calendar-event"></i> Turnos</a>
+  <!-- <a href="#"><i class="bi bi-calendar-event"></i> Turnos</a> -->
   <a href="{% url 'pacientes_list' %}"><i class="bi bi-people"></i> Pacientes</a>
-  <a href="{% url 'crear_informe_interdisciplinario' %}"><i class="bi bi-file-text"></i> Informes Interdisciplinarios</a>
+  <a href="{% url 'lista_informes' %}"><i class="bi bi-file-text"></i> Informes Interdisciplinarios</a>
   <a href="{% url 'estadistica' %}"><i class="bi bi-bar-chart"></i> Estadisticas</a>
   <a href="{% url 'lista_observaciones' %}"><i class="bi bi-bar-chart"></i> Observaciones</a>
   <a href="{% url 'comprobantes' %}"><i class="bi bi-bar-chart"></i> Comprobantes</a>
@@ -44,7 +53,14 @@
 
   <a href="#"><i class="bi bi-robot"></i> TikaBot</a>
 
-  <hr class="sidebar-divider"> <a href="{% url 'logout' %}" style="margin-top: 20px;"><i class="bi bi-box-arrow-right"></i> **Cerrar Sesión**</a>
+  <hr class="sidebar-divider"> 
+  
+  <form action="{% url 'logout' %}" method="post" style="margin-top: 20px;">
+    {% csrf_token %}
+    <button type="submit" class="logout-btn">
+      <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+    </button>
+  </form>
 </div>
 
   <!-- 📄 Contenido principal -->
@@ -63,7 +79,7 @@
     <div class="dashboard-cards">
       <div class="card card-custom text-center p-3">
         <h6>PACIENTES</h6>
-        <h3>0</h3>
+        <h3>{{ total_pacientes|default:0 }}</h3>
       </div>
       <div class="card card-custom text-center p-3">
         <h6>TURNOS HOY</h6>
@@ -76,19 +92,22 @@
     </div>
 
     <!-- 📋 Secciones inferiores -->
-    <div class="row">
-      <div class="col-md-6">
+    <div class="row g-3">
+      <div class="col-md-12">
         <div class="card card-custom p-3">
           <h5>Clasificación de turnos</h5>
           <p>No hay turnos cargados para el día de hoy.</p>
         </div>
+      </div>
+      
+      <div class="col-md-12">
         <div class="card card-custom p-3">
           <h5>Próximos turnos</h5>
           <p>No hay próximos turnos cargados.</p>
         </div>
       </div>
 
-      <div class="col-md-6">
+      <div class="col-md-12">
         <div class="card card-custom p-3">
           <h5>Recordatorios de turnos</h5>
           <p>Utilizá el botón de WhatsApp para enviar los recordatorios a los clientes del 22/10/2025.</p>
@@ -119,5 +138,46 @@
       dropdownContainer.classList.toggle('dropdown-active');
     });
   </script>
+  
+  <style>
+    .logo-link {
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      height: 80px;
+      transition: opacity 0.3s;
+    }
+    
+    .logo-link:hover {
+      opacity: 0.8;
+    }
+    
+    .logout-btn {
+      width: 100%;
+      background: #dc3545;
+      border: none;
+      color: white;
+      padding: 12px 20px;
+      text-align: left;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-radius: 5px;
+      font-weight: 500;
+      margin-top: 10px;
+    }
+    
+    .logout-btn:hover {
+      background: #c82333;
+      transform: translateX(5px);
+    }
+    
+    .logout-btn i {
+      font-size: 18px;
+    }
+  </style>
 </body>
 </html>

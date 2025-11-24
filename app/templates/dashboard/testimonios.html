@@ -43,19 +43,33 @@
           {% endif %}
         </td>
         <td>
+          <a href="{% url 'editar_testimonio' t.id %}" 
+             class="btn-custom btn-editar"
+             title="Editar testimonio">
+            <i class="bi bi-pencil-square"></i> EDITAR
+          </a>
+          
           {% if t.estado == 'pendiente' %}
-            <a href="{% url 'aprobar_testimonio' t.id %}" class="btn-custom btn-publicar">PUBLICAR</a>
-            <a href="{% url 'restringir_testimonio' t.id %}" class="btn-custom btn-restringir">RESTRINGIR</a>
+            <a href="{% url 'aprobar_testimonio' t.id %}" class="btn-custom btn-publicar">
+              <i class="bi bi-check-circle"></i> PUBLICAR
+            </a>
+            <a href="{% url 'restringir_testimonio' t.id %}" class="btn-custom btn-restringir">
+              <i class="bi bi-x-circle"></i> RESTRINGIR
+            </a>
           {% elif t.estado == 'aprobado' %}
-            <a href="{% url 'restringir_testimonio' t.id %}" class="btn-custom btn-restringir">RESTRINGIR</a>
+            <a href="{% url 'restringir_testimonio' t.id %}" class="btn-custom btn-restringir">
+              <i class="bi bi-x-circle"></i> RESTRINGIR
+            </a>
           {% elif t.estado == 'restringido' %}
-            <a href="{% url 'aprobar_testimonio' t.id %}" class="btn-custom btn-publicar">PUBLICAR</a>
+            <a href="{% url 'aprobar_testimonio' t.id %}" class="btn-custom btn-publicar">
+              <i class="bi bi-check-circle"></i> PUBLICAR
+            </a>
           {% endif %}
   
           <a href="{% url 'eliminar_testimonio' t.id %}"
              class="btn-custom btn-eliminar"
-             onclick="return confirm('¿Estás seguro de eliminar este testimonio? Esta acción no se puede deshacer?')">
-            ELIMINAR
+             title="Eliminar testimonio">
+            <i class="bi bi-trash"></i> ELIMINAR
           </a>
         </td>
       </tr>
@@ -70,25 +84,65 @@
 <style>
 .btn-custom {
   display: inline-block;
-  padding: 10px 24px;
+  padding: 8px 18px;
   border: none;
   border-radius: 8px;
-  font-weight: bold;
-  text-transform: uppercase;
+  font-weight: 600;
   color: white;
   font-size: 0.85rem;
-  transition: all 0.2s ease-in-out;
+  transition: all 0.3s ease;
   text-decoration: none;
-  min-width: 120px;
+  min-width: 110px;
   text-align: center;
-  margin: 2px;
+  margin: 3px;
 }
 
-.btn-publicar { background-color: #28a745; }
-.btn-restringir { background-color: #dc3545; }
-.btn-eliminar { background-color: #ff4d4d; }
+.btn-editar { 
+  background-color: #ffc107; 
+  color: #212529;
+}
 
-.btn-custom:hover { opacity: 0.9; transform: scale(1.03); }
-.btn-custom:active { transform: scale(0.97); }
+.btn-editar:hover { 
+  background-color: #e0a800;
+  color: #212529;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);
+}
+
+.btn-publicar { 
+  background-color: #28a745; 
+}
+
+.btn-publicar:hover { 
+  background-color: #218838;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+}
+
+.btn-restringir { 
+  background-color: #6c757d; 
+}
+
+.btn-restringir:hover { 
+  background-color: #5a6268;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.btn-eliminar { 
+  background-color: #dc3545; 
+}
+
+.btn-eliminar:hover { 
+  background-color: #c82333;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+}
+
+.btn-custom i {
+  margin-right: 5px;
+}
 </style>
 {% endblock %}

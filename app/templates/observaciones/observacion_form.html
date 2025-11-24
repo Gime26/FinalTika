@@ -1,25 +1,177 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/observaciones.css' %}">
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Nueva observación</title>
-</head>
-<body>
+<link rel="stylesheet" href="{% static 'css/tika-global.css' %}">
 
-<h2>Registrar nueva observación</h2>
+<style>
+    .form-observacion-container {
+        max-width: 900px;
+        margin: 100px auto 40px;
+        padding: 0 20px;
+    }
+    
+    .form-card {
+        background: white;
+        border-radius: 12px;
+        padding: 35px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        border-top: 4px solid {% if es_edicion %}#ffc107{% else %}#28a745{% endif %};
+    }
+    
+    .form-card h2 {
+        color: #610455;
+        margin-bottom: 30px;
+        font-size: 1.8rem;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .form-card h2 i {
+        {% if es_edicion %}
+        color: #ffc107;
+        {% else %}
+        color: #28a745;
+        {% endif %}
+    }
+    
+    .form-card form p {
+        margin-bottom: 20px;
+    }
+    
+    .form-card label {
+        display: block;
+        font-weight: 600;
+        color: #2d1b35;
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+    }
+    
+    .form-card input[type="text"],
+    .form-card input[type="date"],
+    .form-card select,
+    .form-card textarea {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #d4b5e0;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background: white;
+        color: #2d1b35;
+    }
+    
+    .form-card input:focus,
+    .form-card select:focus,
+    .form-card textarea:focus {
+        outline: none;
+        border-color: #8b5a9e;
+        box-shadow: 0 0 0 3px rgba(139, 90, 158, 0.1);
+    }
+    
+    .form-card textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+    
+    .form-actions {
+        display: flex;
+        gap: 15px;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #d4b5e0;
+    }
+    
+    .btn-guardar {
+        {% if es_edicion %}
+        background: #ffc107;
+        color: #212529;
+        {% else %}
+        background: #28a745;
+        color: white;
+        {% endif %}
+        padding: 14px 32px;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1rem;
+    }
+    
+    .btn-guardar:hover {
+        {% if es_edicion %}
+        background: #e0a800;
+        color: #212529;
+        {% else %}
+        background: #218838;
+        color: white;
+        {% endif %}
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba({% if es_edicion %}255, 193, 7{% else %}40, 167, 69{% endif %}, 0.3);
+    }
+    
+    .btn-volver {
+        background: #6c757d;
+        color: white;
+        padding: 14px 32px;
+        border-radius: 8px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        font-size: 1rem;
+    }
+    
+    .btn-volver:hover {
+        background: #5a6268;
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    .errorlist {
+        color: #dc3545;
+        list-style: none;
+        padding: 0;
+        margin: 5px 0 0 0;
+        font-size: 0.9rem;
+    }
+    
+    .helptext {
+        font-size: 0.85rem;
+        color: #6c757d;
+        margin-top: 5px;
+        display: block;
+    }
+</style>
 
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Guardar</button>
-</form>
+<div class="form-observacion-container">
+    <div class="form-card">
+        <h2>
+            <i class="bi bi-{% if es_edicion %}pencil-square{% else %}journal-plus{% endif %}"></i> 
+            {% if es_edicion %}Editar Observación{% else %}Registrar Nueva Observación{% endif %}
+        </h2>
 
-<a href="{% url 'lista_observaciones' %}">🔙 Volver al historial</a>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            
+            <div class="form-actions">
+                <button type="submit" class="btn-guardar">
+                    <i class="bi bi-{% if es_edicion %}check-circle{% else %}save{% endif %}"></i> 
+                    {% if es_edicion %}Guardar Cambios{% else %}Guardar Observación{% endif %}
+                </button>
+                <a href="{% url 'lista_observaciones' %}" class="btn-volver">
+                    <i class="bi bi-arrow-left"></i> Volver al Historial
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
 
-</body>
-</html>
 {% endblock %}

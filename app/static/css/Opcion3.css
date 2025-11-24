@@ -9,8 +9,39 @@
 
 body { /* Estructura */
     text-align: center; 
-    font-family: 'Montserrat', sans-serif; /* Usamos la fuente de tu @import */
+    font-family: 'Montserrat', sans-serif;
+    position: relative;
+    min-height: 100vh;
+    background-color: rgba(49, 0, 49, 0.494) !important;
+    background: rgba(49, 0, 49, 0.494) !important;
+    padding-top: 80px; /* Espacio para el header fijo */
 }
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../img/logotikadash.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    opacity: 0.25 !important;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Asegurar que el contenido principal sea transparente */
+main.content {
+    background: transparent !important;
+    background-color: transparent !important;
+    position: relative;
+    z-index: 1;
+}
+
 header{
     display: flex; /* Ahora la etiqueta <header> es un contenedor flex */
     justify-content: space-between; /* Distribuye espacio entre sus hijos directos */
@@ -25,19 +56,48 @@ header{
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra suave */
 }
 
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: white;
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 8px 15px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 25px;
+    backdrop-filter: blur(10px);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.user-info:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+    color: white;
+}
+
+.user-info i {
+    font-size: 1.5rem;
+}
+
 /* Estilos para el div que envuelve el logo */
 .head .logo {
     display: flex;
     align-items: center;
     height: 80px; /* Debe coincidir con la altura del header */
+    position: relative;
+    z-index: 1;
 }
 
 .head .logo img { /* Apunta a la imagen dentro del div.logo que está dentro de div.head */
-    height: 150px; /* Imagen más grande que la barra; sobresaldrá sin agrandarla */
+    height: 120px; /* Reducido para que no sobresalga tanto */
     width: auto;
     object-fit: contain; /* Evita distorsionar la imagen */
     display: block;
     margin-right: 20px;
+    position: relative;
+    z-index: 1;
 }
 
 /* Estilos para la barra de navegación (Navbar) */

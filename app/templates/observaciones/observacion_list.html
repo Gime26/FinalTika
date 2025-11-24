@@ -1,23 +1,234 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/observaciones.css' %}">
+<link rel="stylesheet" href="{% static 'css/tika-global.css' %}">
 
-<h2>Historial de observaciones</h2>
+<style>
+    .observaciones-container {
+        max-width: 1200px;
+        margin: 100px auto 40px;
+        padding: 0 20px;
+    }
+    
+    .observaciones-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 3px solid #f6e8fa;
+    }
+    
+    .observaciones-header h2 {
+        color: #610455;
+        font-size: 1.9rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .observaciones-header h2 i {
+        color: #8b5a9e;
+    }
+    
+    .btn-nueva {
+        background: #28a745;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 8px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-nueva:hover {
+        background: #218838;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(40, 167, 69, 0.3);
+    }
+    
+    .observacion-card {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 12px rgba(139, 90, 158, 0.1);
+        transition: all 0.3s ease;
+        border-left: 4px solid #8b5a9e;
+    }
+    
+    .observacion-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 16px rgba(139, 90, 158, 0.2);
+    }
+    
+    .observacion-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid #f6e8fa;
+    }
+    
+    .observacion-info {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+    
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        font-size: 0.95rem;
+    }
+    
+    .info-item i {
+        color: #8b5a9e;
+    }
+    
+    .info-item strong {
+        color: #2d1b35;
+    }
+    
+    .badge-tipo {
+        background: #9d4edd;
+        color: white;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+    
+    .observacion-contenido {
+        color: #4a2f52;
+        line-height: 1.7;
+        font-size: 0.95rem;
+        margin-bottom: 18px;
+    }
+    
+    .observacion-acciones {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+        padding-top: 12px;
+        border-top: 1px solid #f6e8fa;
+    }
+    
+    .btn-accion {
+        padding: 8px 18px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 0.9rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        font-weight: 500;
+    }
+    
+    .btn-editar {
+        background: #ffc107;
+        color: #212529;
+    }
+    
+    .btn-editar:hover {
+        background: #e0a800;
+        color: #212529;
+        transform: translateY(-2px);
+    }
+    
+    .btn-eliminar {
+        background: #dc3545;
+        color: white;
+    }
+    
+    .btn-eliminar:hover {
+        background: #c82333;
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 70px 20px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(139, 90, 158, 0.1);
+        border: 2px dashed #d4b5e0;
+    }
+    
+    .empty-state i {
+        font-size: 5rem;
+        color: #e478e4;
+        margin-bottom: 20px;
+        opacity: 0.5;
+    }
+    
+    .empty-state p {
+        color: #8e7a95;
+        font-size: 1.15rem;
+    }
+</style>
 
-<a href="{% url 'crear_observacion' %}">➕ Nueva observación</a>
+<div class="observaciones-container">
+    <div class="observaciones-header">
+        <h2><i class="bi bi-journal-medical"></i> Historial de Observaciones</h2>
+        <a href="{% url 'crear_observacion' %}" class="btn-nueva">
+            <i class="bi bi-plus-circle"></i> Nueva Observación
+        </a>
+    </div>
 
-<ul>
-{% for o in observaciones %}
-    <li>
-        {{ o.fecha|date:"d/m/Y" }} · {{ o.paciente }} · {{ o.get_especialista_display }}
-    </li>
-    <li>
-    {{ o.observacion_clinica }}
-    </li>
-{% empty %}
-    <li>No hay observaciones registradas.</li>
-{% endfor %}
-</ul>
+    {% if observaciones %}
+        {% for o in observaciones %}
+        <div class="observacion-card">
+            <div class="observacion-header">
+                <div class="observacion-info">
+                    <div class="info-item">
+                        <i class="bi bi-calendar3"></i>
+                        <strong>{{ o.fecha|date:"d/m/Y" }}</strong>
+                    </div>
+                    <div class="info-item">
+                        <i class="bi bi-person"></i>
+                        <strong>{{ o.paciente.nombre }} {{ o.paciente.apellido }}</strong>
+                    </div>
+                    <div class="info-item">
+                        <i class="bi bi-person-badge"></i>
+                        {{ o.get_especialista_display }}
+                    </div>
+                </div>
+                <span class="badge-tipo">{{ o.get_tipo_sesion_display }}</span>
+            </div>
+            <div class="observacion-contenido">
+                {{ o.observacion_clinica }}
+            </div>
+            <div class="observacion-acciones">
+                <a href="{% url 'editar_observacion' o.pk %}" class="btn-accion btn-editar">
+                    <i class="bi bi-pencil-square"></i> Editar
+                </a>
+                <a href="{% url 'eliminar_observacion' o.pk %}" class="btn-accion btn-eliminar">
+                    <i class="bi bi-trash"></i> Eliminar
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-state">
+            <i class="bi bi-journal-x"></i>
+            <p>No hay observaciones registradas aún.</p>
+            <a href="{% url 'crear_observacion' %}" class="btn-nueva" style="margin-top: 15px;">
+                <i class="bi bi-plus-circle"></i> Crear Primera Observación
+            </a>
+        </div>
+    {% endif %}
+</div>
 
 {% endblock %}
