@@ -1,0 +1,556 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    .turnos-container {
+        display: flex;
+        gap: 20px;
+        padding: 15px;
+    }
+    .form-panel {
+        flex: 0 0 400px;
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        border: 2px solid #9b59b6;
+    }
+    .lista-panel {
+        flex: 1;
+        background: white;
+        padding: 0;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        border: 2px solid #9b59b6;
+        max-height: calc(100vh - 120px);
+        overflow: hidden;
+    }
+    .lista-header {
+        background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+        color: white;
+        padding: 15px 20px;
+        border-radius: 10px 10px 0 0;
+        margin: 0;
+    }
+    .lista-content {
+        padding: 20px;
+        max-height: calc(100vh - 200px);
+        overflow-y: auto;
+    }
+    .paciente-inline {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 6px;
+        margin-bottom: 10px;
+    }
+    .form-control-sm {
+        padding: 4px 8px;
+        font-size: 0.875rem;
+        border: 1px solid #9b59b6;
+        border-radius: 6px;
+    }
+    .form-control-sm:focus {
+        border-color: #8e44ad;
+        box-shadow: 0 0 0 0.2rem rgba(155, 89, 182, 0.25);
+    }
+    .form-control-sm:disabled {
+        background-color: #f0f0f0;
+        color: #6c757d;
+        cursor: not-allowed;
+        font-style: italic;
+    }
+    .form-select {
+        border: 1px solid #9b59b6;
+        border-radius: 6px;
+    }
+    .form-select:focus {
+        border-color: #8e44ad;
+        box-shadow: 0 0 0 0.2rem rgba(155, 89, 182, 0.25);
+    }
+    .horarios-grid {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 5px;
+        margin-bottom: 10px;
+    }
+    .horario-btn {
+        padding: 8px 4px;
+        font-size: 0.85rem;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-weight: 600;
+        color: white;
+    }
+    .horario-btn.disponible {
+        background-color: #28a745;
+    }
+    .horario-btn.disponible:hover {
+        background-color: #218838;
+        transform: translateY(-1px);
+    }
+    .horario-btn.ocupado {
+        background-color: #dc3545;
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
+    .horario-btn.selected {
+        outline: 3px solid #ffc107 !important;
+        transform: scale(1.08) !important;
+        box-shadow: 0 4px 12px rgba(255, 193, 7, 0.5) !important;
+        animation: pulse 0.3s ease-in-out !important;
+        position: relative;
+        z-index: 10;
+    }
+    @keyframes pulse {
+        0%, 100% { transform: scale(1.08); }
+        50% { transform: scale(1.12); }
+    }
+    .turno-card {
+        border: 2px solid #9b59b6;
+        border-radius: 10px;
+        padding: 12px;
+        margin-bottom: 10px;
+        transition: all 0.2s;
+        background: white;
+    }
+    .turno-card:hover {
+        box-shadow: 0 4px 12px rgba(155, 89, 182, 0.3);
+        transform: translateY(-2px);
+    }
+    .turno-actions {
+        display: flex;
+        gap: 4px;
+        margin-top: 8px;
+    }
+    .btn-sm {
+        padding: 4px 10px;
+        font-size: 0.75rem;
+        border-radius: 6px;
+    }
+    .btn-primary {
+        background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+        border: none;
+    }
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #8e44ad 0%, #7d3c98 100%);
+    }
+    .btn-secondary {
+        background: #6c757d;
+        border: none;
+    }
+    .badge {
+        border-radius: 6px;
+        padding: 4px 10px;
+        font-size: 0.75rem;
+    }
+    input[type="date"]::-webkit-calendar-picker-indicator {
+        filter: invert(45%) sepia(47%) saturate(1274%) hue-rotate(250deg) brightness(88%) contrast(92%);
+    }
+    .form-label {
+        color: #2c3e50;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+    .form-label strong {
+        color: #9b59b6;
+    }
+    textarea.form-control-sm:disabled {
+        background-color: #e9ecef;
+        border-color: #ced4da;
+    }
+    textarea.form-control-sm:disabled::placeholder {
+        color: #6c757d;
+        font-weight: 500;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h2 class="mb-3">Gestión de Turnos</h2>
+    
+    <div class="turnos-container">
+        <!-- Panel izquierdo: Formulario -->
+        <div class="form-panel">
+            <h5 class="mb-3">Asignar Turno</h5>
+            <form id="turnoForm">
+                {% csrf_token %}
+                
+                <!-- Datos del paciente inline -->
+                <label class="form-label mb-1"><strong>Datos del Paciente</strong></label>
+                <div class="paciente-inline">
+                    <input type="text" id="dni_paciente" class="form-control form-control-sm" 
+                           placeholder="DNI (8 dígitos)" required pattern="\d{8}" 
+                           maxlength="8" title="Ingrese exactamente 8 dígitos">
+                    <input type="text" id="nombre_paciente" class="form-control form-control-sm" 
+                           placeholder="Nombre" required>
+                    <input type="text" id="apellido_paciente" class="form-control form-control-sm" 
+                           placeholder="Apellido" required>
+                </div>
+                
+                <!-- Profesional y Fecha -->
+                <div class="row mb-2">
+                    <div class="col-6">
+                        <label for="id_especialista" class="form-label mb-1">Profesional</label>
+                        <select id="id_especialista" class="form-select form-control-sm" required>
+                            <option value="">Seleccione...</option>
+                            {% for especialista in especialistas %}
+                            <option value="{{ especialista.id }}">{{ especialista.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-6">
+                        <label for="id_fecha" class="form-label mb-1">Fecha</label>
+                        <input type="date" id="id_fecha" class="form-control form-control-sm" 
+                               min="{{ today }}" required>
+                    </div>
+                </div>
+                
+                <!-- Grid de horarios -->
+                <label class="form-label mb-1"><strong>Seleccione Horario</strong></label>
+                <div class="horarios-grid" id="horariosGrid">
+                    <button type="button" class="horario-btn disponible" data-hora="08:00">08:00</button>
+                    <button type="button" class="horario-btn disponible" data-hora="09:00">09:00</button>
+                    <button type="button" class="horario-btn disponible" data-hora="10:00">10:00</button>
+                    <button type="button" class="horario-btn disponible" data-hora="11:00">11:00</button>
+                    <button type="button" class="horario-btn disponible" data-hora="12:00">12:00</button>
+                    <button type="button" class="horario-btn disponible" data-hora="13:00">13:00</button>
+                    <button type="button" class="horario-btn disponible" data-hora="14:00">14:00</button>
+                    <button type="button" class="horario-btn disponible" data-hora="15:00">15:00</button>
+                    <button type="button" class="horario-btn disponible" data-hora="16:00">16:00</button>
+                    <button type="button" class="horario-btn disponible" data-hora="17:00">17:00</button>
+                    <button type="button" class="horario-btn disponible" data-hora="18:00">18:00</button>
+                </div>
+                
+                <input type="hidden" id="id_hora" required>
+                
+                <!-- Motivo -->
+                <div class="mb-2">
+                    <label for="id_motivo" class="form-label mb-1">Motivo (opcional)</label>
+                    <textarea id="id_motivo" class="form-control form-control-sm" 
+                              rows="2" placeholder="⏰ Primero seleccione un horario arriba" disabled></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-sm w-100">Guardar Turno</button>
+                <button type="button" class="btn btn-secondary btn-sm w-100 mt-2" onclick="limpiarFormulario()">Limpiar</button>
+            </form>
+        </div>
+        
+        <!-- Panel derecho: Lista de turnos -->
+        <div class="lista-panel">
+            <div class="lista-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Turnos Programados</h5>
+                    <input type="text" id="searchTurnos" class="form-control form-control-sm" 
+                           style="max-width: 250px; background: white;" placeholder="Buscar por DNI, nombre..." 
+                           oninput="filtrarTurnos()">
+                </div>
+            </div>
+            
+            <div class="lista-content" id="turnosList">
+                {% for turno in turnos %}
+                <div class="turno-card" 
+                     data-turno-id="{{ turno.id }}"
+                     data-paciente-dni="{{ turno.paciente.dni_paciente }}"
+                     data-paciente-nombre="{{ turno.paciente.nombre }}"
+                     data-paciente-apellido="{{ turno.paciente.apellido }}"
+                     data-search="{{ turno.paciente.nombre|lower }} {{ turno.paciente.apellido|lower }} {{ turno.paciente.dni_paciente }}">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <strong>{{ turno.paciente.nombre }} {{ turno.paciente.apellido }}</strong>
+                            <small class="text-muted">(DNI: {{ turno.paciente.dni_paciente }})</small>
+                            <br>
+                            <small>{{ turno.especialista.nombre }} - {{ turno.fecha|date:"d/m/Y" }} {{ turno.hora|time:"H:i" }}</small>
+                        </div>
+                        <span class="badge bg-{% if turno.status == 'CONFIRMED' %}success{% elif turno.status == 'PENDING' %}warning{% else %}secondary{% endif %}">
+                            {{ turno.get_status_display }}
+                        </span>
+                    </div>
+                    {% if turno.motivo %}
+                    <p class="mb-1 small"><strong>Motivo:</strong> {{ turno.motivo }}</p>
+                    {% endif %}
+                    <div class="turno-actions">
+                        {% if turno.status == 'PENDING' %}
+                        <button class="btn btn-success btn-sm" onclick="confirmarTurno({{ turno.id }})">Confirmar</button>
+                        {% endif %}
+                        <button class="btn btn-info btn-sm" onclick="modificarTurno({{ turno.id }})">Modificar</button>
+                        <button class="btn btn-danger btn-sm" onclick="eliminarTurno({{ turno.id }})">Eliminar</button>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-muted">No hay turnos programados</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let turnosData = {{ turnos_json|safe }};
+    let horaSeleccionada = null;
+    
+    // Cargar disponibilidad de horarios
+    function cargarDisponibilidad() {
+        const fecha = document.getElementById('id_fecha').value;
+        const especialistaId = document.getElementById('id_especialista').value;
+        
+        if (!fecha || !especialistaId) return;
+        
+        const turnosOcupados = turnosData.filter(t => 
+            t.fecha === fecha && 
+            t.especialista_id == especialistaId &&
+            t.status !== 'CANCELLED'
+        ).map(t => t.hora);
+        
+        const botones = document.querySelectorAll('.horario-btn');
+        botones.forEach(btn => {
+            const hora = btn.dataset.hora;
+            if (turnosOcupados.includes(hora)) {
+                btn.classList.remove('disponible');
+                btn.classList.add('ocupado');
+                btn.disabled = true;
+                btn.onclick = null;
+            } else {
+                btn.classList.remove('ocupado');
+                btn.classList.add('disponible');
+                btn.disabled = false;
+                btn.onclick = function() { selectHorario(hora, this); };
+            }
+        });
+    }
+    
+    document.getElementById('id_fecha').addEventListener('change', cargarDisponibilidad);
+    document.getElementById('id_especialista').addEventListener('change', cargarDisponibilidad);
+    
+    // Inicializar botones al cargar la página
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.horario-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (!this.disabled) {
+                    selectHorario(this.dataset.hora, this);
+                }
+            });
+        });
+    });
+    
+    let turnoEnEdicion = null;
+    
+    function selectHorario(hora, btnElement) {
+        horaSeleccionada = hora;
+        document.getElementById('id_hora').value = hora;
+        
+        // Remover selected de todos primero
+        document.querySelectorAll('.horario-btn').forEach(btn => {
+            btn.classList.remove('selected');
+        });
+        
+        // Agregar selected al clickeado
+        btnElement.classList.add('selected');
+        
+        // Habilitar el textarea de motivo
+        const motivoField = document.getElementById('id_motivo');
+        motivoField.disabled = false;
+        motivoField.placeholder = '✍️ Escriba el motivo de la consulta (opcional)';
+        motivoField.style.backgroundColor = 'white';
+        motivoField.style.borderColor = '#9b59b6';
+    }
+    
+    function modificarTurno(turnoId) {
+        const turno = turnosData.find(t => t.id === turnoId);
+        if (!turno) return;
+        
+        // Obtener datos del DOM
+        const turnoCard = document.querySelector(`[data-turno-id="${turnoId}"]`);
+        const dni = turnoCard.dataset.pacienteDni;
+        const nombre = turnoCard.dataset.pacienteNombre;
+        const apellido = turnoCard.dataset.pacienteApellido;
+        
+        turnoEnEdicion = turnoId;
+        
+        // Llenar los datos del paciente
+        document.getElementById('dni_paciente').value = dni;
+        document.getElementById('nombre_paciente').value = nombre;
+        document.getElementById('apellido_paciente').value = apellido;
+        
+        // Seleccionar especialista
+        document.getElementById('id_especialista').value = turno.especialista_id;
+        
+        // Seleccionar fecha
+        document.getElementById('id_fecha').value = turno.fecha;
+        
+        // Cargar disponibilidad
+        cargarDisponibilidad();
+        
+        // Marcar el horario actual en rojo (ocupado)
+        setTimeout(() => {
+            const botones = document.querySelectorAll('.horario-btn');
+            botones.forEach(btn => {
+                if (btn.dataset.hora === turno.hora) {
+                    btn.classList.remove('disponible');
+                    btn.classList.add('ocupado');
+                    btn.style.backgroundColor = '#dc3545';
+                    btn.style.opacity = '1';
+                    btn.disabled = false;
+                    btn.onclick = function() { selectHorario(turno.hora, btn); };
+                }
+            });
+        }, 100);
+        
+        // Motivo
+        const motivoField = document.getElementById('id_motivo');
+        motivoField.value = turno.motivo || '';
+        motivoField.disabled = true;
+        motivoField.placeholder = '⏰ Primero seleccione un horario arriba';
+        motivoField.style.backgroundColor = '';
+        motivoField.style.borderColor = '';
+        
+        // Cambiar el texto del botón
+        document.querySelector('#turnoForm button[type="submit"]').textContent = 'Actualizar Turno';
+        
+        // Scroll al formulario
+        document.querySelector('.form-panel').scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    function filtrarTurnos() {
+        const search = document.getElementById('searchTurnos').value.toLowerCase();
+        const cards = document.querySelectorAll('.turno-card');
+        
+        cards.forEach(card => {
+            const searchText = card.dataset.search;
+            card.style.display = searchText.includes(search) ? 'block' : 'none';
+        });
+    }
+    
+    document.getElementById('turnoForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        if (!horaSeleccionada) {
+            alert('Debe seleccionar un horario');
+            return;
+        }
+        
+        const formData = {
+            dni_paciente: document.getElementById('dni_paciente').value,
+            nombre_paciente: document.getElementById('nombre_paciente').value,
+            apellido_paciente: document.getElementById('apellido_paciente').value,
+            especialista: document.getElementById('id_especialista').value,
+            fecha: document.getElementById('id_fecha').value,
+            hora: horaSeleccionada + ':00',
+            motivo: document.getElementById('id_motivo').value
+        };
+        
+        const url = turnoEnEdicion ? `/turnos/editar/${turnoEnEdicion}/` : '{% url "crear_turno" %}';
+        
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify(formData)
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                alert(data.message);
+                location.reload();
+            } else {
+                alert('Error: ' + data.error);
+            }
+        } catch (error) {
+            alert('Error al guardar turno: ' + error);
+        }
+    });
+    
+    // Limpiar formulario
+    function limpiarFormulario() {
+        document.getElementById('turnoForm').reset();
+        turnoEnEdicion = null;
+        horaSeleccionada = null;
+        const motivoField = document.getElementById('id_motivo');
+        motivoField.disabled = true;
+        motivoField.placeholder = '⏰ Primero seleccione un horario arriba';
+        motivoField.style.backgroundColor = '';
+        motivoField.style.borderColor = '';
+        document.querySelector('#turnoForm button[type="submit"]').textContent = 'Guardar Turno';
+        document.querySelectorAll('.horario-btn').forEach(btn => {
+            btn.classList.remove('selected');
+        });
+    }
+    
+    async function confirmarTurno(id) {
+        if (!confirm('¿Confirmar este turno?')) return;
+        
+        try {
+            const response = await fetch(`/turnos/confirmar/${id}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            });
+            
+            const data = await response.json();
+            if (data.success) {
+                alert(data.message);
+                location.reload();
+            } else {
+                alert('Error: ' + data.error);
+            }
+        } catch (error) {
+            alert('Error: ' + error);
+        }
+    }
+    
+    async function cancelarTurno(id) {
+        if (!confirm('¿Cancelar este turno?')) return;
+        
+        try {
+            const response = await fetch(`/turnos/cancelar/${id}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            });
+            
+            const data = await response.json();
+            if (data.success) {
+                alert(data.message);
+                location.reload();
+            } else {
+                alert('Error: ' + data.error);
+            }
+        } catch (error) {
+            alert('Error: ' + error);
+        }
+    }
+    
+    async function eliminarTurno(id) {
+        if (!confirm('¿Eliminar definitivamente este turno?')) return;
+        
+        try {
+            const response = await fetch(`/turnos/eliminar/${id}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            });
+            
+            const data = await response.json();
+            if (data.success) {
+                alert(data.message);
+                location.reload();
+            } else {
+                alert('Error: ' + data.error);
+            }
+        } catch (error) {
+            alert('Error: ' + error);
+        }
+    }
+</script>
+{% endblock %}

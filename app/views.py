@@ -4,8 +4,8 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.db import transaction, IntegrityError
 # Importar todas las clases de formularios desde forms.py
-from .forms import LoginForm, RegisterForm, EntrevistaForm, PacienteForm, EstadisticaPacienteForm, ObservacionForm, TestimonioForm, PerfilUpdateForm, InformeInterdisciplinarioForm, SeccionInformeForm
-from .models import Entrevista, EstadoPaciente, Perfil, Paciente, Observacion, Testimonio, Turno, EstadisticaPaciente, InformeInterdisciplinario, SeccionInforme
+from .forms import LoginForm, RegisterForm, EntrevistaForm, PacienteForm, EstadisticaPacienteForm, ObservacionForm, TestimonioForm, PerfilUpdateForm, InformeInterdisciplinarioForm, TurnoFormGestion, SeccionInformeForm
+from .models import Entrevista, EstadoPaciente, Perfil, Paciente, Observacion, Testimonio, Turno, EstadisticaPaciente, Especialista, STATUS_CHOICES, InformeInterdisciplinario, SeccionInforme
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView
@@ -830,3 +830,160 @@ def eliminar_seccion_informe(request, seccion_id):
     except AttributeError:
         messages.error(request, "Error: Tu cuenta no tiene un perfil asociado.")
         return redirect('lista_informes')
+
+
+# ============== GESTIÓN DE TURNOS ==============
+
+@login_required
+@solo_terapeutas
+def gestion_turnos(request):
+    """Vista principal para gestionar turnos"""
+    turnos = Turno.objects.all().select_related('paciente', 'especialista').order_by('-fecha', '-hora')
+    especialistas = Especialista.objects.all()
+    
+    context = {
+        'turnos': turnos,
+        'especialistas': especialistas,
+        'status_choices': STATUS_CHOICES,
+    }
+    return render(request, 'Turnos/gestion_turnos.html', context)
+
+@login_required
+@solo_terapeutas
+def crear_turno(request):
+    """Crear un nuevo turno"""
+    if request.method == 'POST':
+        form = TurnoFormGestion(request.POST)
+        if form.is_valid():
+            try:
+                turno = form.save()
+                messages.success(request, f'Turno creado exitosamente para {turno.paciente.nombre} {turno.paciente.apellido}')
+                return redirect('gestion_turnos')
+            except Exception as e:
+                messages.error(request, f'Error al crear el turno: {str(e)}')
+        else:
+            for error in form.errors.values():
+                messages.error(request, error)
+    else:
+        form = TurnoFormGestion()
+    
+    return render(request, 'Turnos/gestion_turnos.html', {
+        'form': form,
+        'turnos': Turno.objects.all().select_related('paciente', 'especialista').order_by('-fecha', '-hora'),
+        'especialistas': Especialista.objects.all(),
+        'status_choices': STATUS_CHOICES,
+    })
+
+@login_required
+@solo_terapeutas
+def editar_turno(request, pk):
+    """Editar un turno existente"""
+    turno = get_object_or_404(Turno, pk=pk)
+    
+    if request.method == 'POST':
+        form = TurnoFormGestion(request.POST, instance=turno)
+        if form.is_valid():
+            try:
+                form.save()
+                messages.success(request, 'Turno actualizado exitosamente')
+                return redirect('gestion_turnos')
+            except Exception as e:
+                messages.error(request, f'Error al actualizar el turno: {str(e)}')
+        else:
+            for error in form.errors.values():
+                messages.error(request, error)
+    else:
+        form = TurnoFormGestion(instance=turno)
+    
+    return render(request, 'Turnos/gestion_turnos.html', {
+        'form': form,
+        'turno_edit': turno,
+        'turnos': Turno.objects.all().select_related('paciente', 'especialista').order_by('-fecha', '-hora'),
+        'especialistas': Especialista.objects.all(),
+        'status_choices': STATUS_CHOICES,
+    })
+
+@login_required
+@solo_terapeutas
+def confirmar_turno(request, pk):
+    """Confirmar un turno"""
+    turno = get_object_or_404(Turno, pk=pk)
+    turno.status = 'CONFIRMED'
+    turno.save()
+    messages.success(request, f'Turno confirmado para {turno.paciente.nombre} {turno.paciente.apellido}')
+    return redirect('gestion_turnos')
+
+@login_required
+@solo_terapeutas
+def cancelar_turno(request, pk):
+    """Cancelar un turno"""
+    turno = get_object_or_404(Turno, pk=pk)
+    turno.status = 'CANCELLED'
+    turno.save()
+    messages.warning(request, f'Turno cancelado para {turno.paciente.nombre} {turno.paciente.apellido}')
+    return redirect('gestion_turnos')
+
+@login_required
+@solo_terapeutas
+def eliminar_turno(request, pk):
+    """Eliminar un turno"""
+    turno = get_object_or_404(Turno, pk=pk)
+    paciente_nombre = f"{turno.paciente.nombre} {turno.paciente.apellido}"
+    turno.delete()
+    messages.success(request, f'Turno eliminado para {paciente_nombre}')
+    return redirect('gestion_turnos')
+
+
+# ============== GESTIÓN DE ENTREVISTAS ==============
+
+@login_required
+@solo_terapeutas
+def gestion_entrevistas(request):
+    """Vista para gestionar entrevistas de admisión"""
+    entrevistas = Entrevista.objects.all().select_related('paciente', 'especialista_asignado').order_by('-fecha', '-hora')
+    especialistas = Especialista.objects.all()
+    
+    context = {
+        'entrevistas': entrevistas,
+        'especialistas': especialistas,
+    }
+    return render(request, 'entrevistas/gestion_entrevistas.html', context)
+
+@login_required
+@solo_terapeutas
+def ver_entrevista(request, pk):
+    """Ver detalles de una entrevista"""
+    entrevista = get_object_or_404(Entrevista, pk=pk)
+    especialistas = Especialista.objects.all()
+    
+    context = {
+        'entrevista': entrevista,
+        'especialistas': especialistas,
+    }
+    return render(request, 'entrevistas/ver_entrevista.html', context)
+
+@login_required
+@solo_terapeutas
+def derivar_entrevista(request, pk):
+    """Derivar una entrevista a un especialista"""
+    if request.method == 'POST':
+        entrevista = get_object_or_404(Entrevista, pk=pk)
+        especialista_id = request.POST.get('especialista_id')
+        nuevo_estado = request.POST.get('estado')
+        observaciones = request.POST.get('observaciones', '')
+        
+        if especialista_id:
+            especialista = get_object_or_404(Especialista, pk=especialista_id)
+            entrevista.especialista_asignado = especialista
+        
+        if nuevo_estado:
+            entrevista.estado = nuevo_estado
+        
+        if observaciones:
+            entrevista.observaciones = observaciones
+        
+        entrevista.save()
+        messages.success(request, 'Entrevista actualizada exitosamente')
+        return redirect('gestion_entrevistas')
+    
+    return redirect('ver_entrevista', pk=pk)

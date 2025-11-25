@@ -2,7 +2,7 @@ from django.forms import ModelForm, NumberInput
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User 
-from .models import Perfil, Entrevista, Paciente, EstadisticaPaciente, Observacion, Testimonio, Turno, InformeInterdisciplinario, Especialistas, SeccionInforme
+from .models import Perfil, Entrevista, Paciente, EstadisticaPaciente, Observacion, Testimonio, Turno, InformeInterdisciplinario, Especialistas, Especialista, SeccionInforme
 from datetime import date
 from django.forms.widgets import DateInput, Select, Textarea
 from django.contrib.auth import get_user_model
@@ -247,6 +247,52 @@ class TurnoForm(forms.ModelForm):
             'fecha': forms.DateInput(attrs={'type': 'date'}),
             'hora': forms.TimeInput(attrs={'type': 'time'}),
         }
+
+class TurnoFormGestion(forms.ModelForm):
+    """Formulario para gestión completa de turnos con especialista y estado"""
+    class Meta:
+        model = Turno
+        fields = ['paciente', 'especialista', 'fecha', 'hora', 'motivo', 'status']
+        widgets = {
+            'paciente': forms.Select(attrs={'class': 'form-control'}),
+            'especialista': forms.Select(attrs={'class': 'form-control'}),
+            'fecha': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'hora': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
+            'motivo': forms.TextInput(attrs={'class': 'form-control'}),
+            'status': forms.Select(attrs={'class': 'form-control'}),
+        }
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        fecha = cleaned_data.get('fecha')
+        hora = cleaned_data.get('hora')
+        especialista = cleaned_data.get('especialista')
+        status = cleaned_data.get('status')
+        
+        if fecha and hora:
+            from datetime import datetime
+            turno_datetime = datetime.combine(fecha, hora)
+            if turno_datetime < datetime.now():
+                raise forms.ValidationError("No se puede agendar un turno en el pasado.")
+        
+        # Validar disponibilidad solo si el estado es PENDING o CONFIRMED
+        if status in ['PENDING', 'CONFIRMED'] and fecha and hora and especialista:
+            conflicting = Turno.objects.filter(
+                especialista=especialista,
+                fecha=fecha,
+                hora=hora
+            ).exclude(status__in=['CANCELLED', 'COMPLETED'])
+            
+            if self.instance.pk:
+                conflicting = conflicting.exclude(pk=self.instance.pk)
+            
+            if conflicting.exists():
+                raise forms.ValidationError(
+                    f"El especialista {especialista.nombre} ya tiene un turno en esta fecha y hora."
+                )
+        
+        return cleaned_data
+
 
 class TestimonioForm(forms.ModelForm):
     class Meta:

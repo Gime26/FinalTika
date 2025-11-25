@@ -98,19 +98,76 @@ class HistorialPaciente(models.Model):
         return f"Historial de {self.paciente.nombre} {self.paciente.apellido}"
     
 
-# 🩺 TURNOS
-class Turno(models.Model):
-    id_turno = models.IntegerField(db_column='ID_Turno', primary_key=True)
-    paciente = models.ForeignKey(Paciente, models.DO_NOTHING, db_column='ID_Paciente')
-    fecha = models.DateField()
-    hora = models.TimeField()
-    motivo = models.CharField(max_length=200)
+# 🩺 TURNOS Y ESPECIALISTAS
+STATUS_CHOICES = [
+    ('PENDING', 'Pendiente'),
+    ('CONFIRMED', 'Confirmado'),
+    ('CANCELLED', 'Cancelado'),
+    ('COMPLETED', 'Completado'),
+]
 
+class Especialista(models.Model):
+    """Modelo para especialistas/profesionales"""
+    nombre = models.CharField(max_length=100, verbose_name="Nombre Completo")
+    especialidad = models.CharField(max_length=100, verbose_name="Especialidad")
+    matricula = models.CharField(max_length=20, unique=True, verbose_name="Matrícula", null=True, blank=True)
+    email = models.EmailField(blank=True, null=True)
+    telefono = models.CharField(max_length=20, blank=True, null=True)
+    
     class Meta:
-        managed = False
-
+        verbose_name = "Especialista"
+        verbose_name_plural = "Especialistas"
+    
     def __str__(self):
-        return f"Turno {self.id_turno} - Paciente {self.paciente}"
+        return f"{self.nombre} - {self.especialidad}"
+
+class Turno(models.Model):
+    """Modelo de turno con validación y estados"""
+    paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE, verbose_name="Paciente")
+    especialista = models.ForeignKey(Especialista, on_delete=models.CASCADE, verbose_name="Especialista", null=True, blank=True)
+    fecha = models.DateField(verbose_name="Fecha")
+    hora = models.TimeField(verbose_name="Hora")
+    motivo = models.CharField(max_length=200, verbose_name="Motivo", blank=True)
+    status = models.CharField(
+        max_length=10,
+        choices=STATUS_CHOICES,
+        default='PENDING',
+        verbose_name="Estado"
+    )
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    
+    class Meta:
+        verbose_name = "Turno"
+        verbose_name_plural = "Turnos"
+        unique_together = ('especialista', 'fecha', 'hora')
+        ordering = ['fecha', 'hora']
+    
+    def __str__(self):
+        return f"Turno de {self.paciente.nombre} con {self.especialista.nombre} - {self.fecha} {self.hora}"
+    
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        from django.utils import timezone
+        import datetime
+        
+        # Validar que no sea fecha/hora pasada
+        turno_datetime = datetime.datetime.combine(self.fecha, self.hora)
+        if turno_datetime < datetime.datetime.now():
+            raise ValidationError("No se puede agendar un turno en el pasado.")
+        
+        # Validar disponibilidad (solo para turnos pendientes o confirmados)
+        if self.status in ['PENDING', 'CONFIRMED']:
+            conflicting = Turno.objects.filter(
+                especialista=self.especialista,
+                fecha=self.fecha,
+                hora=self.hora
+            ).exclude(status__in=['CANCELLED', 'COMPLETED'])
+            
+            if self.pk:
+                conflicting = conflicting.exclude(pk=self.pk)
+            
+            if conflicting.exists():
+                raise ValidationError(f"El especialista {self.especialista.nombre} ya tiene un turno en esta fecha y hora.")
     
 
 # 🏥 CENTROS TERAPÉUTICOS

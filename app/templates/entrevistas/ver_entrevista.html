@@ -1,0 +1,304 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <a href="{% url 'gestion_entrevistas' %}" class="btn btn-secondary mb-3">
+                <i class="fas fa-arrow-left"></i> Volver
+            </a>
+            <h2 style="color: #9b59b6; font-weight: 700;">
+                <i class="fas fa-file-alt"></i> Detalles de Entrevista #{{ entrevista.id_entrevista }}
+            </h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Información del Paciente -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header" style="background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%); color: white;">
+                    <h5 class="mb-0"><i class="fas fa-user"></i> Información del Paciente</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-borderless">
+                        <tr>
+                            <th width="40%">Nombre:</th>
+                            <td><strong>{{ entrevista.paciente.nombre }} {{ entrevista.paciente.apellido }}</strong></td>
+                        </tr>
+                        <tr>
+                            <th>DNI:</th>
+                            <td>{{ entrevista.paciente.dni_paciente }}</td>
+                        </tr>
+                        <tr>
+                            <th>Fecha Nacimiento:</th>
+                            <td>
+                                {% if entrevista.paciente.fecha_nacimiento %}
+                                {{ entrevista.paciente.fecha_nacimiento|date:"d/m/Y" }}
+                                {% else %}
+                                No especificada
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Teléfono:</th>
+                            <td>
+                                {% if entrevista.paciente.telefono %}
+                                <a href="tel:{{ entrevista.paciente.telefono }}">{{ entrevista.paciente.telefono }}</a>
+                                {% else %}
+                                No especificado
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Email:</th>
+                            <td>
+                                {% if entrevista.paciente.email %}
+                                <a href="mailto:{{ entrevista.paciente.email }}">{{ entrevista.paciente.email }}</a>
+                                {% else %}
+                                No especificado
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información de la Entrevista -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header" style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white;">
+                    <h5 class="mb-0"><i class="fas fa-calendar-check"></i> Datos de la Entrevista</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-borderless">
+                        <tr>
+                            <th width="40%">Fecha Propuesta:</th>
+                            <td><strong>{{ entrevista.fecha|date:"d/m/Y" }}</strong></td>
+                        </tr>
+                        <tr>
+                            <th>Hora Propuesta:</th>
+                            <td><strong>{{ entrevista.hora|time:"H:i" }}</strong></td>
+                        </tr>
+                        <tr>
+                            <th>Estado:</th>
+                            <td>
+                                {% if entrevista.estado == 'pendiente' %}
+                                <span class="badge bg-warning text-dark">
+                                    <i class="fas fa-clock"></i> Pendiente
+                                </span>
+                                {% elif entrevista.estado == 'en_revision' %}
+                                <span class="badge bg-info">
+                                    <i class="fas fa-eye"></i> En Revisión
+                                </span>
+                                {% elif entrevista.estado == 'derivada' %}
+                                <span class="badge bg-success">
+                                    <i class="fas fa-check"></i> Derivada
+                                </span>
+                                {% elif entrevista.estado == 'contactada' %}
+                                <span class="badge bg-primary">
+                                    <i class="fas fa-phone"></i> Contactada
+                                </span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Especialista Asignado:</th>
+                            <td>
+                                {% if entrevista.especialista_asignado %}
+                                <span class="badge bg-secondary">
+                                    <i class="fas fa-user-md"></i> {{ entrevista.especialista_asignado.nombre }}
+                                </span>
+                                <br><small class="text-muted">{{ entrevista.especialista_asignado.especialidad }}</small>
+                                {% else %}
+                                <span class="text-muted">Sin asignar</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Fecha de Recepción:</th>
+                            <td>
+                                {% if entrevista.fecha_creacion %}
+                                {{ entrevista.fecha_creacion|date:"d/m/Y H:i" }}
+                                {% else %}
+                                -
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Motivo de Consulta -->
+    <div class="row">
+        <div class="col-12 mb-4">
+            <div class="card">
+                <div class="card-header" style="background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); color: white;">
+                    <h5 class="mb-0"><i class="fas fa-notes-medical"></i> Información Completa de la Entrevista</h5>
+                </div>
+                <div class="card-body">
+                    <div style="white-space: pre-wrap; background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #9b59b6;">
+                        {{ entrevista.motivo_consulta }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Observaciones -->
+    {% if entrevista.observaciones %}
+    <div class="row">
+        <div class="col-12 mb-4">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="fas fa-comment-dots"></i> Observaciones de Derivación</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-0">{{ entrevista.observaciones }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Acciones -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="mb-3">Acciones Rápidas</h5>
+                    <button class="btn btn-success btn-lg me-2" onclick="abrirModalDerivar({{ entrevista.id_entrevista }})">
+                        <i class="fas fa-share"></i> Derivar/Actualizar
+                    </button>
+                    {% if entrevista.paciente.telefono %}
+                    <a href="https://wa.me/54{{ entrevista.paciente.telefono }}?text=Hola%20{{ entrevista.paciente.nombre }},%20te%20contactamos%20desde%20TIKA%20respecto%20a%20tu%20entrevista%20de%20admisión." 
+                       target="_blank" class="btn btn-success btn-lg me-2">
+                        <i class="fab fa-whatsapp"></i> WhatsApp
+                    </a>
+                    {% endif %}
+                    <a href="{% url 'gestion_entrevistas' %}" class="btn btn-secondary btn-lg">
+                        <i class="fas fa-arrow-left"></i> Volver al Listado
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Derivar (igual que en gestion_entrevistas.html) -->
+<div class="modal fade" id="modalDerivar" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%); color: white;">
+                <h5 class="modal-title">
+                    <i class="fas fa-share"></i> Derivar/Actualizar Entrevista
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="entrevista_id" value="{{ entrevista.id_entrevista }}">
+                
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Especialista:</label>
+                    <select id="especialista_id" class="form-select" required>
+                        <option value="">Seleccione un especialista</option>
+                        {% for esp in especialistas %}
+                        <option value="{{ esp.id }}" {% if entrevista.especialista_asignado.id == esp.id %}selected{% endif %}>
+                            {{ esp.nombre }} - {{ esp.especialidad }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Estado:</label>
+                    <select id="estado" class="form-select" required>
+                        <option value="en_revision" {% if entrevista.estado == 'en_revision' %}selected{% endif %}>En Revisión</option>
+                        <option value="derivada" {% if entrevista.estado == 'derivada' %}selected{% endif %}>Derivada</option>
+                        <option value="contactada" {% if entrevista.estado == 'contactada' %}selected{% endif %}>Contactada</option>
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Observaciones:</label>
+                    <textarea id="observaciones" class="form-control" rows="3" 
+                              placeholder="Notas adicionales sobre la derivación...">{{ entrevista.observaciones }}</textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" onclick="guardarDerivacion()">
+                    <i class="fas fa-save"></i> Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function abrirModalDerivar(id) {
+    const modal = new bootstrap.Modal(document.getElementById('modalDerivar'));
+    modal.show();
+}
+
+function guardarDerivacion() {
+    const entrevistaId = document.getElementById('entrevista_id').value;
+    const especialistaId = document.getElementById('especialista_id').value;
+    const estado = document.getElementById('estado').value;
+    const observaciones = document.getElementById('observaciones').value;
+    
+    if (!especialistaId) {
+        alert('Por favor seleccione un especialista');
+        return;
+    }
+    
+    fetch(`/entrevistas/derivar/${entrevistaId}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({
+            especialista_id: especialistaId,
+            estado: estado,
+            observaciones: observaciones
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Derivación actualizada correctamente');
+            location.reload();
+        } else {
+            alert('Error: ' + data.error);
+        }
+    })
+    .catch(error => {
+        alert('Error al guardar: ' + error);
+    });
+}
+</script>
+
+<style>
+.card {
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border: none;
+    margin-bottom: 20px;
+}
+
+.table th {
+    font-weight: 600;
+    color: #555;
+}
+
+.badge {
+    font-size: 0.9rem;
+    padding: 8px 14px;
+}
+</style>
+{% endblock %}

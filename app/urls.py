@@ -60,6 +60,18 @@ urlpatterns = [
     path("dashboard/estadistica/", views.estadistica_view, name="estadistica"),
     path("dashboard/estadistica/agregar/", views.estadistica_agregar, name="estadistica_agregar"),
     
+    # Gestión de Turnos
+    path('turnos/gestion/', views.gestion_turnos, name='gestion_turnos'),
+    path('turnos/crear/', views.crear_turno, name='crear_turno'),
+    path('turnos/editar/<int:pk>/', views.editar_turno, name='editar_turno'),
+    path('turnos/confirmar/<int:pk>/', views.confirmar_turno, name='confirmar_turno'),
+    path('turnos/cancelar/<int:pk>/', views.cancelar_turno, name='cancelar_turno'),
+    path('turnos/eliminar/<int:pk>/', views.eliminar_turno, name='eliminar_turno'),
+    
+    # Gestión de Entrevistas de Admisión
+    path('entrevistas/gestion/', views.gestion_entrevistas, name='gestion_entrevistas'),
+    path('entrevistas/ver/<int:pk>/', views.ver_entrevista, name='ver_entrevista'),
+    path('entrevistas/derivar/<int:pk>/', views.derivar_entrevista, name='derivar_entrevista'),
     
 ]    
     

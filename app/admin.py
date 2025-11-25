@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import (
     Paciente, Entrevista, Perfil, EstadoPaciente, HistorialPaciente, 
-    Turno, Centrosterapeuticos, Detallepagos, Especialidades, Especialistas, Observacion, Testimonio
+    Turno, Especialista, Centrosterapeuticos, Detallepagos, Especialidades, Especialistas, Observacion, Testimonio
 )
 
 # ----------------------
@@ -77,13 +77,20 @@ class HistorialPacienteAdmin(admin.ModelAdmin):
     search_fields = ('paciente__nombre', 'paciente__apellido', 'observaciones')
 
 # ----------------------
-# TURNOS
+# TURNOS Y ESPECIALISTAS
 # ----------------------
+@admin.register(Especialista)
+class EspecialistaAdmin(admin.ModelAdmin):
+    list_display = ('nombre', 'especialidad', 'matricula', 'email', 'telefono')
+    search_fields = ('nombre', 'especialidad', 'matricula', 'email')
+    list_filter = ('especialidad',)
+
 @admin.register(Turno)
 class TurnoAdmin(admin.ModelAdmin):
-    list_display = ('id_turno', 'paciente', 'fecha', 'hora', 'motivo')
-    search_fields = ('paciente__nombre', 'paciente__apellido', 'motivo')
-    list_filter = ('fecha',)
+    list_display = ('id', 'paciente', 'especialista', 'fecha', 'hora', 'status', 'motivo')
+    search_fields = ('paciente__nombre', 'paciente__apellido', 'especialista__nombre', 'motivo')
+    list_filter = ('fecha', 'status', 'especialista')
+    ordering = ('-fecha', '-hora')
 
 # ----------------------
 # CENTROS TERAPÉUTICOS
