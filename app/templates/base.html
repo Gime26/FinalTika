@@ -46,6 +46,12 @@
   <a href="{% url 'estadistica' %}" class="sidebar-link {% if 'estadistica' in request.path %}active{% endif %}">
     <i class="bi bi-bar-chart"></i> Estadísticas
   </a>
+  <a href="{% url 'gestion_turnos' %}" class="sidebar-link {% if 'turnos' in request.path %}active{% endif %}">
+    <i class="bi bi-calendar-event"></i> Turnos
+  </a>
+  <a href="{% url 'gestion_entrevistas' %}" class="sidebar-link {% if 'entrevistas' in request.path %}active{% endif %}">
+    <i class="bi bi-clipboard-check"></i> Entrevistas
+  </a>
   <a href="{% url 'lista_observaciones' %}" class="sidebar-link {% if 'observaciones' in request.path %}active{% endif %}">
     <i class="bi bi-journal-medical"></i> Observaciones
   </a>

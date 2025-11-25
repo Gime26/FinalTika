@@ -38,9 +38,9 @@ class PacienteAdmin(admin.ModelAdmin):
 # ----------------------
 @admin.register(Entrevista)
 class EntrevistaAdmin(admin.ModelAdmin):
-    list_display = ('id_entrevista', 'paciente', 'fecha', 'hora', 'motivo_consulta')
+    list_display = ('id', 'paciente', 'fecha', 'hora', 'motivo_consulta', 'estado')
     search_fields = ('paciente__nombre', 'paciente__apellido')
-    list_filter = ('fecha',)
+    list_filter = ('fecha', 'estado')
 
 # ----------------------
 # PERFIL USUARIO

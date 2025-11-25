@@ -1,0 +1,233 @@
+{% load static %}
+<section id="contacto" class="content contact">
+    <h2 class="title">CONTACTO</h2>
+    
+    <div class="contact-grid">
+        <!-- Columna Izquierda: Mapa + Info -->
+        <div class="left-side">
+            <!-- Mapa -->
+            <a href="https://www.google.com/maps/search/?api=1&query=Bolivar+142,+Salta+Capital,+Argentina" 
+               target="_blank" 
+               class="map-box">
+                <img src="{% static 'img/mapa.png' %}" alt="Mapa de ubicación">
+                <div class="map-pin"><i class="fas fa-map-marker-alt"></i></div>
+            </a>
+        </div>
+
+        <!-- Columna Derecha: Formulario -->
+        <div class="right-side">
+            <h4>¿Estás interesado en formar parte de TIKA?</h4>
+            <p class="form-subtitle">Comunicate con nosotros</p>
+            
+            <form class="contact-form" action="#" method="POST">
+                <input type="text" name="nombre" placeholder="Nombre" required>
+                <input type="email" name="email" placeholder="E-mail" required>
+                <input type="tel" name="telefono" placeholder="Teléfono">
+                <textarea name="mensaje" placeholder="Mensaje" rows="6"></textarea>
+                <button type="submit">Enviar</button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<style>
+    #contacto {
+        padding: 2.5rem 0;
+        background-image: url("{% static 'img/juguetes.jpg' %}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    #contacto::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.3);
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    #contacto .title {
+        text-align: center;
+        font-size: 2rem;
+        font-weight: 700;
+        color: #f3e5f5;
+        text-shadow: 2px 2px 4px rgba(155, 89, 182, 0.4);
+        margin-bottom: 2rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .contact-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        align-items: center;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Columna Izquierda */
+    .left-side {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .map-box {
+        display: block;
+        position: relative;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(155, 89, 182, 0.2);
+        transition: all 0.4s ease;
+        height: 500px;
+    }
+
+    .map-box:hover {
+        box-shadow: 0 15px 40px rgba(155, 89, 182, 0.35);
+        transform: translateY(-5px);
+    }
+
+    .map-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .map-pin {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 50px;
+        height: 50px;
+        background: rgba(220, 53, 69, 0.9);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 4px 15px rgba(231, 76, 60, 0.5); }
+        50% { transform: translate(-50%, -50%) scale(1.15); box-shadow: 0 6px 25px rgba(231, 76, 60, 0.7); }
+    }
+
+    /* Columna Derecha */
+    .right-side {
+        background: white;
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        height: fit-content;
+    }
+
+    .right-side h4 {
+        color: #333;
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-subtitle {
+        color: #666;
+        font-size: 0.95rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .contact-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+        padding: 0.9rem;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        font-size: 0.95rem;
+        background: rgba(155, 89, 182, 0.04);
+        transition: all 0.3s;
+    }
+
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+        outline: none;
+        border-color: #9b59b6;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(155, 89, 182, 0.1);
+    }
+
+    .contact-form textarea {
+        resize: vertical;
+        font-family: inherit;
+    }
+
+    .contact-form button {
+        background: #90c290;
+        color: white;
+        border: none;
+        padding: 1rem;
+        border-radius: 10px;
+        font-size: 1.05rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .contact-form button:hover {
+        background: #75a875;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(144, 194, 144, 0.3);
+    }
+
+    @media (max-width: 992px) {
+        .contact-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .map-box {
+            height: 250px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        #contacto {
+            padding: 2rem 0;
+        }
+
+        .contact-grid {
+            padding: 0 1rem;
+        }
+
+        .map-box {
+            height: 220px;
+        }
+
+        .info-card,
+        .right-side {
+            padding: 1.5rem;
+        }
+    }
+</style>
+

@@ -26,15 +26,24 @@ class Paciente(models.Model):
 
  #ESTO ACABO DE AUMENTAR DE 28/11
 class Entrevista(models.Model):
-    id_entrevista = models.AutoField(primary_key=True)
+    ESTADO_CHOICES = [
+        ('pendiente', 'Pendiente de Revisión'),
+        ('en_revision', 'En Revisión'),
+        ('derivada', 'Derivada'),
+        ('contactada', 'Contactada'),
+    ]
+    
     paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
     fecha = models.DateField()
     hora = models.TimeField()
     motivo_consulta = models.TextField()
-    # Otros campos relevantes
+    estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='pendiente')
+    especialista_asignado = models.ForeignKey('Especialista', on_delete=models.SET_NULL, null=True, blank=True, related_name='entrevistas_asignadas')
+    fecha_creacion = models.DateTimeField(auto_now_add=True, null=True)
+    observaciones = models.TextField(blank=True, default='')
 
     def __str__(self):
-        return f"Entrevista {self.id_entrevista} - Paciente {self.paciente}"
+        return f"Entrevista {self.id} - Paciente {self.paciente}"
 
 # 👤 PERFIL DE USUARIO
 # models.py
@@ -125,8 +134,8 @@ class Turno(models.Model):
     """Modelo de turno con validación y estados"""
     paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE, verbose_name="Paciente")
     especialista = models.ForeignKey(Especialista, on_delete=models.CASCADE, verbose_name="Especialista", null=True, blank=True)
-    fecha = models.DateField(verbose_name="Fecha")
-    hora = models.TimeField(verbose_name="Hora")
+    fecha = models.DateField(verbose_name="Fecha", db_column='date')
+    hora = models.TimeField(verbose_name="Hora", db_column='time')
     motivo = models.CharField(max_length=200, verbose_name="Motivo", blank=True)
     status = models.CharField(
         max_length=10,

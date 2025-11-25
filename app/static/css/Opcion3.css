@@ -201,40 +201,40 @@ p { /* Estilo del párrafo de cada contenedor*/
     gap: 20px; /* Espacio entre las cajas */
 }
 
-.box-container .box{
-    height: 10rem; /* Altura de las cajas */
-    width: 17rem; /* Ancho de las cajas */  
-    background: #A99B72; /* Color de fondo de las cajas */
-    text-align: center; /* Centra el texto dentro de las cajas */
-    border-radius: 1rem; /* Bordes redondeados */
-    font-size: 20px; /* Tamaño del título */
-    margin: 2rem; /* Espacio debajo del título */
-    text-transform: uppercase; /* Título en mayúsculas */
-}
+/* .box-container .box{
+    height: 10rem;
+    width: 17rem;
+    background: #A99B72;
+    text-align: center;
+    border-radius: 1rem;
+    font-size: 20px;
+    margin: 2rem;
+    text-transform: uppercase;
+} */
 
-.box-container .box i {
-    height: 3rem; /* Altura del icono */
-    width: 3rem; /* Ancho del icono */
-    line-height: 3rem; /* Centra el icono verticalmente */
-    text-align: center; /* Centra el icono horizontalmente */
-    border-radius: 50%; /* Bordes redondeados para el icono */
-    color: #fff; /* Color del icono */
-    background: #b31c7b; /* Color de fondo del icono */
-    font-size: 2rem; /* Tamaño del icono */
-    margin: 1rem 0; /* Espacio alrededor del icono */
-}
+/* .box-container .box i {
+    height: 3rem;
+    width: 3rem;
+    line-height: 3rem;
+    text-align: center;
+    border-radius: 50%;
+    color: #fff;
+    background: #b31c7b;
+    font-size: 2rem;
+    margin: 1rem 0;
+} */
 
-.box-container .box h3 {
-    font-size: 1.3; /* Tamaño del título dentro de la caja */
-    color: #500202; /* Color del texto del título */;
-}
+/* .box-container .box h3 {
+    font-size: 1.3;
+    color: #500202;
+} */
 
-.box:hover {
-    background: #e782db; /* Cambia el color de fondo al pasar el ratón */
+/* .box:hover {
+    background: #e782db;
 }
 .box h3:hover {
-    color: #fff; /* Cambia el color del texto al pasar el ratón */
-}
+    color: #fff;
+} */
 
 .content.services { /* Estilo para la página de "Servicios" */
     min-height: 100vh;
@@ -252,17 +252,17 @@ p { /* Estilo del párrafo de cada contenedor*/
 .descripcion-oculta {
    display: none;
 }
-.box {
-  cursor: wait; /*para indicar que es clicable */
+/* .box {
+  cursor: wait;
   padding: 30px; 
   border-radius: 10px; 
-  transition: transform 0.3s ease-in-out; /* Transición suave para el efecto hsover */
+  transition: transform 0.3s ease-in-out;
 }
 
 .box:hover {
     height: auto;
     transform: translateY(-5px); 
-}
+} */
 
 
 .content.test{ /* Estilo para la página de "Test" */

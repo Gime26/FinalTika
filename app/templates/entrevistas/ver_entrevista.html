@@ -9,7 +9,7 @@
                 <i class="fas fa-arrow-left"></i> Volver
             </a>
             <h2 style="color: #9b59b6; font-weight: 700;">
-                <i class="fas fa-file-alt"></i> Detalles de Entrevista #{{ entrevista.id_entrevista }}
+                <i class="fas fa-file-alt"></i> Detalles de Entrevista #{{ entrevista.id }}
             </h2>
         </div>
     </div>
@@ -171,7 +171,7 @@
             <div class="card">
                 <div class="card-body text-center">
                     <h5 class="mb-3">Acciones Rápidas</h5>
-                    <button class="btn btn-success btn-lg me-2" onclick="abrirModalDerivar({{ entrevista.id_entrevista }})">
+                    <button class="btn btn-success btn-lg me-2" onclick="abrirModalDerivar({{ entrevista.id }})">
                         <i class="fas fa-share"></i> Derivar/Actualizar
                     </button>
                     {% if entrevista.paciente.telefono %}
@@ -200,7 +200,7 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <input type="hidden" id="entrevista_id" value="{{ entrevista.id_entrevista }}">
+                <input type="hidden" id="entrevista_id" value="{{ entrevista.id }}">
                 
                 <div class="mb-3">
                     <label class="form-label fw-bold">Especialista:</label>

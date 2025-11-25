@@ -1,0 +1,498 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrevista Integral - TIKA</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-purple: #9b59b6;
+            --dark-purple: #8e44ad;
+            --light-purple: #e9d8f4;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+
+        .wizard-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .wizard-header {
+            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--dark-purple) 100%);
+            color: white;
+            padding: 2.5rem;
+            text-align: center;
+        }
+
+        .wizard-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .wizard-header p {
+            opacity: 0.95;
+            font-size: 1.1rem;
+        }
+
+        /* Progress Steps */
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            padding: 2rem;
+            background: #f8f9fa;
+            position: relative;
+        }
+
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 5%;
+            right: 5%;
+            height: 3px;
+            background: #dee2e6;
+            z-index: 1;
+        }
+
+        .step {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            flex: 1;
+        }
+
+        .step-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid #dee2e6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.5rem;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #6c757d;
+            transition: all 0.3s ease;
+        }
+
+        .step.active .step-circle {
+            background: var(--primary-purple);
+            border-color: var(--primary-purple);
+            color: white;
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(155, 89, 182, 0.4);
+        }
+
+        .step.completed .step-circle {
+            background: var(--dark-purple);
+            border-color: var(--dark-purple);
+            color: white;
+        }
+
+        .step.completed .step-circle::before {
+            content: '✓';
+        }
+
+        .step-label {
+            font-size: 0.85rem;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .step.active .step-label {
+            color: var(--primary-purple);
+            font-weight: 600;
+        }
+
+        /* Form Content */
+        .wizard-body {
+            padding: 3rem;
+        }
+
+        .step-content {
+            display: none;
+        }
+
+        .step-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .step-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--dark-purple);
+            margin-bottom: 1rem;
+        }
+
+        .step-description {
+            color: #6c757d;
+            margin-bottom: 2rem;
+            font-size: 1.05rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control,
+        .form-select {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 0 0.2rem rgba(155, 89, 182, 0.15);
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+        }
+
+        /* Buttons */
+        .wizard-footer {
+            padding: 2rem 3rem;
+            background: #f8f9fa;
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-prev {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-prev:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .btn-next,
+        .btn-submit {
+            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--dark-purple) 100%);
+            color: white;
+        }
+
+        .btn-next:hover,
+        .btn-submit:hover {
+            background: linear-gradient(135deg, var(--dark-purple) 0%, var(--primary-purple) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+        }
+
+        .btn-back-home {
+            background: transparent;
+            color: var(--primary-purple);
+            border: 2px solid var(--primary-purple);
+        }
+
+        .btn-back-home:hover {
+            background: var(--primary-purple);
+            color: white;
+        }
+
+        /* Success Message */
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .success-message.active {
+            display: block;
+        }
+
+        .success-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 3rem;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .wizard-body {
+                padding: 2rem 1.5rem;
+            }
+
+            .wizard-footer {
+                padding: 1.5rem;
+                flex-direction: column;
+            }
+
+            .progress-steps {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+
+            .step {
+                flex: 0 0 50%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wizard-container">
+        <!-- Header -->
+        <div class="wizard-header">
+            <h1><i class="fas fa-clipboard-list"></i> Entrevista Integral</h1>
+            <p>Complete todos los pasos para enviar su solicitud</p>
+        </div>
+
+        <!-- Progress Steps -->
+        <div class="progress-steps">
+            <div class="step active" data-step="1">
+                <div class="step-circle">1</div>
+                <div class="step-label">Datos del Niño</div>
+            </div>
+            <div class="step" data-step="2">
+                <div class="step-circle">2</div>
+                <div class="step-label">Etapa Prenatal</div>
+            </div>
+            <div class="step" data-step="3">
+                <div class="step-circle">3</div>
+                <div class="step-label">Etapa Escolar</div>
+            </div>
+            <div class="step" data-step="4">
+                <div class="step-circle">4</div>
+                <div class="step-label">Antecedentes</div>
+            </div>
+        </div>
+
+        <!-- Form -->
+        <form id="wizardForm" method="POST" action="{% url 'entrevista' %}">
+            {% csrf_token %}
+            
+            <div class="wizard-body">
+                <!-- Step 1: Datos del Niño y Tutor -->
+                <div class="step-content active" data-step="1">
+                    <h2 class="step-title">Datos del Niño y Tutor</h2>
+                    <p class="step-description">Información básica del niño/a y datos de contacto</p>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Nombre del niño <span class="text-danger">*</span></label>
+                            <input type="text" name="nombre_paciente" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Apellido del niño <span class="text-danger">*</span></label>
+                            <input type="text" name="apellido_paciente" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">DNI del niño <span class="text-danger">*</span></label>
+                            <input type="text" name="dni_paciente" class="form-control" pattern="[0-9]{8}" 
+                                   maxlength="8" placeholder="12345678" required>
+                            <small class="text-muted">Debe tener 8 dígitos</small>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Fecha de Nacimiento</label>
+                            <input type="date" name="fecha_nacimiento" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Nombre del tutor <span class="text-danger">*</span></label>
+                            <input type="text" name="nombre_tutor" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Teléfono de contacto <span class="text-danger">*</span></label>
+                            <input type="tel" name="telefono_contacto" class="form-control" 
+                                   placeholder="3875827499" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Etapa Prenatal y Perinatal -->
+                <div class="step-content" data-step="2">
+                    <h2 class="step-title">Etapa Prenatal y Perinatal</h2>
+                    <p class="step-description">Detalles sobre embarazo, parto y primeros meses</p>
+
+                    <div class="mb-3">
+                        <label class="form-label">Información sobre el embarazo y parto</label>
+                        <textarea name="datos_prenatales" class="form-control" 
+                                  placeholder="Detalles sobre embarazo, parto y primeros meses de vida..."></textarea>
+                        <small class="text-muted">Por ejemplo: tipo de parto, peso al nacer, complicaciones, etc.</small>
+                    </div>
+                </div>
+
+                <!-- Step 3: Etapa Escolar -->
+                <div class="step-content" data-step="3">
+                    <h2 class="step-title">Etapa Escolar</h2>
+                    <p class="step-description">Información sobre escolaridad, desempeño y actividades</p>
+
+                    <div class="mb-3">
+                        <label class="form-label">Información escolar</label>
+                        <textarea name="datos_escolares" class="form-control" 
+                                  placeholder="Información sobre escolaridad, desempeño y actividades..."></textarea>
+                        <small class="text-muted">Por ejemplo: nivel educativo, rendimiento, adaptación social, etc.</small>
+                    </div>
+                </div>
+
+                <!-- Step 4: Antecedentes Clínicos -->
+                <div class="step-content" data-step="4">
+                    <h2 class="step-title">Antecedentes Clínicos</h2>
+                    <p class="step-description">Historial médico y motivo de consulta</p>
+
+                    <div class="mb-3">
+                        <label class="form-label">Antecedentes médicos y motivo de consulta</label>
+                        <textarea name="datos_clinicos" class="form-control" 
+                                  placeholder="Antecedentes médicos, tratamientos previos, motivo de la consulta..."></textarea>
+                        <small class="text-muted">Por ejemplo: diagnósticos previos, medicación actual, razón de la consulta, etc.</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Buttons -->
+            <div class="wizard-footer">
+                <button type="button" class="btn btn-prev" id="prevBtn" style="display: none;">
+                    <i class="bi bi-arrow-left"></i> Anterior
+                </button>
+                <div style="flex: 1"></div>
+                <a href="{% url 'index' %}" class="btn btn-back-home">
+                    <i class="bi bi-house"></i> Volver al Inicio
+                </a>
+                <button type="button" class="btn btn-next" id="nextBtn">
+                    Siguiente <i class="bi bi-arrow-right"></i>
+                </button>
+                <button type="submit" class="btn btn-submit" id="submitBtn" style="display: none;">
+                    <i class="bi bi-send"></i> Enviar Entrevista
+                </button>
+            </div>
+        </form>
+
+        <!-- Success Message -->
+        <div class="success-message" id="successMessage">
+            <div class="success-icon">
+                <i class="fas fa-check"></i>
+            </div>
+            <h2 style="color: var(--dark-purple); font-weight: 700;">¡Entrevista Enviada!</h2>
+            <p style="font-size: 1.1rem; color: #6c757d; margin: 1.5rem 0;">
+                Gracias por completar la entrevista. Nos pondremos en contacto con usted pronto.
+            </p>
+            <a href="{% url 'index' %}" class="btn btn-next">
+                <i class="bi bi-house"></i> Volver al Inicio
+            </a>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 4;
+
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        const form = document.getElementById('wizardForm');
+
+        function showStep(step) {
+            // Hide all steps
+            document.querySelectorAll('.step-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Show current step
+            document.querySelector(`.step-content[data-step="${step}"]`).classList.add('active');
+
+            // Update progress indicators
+            document.querySelectorAll('.step').forEach((stepEl, index) => {
+                stepEl.classList.remove('active', 'completed');
+                if (index + 1 < step) {
+                    stepEl.classList.add('completed');
+                } else if (index + 1 === step) {
+                    stepEl.classList.add('active');
+                }
+            });
+
+            // Update buttons
+            prevBtn.style.display = step === 1 ? 'none' : 'block';
+            nextBtn.style.display = step === totalSteps ? 'none' : 'block';
+            submitBtn.style.display = step === totalSteps ? 'block' : 'none';
+
+            currentStep = step;
+        }
+
+        function validateStep(step) {
+            const stepContent = document.querySelector(`.step-content[data-step="${step}"]`);
+            const requiredFields = stepContent.querySelectorAll('[required]');
+            
+            for (let field of requiredFields) {
+                if (!field.value.trim()) {
+                    field.focus();
+                    alert('Por favor complete todos los campos obligatorios.');
+                    return false;
+                }
+                
+                // Validar DNI
+                if (field.name === 'dni_paciente' && !/^\d{8}$/.test(field.value)) {
+                    field.focus();
+                    alert('El DNI debe contener exactamente 8 dígitos.');
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+
+        nextBtn.addEventListener('click', () => {
+            if (validateStep(currentStep)) {
+                showStep(currentStep + 1);
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            showStep(currentStep - 1);
+        });
+
+        // Initialize
+        showStep(1);
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

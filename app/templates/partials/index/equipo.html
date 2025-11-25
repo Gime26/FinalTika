@@ -1,0 +1,343 @@
+{% load static %}
+<section id="equipo" class="content equipo">
+    <h2 class="title">EQUIPO</h2>
+    
+    <div class="carousel-container">
+        <button class="carousel-btn prev" onclick="moveCarousel(-1)">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        
+        <div class="carousel-wrapper">
+            <div class="carousel-track" id="carouselTrack">
+                <!-- Member 1 -->
+                <div class="carousel-item">
+                    <div class="team-card">
+                        <div class="card-image">
+                            <img src="{% static 'img/psico.png' %}" alt="Psicólogas" />
+                        </div>
+                        <div class="card-info">
+                            <h3>Lic. Silvina Diaz</h3>
+                            <p class="specialty">Psicóloga</p>
+                            <p class="matricula">MP XXXX</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Member 2 -->
+                <div class="carousel-item">
+                    <div class="team-card">
+                        <div class="card-image">
+                            <img src="{% static 'img/psico.png' %}" alt="Psicóloga" />
+                        </div>
+                        <div class="card-info">
+                            <h3>Lic. Mailén Danilowicz</h3>
+                            <p class="specialty">Psicóloga</p>
+                            <p class="matricula">MP XXXX</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Member 3 -->
+                <div class="carousel-item">
+                    <div class="team-card">
+                        <div class="card-image">
+                            <img src="{% static 'img/fono.png' %}" alt="Fonoaudióloga" />
+                        </div>
+                        <div class="card-info">
+                            <h3>Lic. Monica Palacios Cañizares</h3>
+                            <p class="specialty">Fonoaudióloga</p>
+                            <p class="matricula">MP XXXX</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Member 4 -->
+                <div class="carousel-item">
+                    <div class="team-card">
+                        <div class="card-image">
+                            <img src="{% static 'img/kines.png' %}" alt="Kinesiólogo" />
+                        </div>
+                        <div class="card-info">
+                            <h3>Lic. Carlos Herrera</h3>
+                            <p class="specialty">Kinesiólogo</p>
+                            <p class="matricula">MP XXXX</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Member 5 -->
+                <div class="carousel-item">
+                    <div class="team-card">
+                        <div class="card-image">
+                            <img src="{% static 'img/motric.png' %}" alt="Psicomotricista" />
+                        </div>
+                        <div class="card-info">
+                            <h3>Lic. Sol Espasandin</h3>
+                            <p class="specialty">Psicomotricista</p>
+                            <p class="matricula">RNP 478881</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Member 6 -->
+                <div class="carousel-item">
+                    <div class="team-card">
+                        <div class="card-image">
+                            <img src="{% static 'img/motric.png' %}" alt="Psicomotricista" />
+                        </div>
+                        <div class="card-info">
+                            <h3>Lic. Lucila Lencina</h3>
+                            <p class="specialty">Psicomotricista</p>
+                            <p class="matricula">MP XXXX</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Member 7 -->
+                <div class="carousel-item">
+                    <div class="team-card">
+                        <div class="card-image">
+                            <img src="{% static 'img/pedag.png' %}" alt="Psicopedagoga" />
+                        </div>
+                        <div class="card-info">
+                            <h3>Lic. Carolina Castro Herrera</h3>
+                            <p class="specialty">Psicopedagoga</p>
+                            <p class="matricula">MP 1461</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Member 8 -->
+                <div class="carousel-item">
+                    <div class="team-card">
+                        <div class="card-image">
+                            <img src="{% static 'img/pedag.png' %}" alt="Psicopedagoga" />
+                        </div>
+                        <div class="card-info">
+                            <h3>Lic. Itati Gordillo</h3>
+                            <p class="specialty">Psicopedagoga</p>
+                            <p class="matricula">MP 2583</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <button class="carousel-btn next" onclick="moveCarousel(1)">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+</section>
+
+<style>
+    #equipo {
+        padding: 5rem 0;
+        background-image: url("{% static 'img/fondoequipo.jpg' %}");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    
+    #equipo::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.3);
+        z-index: 0;
+    }
+    
+    #equipo .title {
+        text-align: center;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 3rem;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .carousel-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+    
+    .carousel-wrapper {
+        overflow: hidden;
+        flex: 1;
+        border-radius: 20px;
+    }
+    
+    .carousel-track {
+        display: flex;
+        transition: transform 0.5s ease;
+        gap: 2rem;
+    }
+    
+    .carousel-item {
+        min-width: calc(33.333% - 1.35rem);
+        flex-shrink: 0;
+    }
+    
+    .team-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .team-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 12px 35px rgba(155, 89, 182, 0.3);
+    }
+    
+    .card-image {
+        width: 100%;
+        height: 350px;
+        overflow: hidden;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    }
+    
+    .card-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+    
+    .team-card:hover .card-image img {
+        transform: scale(1.05);
+    }
+    
+    .card-info {
+        padding: 1.5rem;
+        text-align: center;
+        background: white;
+    }
+    
+    .card-info h3 {
+        color: #333;
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    
+    .specialty {
+        color: #9b59b6;
+        font-size: 0.95rem;
+        font-weight: 500;
+        margin-bottom: 0.3rem;
+    }
+    
+    .matricula {
+        color: #666;
+        font-size: 0.85rem;
+    }
+    
+    .carousel-btn {
+        background: white;
+        border: none;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        transition: all 0.3s ease;
+        flex-shrink: 0;
+        z-index: 2;
+    }
+    
+    .carousel-btn i {
+        font-size: 1.2rem;
+        color: #9b59b6;
+    }
+    
+    .carousel-btn:hover {
+        background: #9b59b6;
+        transform: scale(1.1);
+    }
+    
+    .carousel-btn:hover i {
+        color: white;
+    }
+    
+    .carousel-btn:active {
+        transform: scale(0.95);
+    }
+    
+    @media (max-width: 1024px) {
+        .carousel-item {
+            min-width: calc(50% - 1rem);
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .carousel-item {
+            min-width: 100%;
+        }
+        
+        .carousel-btn {
+            width: 40px;
+            height: 40px;
+        }
+        
+        .carousel-btn i {
+            font-size: 1rem;
+        }
+    }
+</style>
+
+<script>
+    let currentIndex = 0;
+    const track = document.getElementById('carouselTrack');
+    const items = document.querySelectorAll('.carousel-item');
+    const totalItems = items.length;
+    
+    function getItemsPerView() {
+        if (window.innerWidth <= 768) return 1;
+        if (window.innerWidth <= 1024) return 2;
+        return 3;
+    }
+    
+    function moveCarousel(direction) {
+        const itemsPerView = getItemsPerView();
+        const maxIndex = totalItems - itemsPerView;
+        
+        currentIndex += direction;
+        
+        if (currentIndex < 0) {
+            currentIndex = 0;
+        } else if (currentIndex > maxIndex) {
+            currentIndex = maxIndex;
+        }
+        
+        const itemWidth = items[0].offsetWidth;
+        const gap = 32; // 2rem
+        const offset = -(currentIndex * (itemWidth + gap));
+        
+        track.style.transform = `translateX(${offset}px)`;
+    }
+    
+    // Reset on window resize
+    window.addEventListener('resize', () => {
+        currentIndex = 0;
+        track.style.transform = 'translateX(0)';
+    });
+</script>
