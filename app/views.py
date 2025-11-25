@@ -110,14 +110,41 @@ def dashboard_pacientes(request):
         # Obtener informes del paciente
         informes = InformeInterdisciplinario.objects.filter(paciente=paciente_perfil).prefetch_related('especialistas', 'secciones')[:5]
 
+        # Calcular notificaciones (últimos 7 días)
+        from datetime import timedelta
+        from django.utils import timezone
+        hace_7_dias = timezone.now() - timedelta(days=7)
+        
+        informes_nuevos = InformeInterdisciplinario.objects.filter(
+            paciente=paciente_perfil,
+            fecha_creacion__gte=hace_7_dias
+        ).count()
+        
+        observaciones_nuevas = Observacion.objects.filter(
+            paciente=paciente_perfil,
+            fecha_registro__gte=hace_7_dias
+        ).count()
+        
+        total_notificaciones = informes_nuevos + observaciones_nuevas
+        
+        notificaciones = []
+        if informes_nuevos > 0:
+            notificaciones.append(f"Tenés {informes_nuevos} informe{'s' if informes_nuevos > 1 else ''} nuevo{'s' if informes_nuevos > 1 else ''}")
+        if observaciones_nuevas > 0:
+            notificaciones.append(f"Tenés {observaciones_nuevas} observación{'es' if observaciones_nuevas > 1 else ''} nueva{'s' if observaciones_nuevas > 1 else ''}")
+
         context = {
             'paciente': paciente_perfil,
             'turnos': turnos,
             'observaciones': observaciones,
             'informes': informes,
+            'total_notificaciones': total_notificaciones,
+            'notificaciones': notificaciones,
+            'informes_nuevos': informes_nuevos,
+            'observaciones_nuevas': observaciones_nuevas,
         }
         
-        return render(request, 'dashboard_paciente.html', context)
+        return render(request, 'pacientes/dashboard_pacientes.html', context)
 
     except AttributeError:
         # El usuario no tiene un objeto 'perfil' asociado.
@@ -128,15 +155,6 @@ def dashboard_pacientes(request):
         # Si hay un error en el filtro de Turnos 
         messages.error(request, f"Error al filtrar datos. Mensaje: {e}")
         return redirect('login')
-        return redirect('login')
-
-
-    context = {
-        'turnos': turnos,
-        'paciente': paciente_perfil,
-        'perfil': perfil_del_usuario,
-    }
-    return render(request, 'pacientes/dashboard_pacientes.html', context)
 
 
 @login_required
@@ -144,16 +162,77 @@ def paciente_turnos(request):
     return render(request, "pacientes/paciente_turnos.html")
 
 @login_required
+@solo_pacientes
 def paciente_informes(request):
-    return render(request, "pacientes/paciente_informes.html")
+    try:
+        perfil = request.user.perfil
+        if perfil.rol != 'paciente' or not perfil.paciente:
+            messages.error(request, "Acceso no autorizado.")
+            return redirect('login')
+        
+        informes = InformeInterdisciplinario.objects.filter(
+            paciente=perfil.paciente
+        ).prefetch_related('especialistas', 'secciones').order_by('-fecha_informe')
+        
+        # Marcar los nuevos (últimos 7 días)
+        from datetime import timedelta
+        from django.utils import timezone
+        hace_7_dias = timezone.now() - timedelta(days=7)
+        
+        for informe in informes:
+            informe.es_nuevo = informe.fecha_creacion and informe.fecha_creacion >= hace_7_dias
+        
+        return render(request, "pacientes/paciente_informes.html", {
+            'informes': informes
+        })
+    except Exception as e:
+        messages.error(request, f"Error al cargar informes: {str(e)}")
+        return redirect('dashboard_pacientes')
 
 @login_required
 def paciente_observaciones(request):
-    return render(request, "pacientes/paciente_observaciones.html")
+    try:
+        perfil = request.user.perfil
+        if perfil.rol != 'paciente' or not perfil.paciente:
+            messages.error(request, "Acceso no autorizado.")
+            return redirect('login')
+        
+        observaciones = Observacion.objects.filter(
+            paciente=perfil.paciente
+        ).order_by('-fecha')
+        
+        # Marcar las nuevas (últimos 7 días)
+        from datetime import timedelta
+        from django.utils import timezone
+        hace_7_dias = timezone.now() - timedelta(days=7)
+        
+        for obs in observaciones:
+            obs.es_nueva = obs.fecha_registro and obs.fecha_registro >= hace_7_dias
+        
+        return render(request, "pacientes/paciente_observaciones.html", {
+            'observaciones': observaciones,
+            'paciente': perfil.paciente
+        })
+    except:
+        messages.error(request, "Error al cargar observaciones.")
+        return redirect('dashboard_pacientes')
 
 @login_required
 def paciente_comprobantes(request):
-    return render(request, "pacientes/paciente_comprobantes.html")
+    try:
+        perfil = request.user.perfil
+        if perfil.rol != 'paciente' or not perfil.paciente:
+            messages.error(request, "Acceso no autorizado.")
+            return redirect('login')
+        
+        # Por ahora solo renderizar el template
+        # Cuando implementes comprobantes, aquí filtrarás por paciente
+        return render(request, "pacientes/paciente_comprobantes.html", {
+            'paciente': perfil.paciente
+        })
+    except:
+        messages.error(request, "Error al cargar comprobantes.")
+        return redirect('dashboard_pacientes')
 
 @login_required
 def paciente_perfil(request):
@@ -259,7 +338,7 @@ def register_view(request):
 
                     # Solo crear paciente si NO es terapeuta
                     if not es_terapeuta:
-                        Paciente.objects.create(
+                        paciente_creado = Paciente.objects.create(
                             dni=perfil.dni,
                             nombre=perfil.nombre,
                             apellido=perfil.apellido,
@@ -268,6 +347,9 @@ def register_view(request):
                             telefono=perfil.telefono,
                             email=perfil.email
                         )
+                        # 🔗 ASOCIAR EL PACIENTE AL PERFIL
+                        perfil.paciente = paciente_creado
+                        perfil.save()
 
                 messages.success(request, "Cuenta creada exitosamente. Por favor, inicia sesión.")
                 return redirect("login")
@@ -305,6 +387,7 @@ def register_view(request):
     return render(request, "registro.html", {"form": form})
 
 @login_required
+@solo_terapeutas
 def dashboard(request):
     # Contar pacientes registrados
     total_pacientes = Paciente.objects.count()
@@ -320,11 +403,15 @@ def gestionturnos(request):
     return render(request, 'gestionturnos.html')
 
 
+@login_required
+@solo_terapeutas
 def pacientes_list(request):
     pacientes = Paciente.objects.all()
     return render(request, "pacientes/pacientes_list.html", {"pacientes": pacientes})
 
 
+@login_required
+@solo_terapeutas
 def paciente_create(request):
     if request.method == 'POST':
         form = PacienteForm(request.POST)
@@ -336,6 +423,8 @@ def paciente_create(request):
     return render(request, 'pacientes/pacientes_form.html', {'form': form})
 
 
+@login_required
+@solo_terapeutas
 def paciente_update(request, pk):
     paciente = get_object_or_404(Paciente, pk=pk)
     if request.method == 'POST':
@@ -347,6 +436,8 @@ def paciente_update(request, pk):
         form = PacienteForm(instance=paciente)
     return render(request, 'pacientes/pacientes_form.html', {'form': form})
 
+@login_required
+@solo_terapeutas
 def paciente_delete(request, pk):
     paciente = get_object_or_404(Paciente, pk=pk)
     if request.method == 'POST':
@@ -561,27 +652,11 @@ def crear_informe_interdisciplinario(request):
 
 
 @login_required
+@solo_terapeutas
 def lista_informes(request):
-    """Lista todos los informes (especialistas ven todos, pacientes ven solo los suyos)"""
-    try:
-        perfil = request.user.perfil
-        
-        if perfil.rol == 'especialista':
-            # Especialistas ven todos los informes o los que colaboran
-            informes = InformeInterdisciplinario.objects.all().prefetch_related('especialistas', 'paciente')
-        else:
-            # Pacientes ven solo sus informes
-            if perfil.paciente:
-                informes = InformeInterdisciplinario.objects.filter(paciente=perfil.paciente).prefetch_related('especialistas')
-            else:
-                informes = []
-                messages.info(request, "No tienes informes asociados.")
-        
-        return render(request, 'informes/lista_informes.html', {'informes': informes})
-    
-    except AttributeError:
-        messages.error(request, "Error: Tu cuenta no tiene un perfil asociado.")
-        return redirect('dashboard')
+    """Lista todos los informes interdisciplinarios (solo especialistas)"""
+    informes = InformeInterdisciplinario.objects.all().prefetch_related('especialistas', 'paciente').order_by('-fecha_informe')
+    return render(request, 'informes/lista_informes.html', {'informes': informes})
 
 
 @login_required
@@ -597,13 +672,24 @@ def detalle_informe(request, informe_id):
         if perfil.rol == 'paciente':
             if not perfil.paciente or informe.paciente != perfil.paciente:
                 messages.error(request, "No tienes permiso para ver este informe.")
-                return redirect('lista_informes')
+                return redirect('paciente_informes')
+            
+            # Obtener secciones para pacientes
+            secciones = informe.secciones.all().select_related('especialista')
+            
+            context = {
+                'informe': informe,
+                'secciones': secciones,
+            }
+            
+            # Usar template de pacientes
+            return render(request, 'pacientes/detalle_informe_paciente.html', context)
     
     except AttributeError:
         messages.error(request, "Error: Tu cuenta no tiene un perfil asociado.")
         return redirect('dashboard')
     
-    # Obtener todas las secciones del informe
+    # Obtener todas las secciones del informe (para especialistas)
     secciones = informe.secciones.all().select_related('especialista')
     
     # Verificar si el usuario actual es colaborador y si ya tiene una sección

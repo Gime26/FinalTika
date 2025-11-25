@@ -1,0 +1,415 @@
+{% extends 'pacientes/basepacientes.html' %}
+{% load static %}
+
+{% block title %}{{ informe.asunto }}{% endblock %}
+
+{% block content %}
+<div class="detalle-informe-container">
+    <!-- Header del informe -->
+    <div class="informe-header">
+        <div class="header-top">
+            <h1 class="informe-titulo">
+                <i class="bi bi-file-earmark-medical-fill"></i>
+                {{ informe.asunto }}
+            </h1>
+            <a href="{% url 'paciente_informes' %}" class="btn-volver">
+                <i class="bi bi-arrow-left"></i>
+                Volver a Informes
+            </a>
+        </div>
+    </div>
+
+    <!-- Información general -->
+    <div class="info-card">
+        <div class="info-grid">
+            <div class="info-item">
+                <span class="info-label">
+                    <i class="bi bi-calendar-event me-1"></i>
+                    Fecha del Informe
+                </span>
+                <span class="info-value">{{ informe.fecha_informe|date:"d/m/Y" }}</span>
+            </div>
+            
+            <div class="info-item">
+                <span class="info-label">
+                    <i class="bi bi-clock-history me-1"></i>
+                    Fecha de Creación
+                </span>
+                <span class="info-value">{{ informe.fecha_creacion|date:"d/m/Y H:i" }}</span>
+            </div>
+            
+            <div class="info-item">
+                <span class="info-label">
+                    <i class="bi bi-card-text me-1"></i>
+                    DNI del Paciente
+                </span>
+                <span class="info-value">{{ informe.paciente.dni }}</span>
+            </div>
+            
+            <div class="info-item">
+                <span class="info-label">
+                    <i class="bi bi-person-fill me-1"></i>
+                    Creado por
+                </span>
+                <span class="info-value">{{ informe.creado_por.nombre }} {{ informe.creado_por.apellido }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Descripción general -->
+    {% if informe.descripcion_general %}
+    <div class="descripcion-card">
+        <h3><i class="bi bi-file-text me-2"></i>Descripción General</h3>
+        <p>{{ informe.descripcion_general }}</p>
+    </div>
+    {% endif %}
+
+    <!-- Especialistas participantes -->
+    <div class="especialistas-card">
+        <h3><i class="bi bi-people-fill me-2"></i>Equipo Terapéutico Participante</h3>
+        <div class="especialistas-grid">
+            {% for especialista in informe.especialistas.all %}
+            <div class="especialista-item">
+                <i class="bi bi-person-badge-fill"></i>
+                <span>{{ especialista.nombre }} {{ especialista.apellido }}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Secciones del informe -->
+    {% if secciones %}
+    <div class="secciones-container">
+        <h2 class="secciones-titulo">
+            <i class="bi bi-collection me-2"></i>
+            Evaluaciones por Especialidad
+        </h2>
+        
+        {% for seccion in secciones %}
+        <div class="seccion-card">
+            <div class="seccion-header">
+                <div class="especialista-info">
+                    <i class="bi bi-person-circle"></i>
+                    <div>
+                        <h4>{{ seccion.especialista.nombre }} {{ seccion.especialista.apellido }}</h4>
+                        <span class="especialidad">{{ seccion.especialista.especialidad|default:"Especialista" }}</span>
+                    </div>
+                </div>
+                <span class="fecha-modificacion">
+                    <i class="bi bi-calendar3 me-1"></i>
+                    {{ seccion.fecha_modificacion|date:"d/m/Y" }}
+                </span>
+            </div>
+            
+            <div class="seccion-contenido">
+                {{ seccion.contenido|linebreaks }}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="no-secciones">
+        <i class="bi bi-info-circle"></i>
+        <p>Este informe aún no tiene secciones agregadas por los especialistas.</p>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .detalle-informe-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px 30px;
+    }
+
+    .informe-header {
+        background: linear-gradient(135deg, #8b5a9e 0%, #610455 100%);
+        color: white;
+        padding: 35px 40px;
+        border-radius: 20px;
+        margin-bottom: 30px;
+        box-shadow: 0 8px 25px rgba(139, 90, 158, 0.3);
+    }
+
+    .header-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .informe-titulo {
+        color: white;
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .btn-volver {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 12px 25px;
+        border-radius: 25px;
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-volver:hover {
+        background: rgba(255, 255, 255, 0.3);
+        color: white;
+        border-color: white;
+        transform: translateX(-5px);
+    }
+
+    .info-card {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        margin-bottom: 25px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        border: 2px solid #e1b9eb;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 25px;
+    }
+
+    .info-item {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .info-label {
+        font-size: 0.85rem;
+        color: #8b5a9e;
+        text-transform: uppercase;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        display: flex;
+        align-items: center;
+    }
+
+    .info-value {
+        font-size: 1.15rem;
+        color: #333;
+        font-weight: 600;
+    }
+
+    .descripcion-card {
+        background: linear-gradient(135deg, #f8f4fa 0%, #ffffff 100%);
+        padding: 30px;
+        border-radius: 15px;
+        margin-bottom: 25px;
+        border-left: 5px solid #8b5a9e;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    .descripcion-card h3 {
+        color: #610455;
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+    }
+
+    .descripcion-card p {
+        color: #495057;
+        font-size: 1.1rem;
+        line-height: 1.8;
+        margin: 0;
+        white-space: pre-wrap;
+    }
+
+    .especialistas-card {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        border: 2px solid #e1b9eb;
+    }
+
+    .especialistas-card h3 {
+        color: #610455;
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+    }
+
+    .especialistas-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 15px;
+    }
+
+    .especialista-item {
+        background: linear-gradient(135deg, #8b5a9e 0%, #610455 100%);
+        color: white;
+        padding: 15px 20px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 600;
+        font-size: 1.05rem;
+    }
+
+    .especialista-item i {
+        font-size: 1.5rem;
+    }
+
+    .secciones-container {
+        margin-top: 40px;
+    }
+
+    .secciones-titulo {
+        color: #610455;
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 30px;
+        display: flex;
+        align-items: center;
+    }
+
+    .seccion-card {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        margin-bottom: 25px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        border: 2px solid #e1b9eb;
+        transition: all 0.3s;
+    }
+
+    .seccion-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 30px rgba(139, 90, 158, 0.2);
+        border-color: #8b5a9e;
+    }
+
+    .seccion-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #f0f0f0;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .especialista-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .especialista-info i {
+        font-size: 3rem;
+        color: #8b5a9e;
+    }
+
+    .especialista-info h4 {
+        color: #610455;
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .especialidad {
+        color: #8b5a9e;
+        font-size: 0.95rem;
+        font-weight: 500;
+    }
+
+    .fecha-modificacion {
+        background: #f8f4fa;
+        color: #610455;
+        padding: 10px 18px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        display: inline-flex;
+        align-items: center;
+        border: 1px solid #e1b9eb;
+    }
+
+    .seccion-contenido {
+        background: #f8f9fa;
+        padding: 25px;
+        border-radius: 12px;
+        color: #495057;
+        font-size: 1.05rem;
+        line-height: 1.8;
+    }
+
+    .no-secciones {
+        background: white;
+        padding: 60px 40px;
+        border-radius: 15px;
+        text-align: center;
+        border: 2px dashed #e1b9eb;
+    }
+
+    .no-secciones i {
+        font-size: 4rem;
+        color: #8b5a9e;
+        margin-bottom: 15px;
+        opacity: 0.7;
+    }
+
+    .no-secciones p {
+        color: #6c757d;
+        font-size: 1.2rem;
+        margin: 0;
+    }
+
+    @media (max-width: 768px) {
+        .detalle-informe-container {
+            padding: 15px;
+        }
+
+        .informe-header {
+            padding: 25px 20px;
+        }
+
+        .header-top {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .informe-titulo {
+            font-size: 1.6rem;
+        }
+
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .especialistas-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .seccion-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+</style>
+
+{% endblock %}

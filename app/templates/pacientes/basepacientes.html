@@ -37,6 +37,227 @@
 .sidebar-logout-btn i {
     margin-right: 6px;
 }
+
+/* --- Sidebar Link Activo --- */
+.sidebar a.active {
+    background: linear-gradient(135deg, #8b5a9e 0%, #610455 100%);
+    color: white !important;
+    border-left: 4px solid #ffffff;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(139, 90, 158, 0.3);
+}
+
+.sidebar a.active i {
+    color: white;
+}
+
+/* --- Navbar Usuario y Notificaciones --- */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.head {
+    display: flex;
+    align-items: center;
+}
+
+.logo-link {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    transition: opacity 0.3s;
+}
+
+.logo-link:hover {
+    opacity: 0.8;
+}
+
+.user-info-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 25px;
+    color: white;
+    text-decoration: none;
+    transition: all 0.3s;
+    font-weight: 500;
+}
+
+.user-info:hover {
+    background: rgba(255, 255, 255, 0.25);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.user-info i {
+    font-size: 1.3rem;
+}
+
+.notifications-dropdown {
+    position: relative;
+}
+
+.notification-btn {
+    position: relative;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: none;
+    color: white;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.notification-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(1.1);
+}
+
+.notification-btn i {
+    font-size: 1.3rem;
+}
+
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #dc3545;
+    color: white;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: bold;
+    border: 2px solid white;
+}
+
+.notifications-panel {
+    position: absolute;
+    top: 60px;
+    right: 0;
+    width: 350px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    display: none;
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.notifications-panel.show {
+    display: block;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.notifications-header {
+    background: linear-gradient(135deg, #8b5a9e 0%, #610455 100%);
+    color: white;
+    padding: 15px 20px;
+}
+
+.notifications-header h6 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.notifications-header i {
+    margin-right: 8px;
+}
+
+.notifications-body {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.notification-item {
+    padding: 15px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    align-items: start;
+    gap: 12px;
+    transition: background 0.2s;
+    cursor: default;
+}
+
+.notification-item-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.notification-item-link .notification-item {
+    cursor: pointer;
+}
+
+.notification-item-link:hover .notification-item {
+    background: #f0f7ff;
+}
+
+.notification-item:hover {
+    background: #f8f9fa;
+}
+
+.notification-item:last-child {
+    border-bottom: none;
+}
+
+.notification-item i {
+    font-size: 1.2rem;
+    margin-top: 2px;
+}
+
+.notification-item span {
+    flex: 1;
+    color: #333;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.notification-item .ms-auto {
+    color: #999;
+    font-size: 1rem;
+}
+
+.notification-item.empty {
+    justify-content: center;
+    color: #999;
+}
+
+.notification-item.empty:hover {
+    background: white;
+}
 </style>
 
 </head>
@@ -45,20 +266,84 @@
 
 <header>
     <div class="head">
-        <div class="logo">
-            <img src="{% static 'img/sinfondo.png' %}" alt="Tika" class="logo">
+        <a href="{% url 'dashboard_pacientes' %}" class="logo-link">
+            <div class="logo">
+                <img src="{% static 'img/sinfondo.png' %}" alt="Tika">
+            </div>
+        </a>
+    </div>
+    
+    <!-- Usuario y notificaciones -->
+    <div class="user-info-container">
+        <a href="{% url 'paciente_perfil' %}" class="user-info">
+            <i class="bi bi-person-circle"></i>
+            <span>{{ request.user.username }}</span>
+        </a>
+        
+        <div class="notifications-dropdown">
+            <button class="notification-btn" id="notificationBtn">
+                <i class="bi bi-bell-fill"></i>
+                {% if total_notificaciones > 0 %}
+                <span class="notification-badge">{{ total_notificaciones }}</span>
+                {% endif %}
+            </button>
+            
+            <div class="notifications-panel" id="notificationsPanel">
+                <div class="notifications-header">
+                    <h6><i class="bi bi-bell"></i> Notificaciones</h6>
+                </div>
+                <div class="notifications-body">
+                    {% if notificaciones %}
+                        {% if informes_nuevos > 0 %}
+                        <a href="{% url 'paciente_informes' %}" class="notification-item-link">
+                            <div class="notification-item">
+                                <i class="bi bi-file-earmark-medical-fill text-primary"></i>
+                                <span>Tenés {{ informes_nuevos }} informe{{ informes_nuevos|pluralize }} nuevo{{ informes_nuevos|pluralize }}</span>
+                                <i class="bi bi-chevron-right ms-auto"></i>
+                            </div>
+                        </a>
+                        {% endif %}
+                        {% if observaciones_nuevas > 0 %}
+                        <a href="{% url 'paciente_observaciones' %}" class="notification-item-link">
+                            <div class="notification-item">
+                                <i class="bi bi-clipboard2-pulse-fill text-success"></i>
+                                <span>Tenés {{ observaciones_nuevas }} observación{{ observaciones_nuevas|pluralize:"es" }} nueva{{ observaciones_nuevas|pluralize }}</span>
+                                <i class="bi bi-chevron-right ms-auto"></i>
+                            </div>
+                        </a>
+                        {% endif %}
+                    {% else %}
+                        <div class="notification-item empty">
+                            <i class="bi bi-check-circle text-success"></i>
+                            <span>No tenés notificaciones nuevas</span>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
         </div>
     </div>
 </header>
 
 <!-- Sidebar -->
 <div class="sidebar">
-    <a href="{% url 'dashboard_pacientes' %}"><i class="bi bi-house"></i> Inicio</a>
-    <a href="{% url 'paciente_perfil' %}"><i class="bi bi-person'"></i> Mi Perfil</a>
-    <a href="{% url 'paciente_turnos' %}"><i class="bi bi-calendar-event"></i> Turnos</a>
-    <a href="{% url 'paciente_informes' %}"><i class="bi bi-file-text"></i> Informes</a>
-    <a href="{% url 'paciente_observaciones' %}"><i class="bi bi-bar-chart"></i> Observaciones</a>
-    <a href="{% url 'paciente_comprobantes' %}"><i class="bi bi-receipt"></i> Comprobantes</a>
+    <a href="{% url 'dashboard_pacientes' %}" class="{% if request.resolver_match.url_name == 'dashboard_pacientes' %}active{% endif %}">
+        <i class="bi bi-house"></i> Inicio
+    </a>
+    <a href="{% url 'paciente_perfil' %}" class="{% if request.resolver_match.url_name == 'paciente_perfil' %}active{% endif %}">
+        <i class="bi bi-person"></i> Mi Perfil
+    </a>
+    <a href="{% url 'paciente_turnos' %}" class="{% if request.resolver_match.url_name == 'paciente_turnos' %}active{% endif %}">
+        <i class="bi bi-calendar-event"></i> Turnos
+    </a>
+    <a href="{% url 'paciente_informes' %}" class="{% if request.resolver_match.url_name == 'paciente_informes' %}active{% endif %}">
+        <i class="bi bi-file-text"></i> Informes
+    </a>
+    <a href="{% url 'paciente_observaciones' %}" class="{% if request.resolver_match.url_name == 'paciente_observaciones' %}active{% endif %}">
+        <i class="bi bi-bar-chart"></i> Observaciones
+    </a>
+    <a href="{% url 'paciente_comprobantes' %}" class="{% if request.resolver_match.url_name == 'paciente_comprobantes' %}active{% endif %}">
+        <i class="bi bi-receipt"></i> Comprobantes
+    </a>
 
 
     <form action="{% url 'logout' %}" method="post">
@@ -71,9 +356,31 @@
 </div>
 
 <main class="content">
-    {% block content %}
-    {% endblock %}
+    <div class="content-wrapper">
+        {% block content %}
+        {% endblock %}
+    </div>
 </main>
+
+<script>
+    // Toggle notificaciones
+    const notificationBtn = document.getElementById('notificationBtn');
+    const notificationsPanel = document.getElementById('notificationsPanel');
+    
+    if (notificationBtn && notificationsPanel) {
+        notificationBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            notificationsPanel.classList.toggle('show');
+        });
+        
+        // Cerrar al hacer click fuera
+        document.addEventListener('click', function(e) {
+            if (!notificationsPanel.contains(e.target) && e.target !== notificationBtn) {
+                notificationsPanel.classList.remove('show');
+            }
+        });
+    }
+</script>
 
 </body>
 </html>

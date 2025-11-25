@@ -4,23 +4,211 @@
 {% block title %}Mi Perfil{% endblock %}
 
 {% block content %}
-<h3><i class="bi bi-person-circle"></i> Mi Perfil</h3>
-<hr>
+<style>
+    .perfil-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .profile-header {
+        background: linear-gradient(135deg, #8b5a9e 0%, #610455 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 15px rgba(139, 90, 158, 0.3);
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+    
+    .profile-avatar {
+        width: 100px;
+        height: 100px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        border: 4px solid white;
+    }
+    
+    .profile-info h2 {
+        margin: 0;
+        font-size: 1.8rem;
+        font-weight: 600;
+    }
+    
+    .profile-info p {
+        margin: 5px 0 0 0;
+        opacity: 0.9;
+    }
+    
+    .info-section {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        transition: transform 0.2s;
+    }
+    
+    .info-section:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+    }
+    
+    .section-title {
+        color: #8b5a9e;
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #e1b9eb;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .section-title i {
+        font-size: 1.5rem;
+    }
+    
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+    
+    .info-item {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .info-label {
+        font-size: 0.85rem;
+        color: #666;
+        text-transform: uppercase;
+        font-weight: 600;
+        margin-bottom: 5px;
+        letter-spacing: 0.5px;
+    }
+    
+    .info-value {
+        font-size: 1.1rem;
+        color: #333;
+        font-weight: 500;
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border-left: 3px solid #8b5a9e;
+    }
+    
+    .info-value.empty {
+        color: #999;
+        font-style: italic;
+    }
+    
+    .alert-info-custom {
+        background: #e7f3ff;
+        border-left: 4px solid #2196F3;
+        padding: 15px 20px;
+        border-radius: 8px;
+        margin-top: 20px;
+    }
+    
+    .alert-info-custom i {
+        color: #2196F3;
+        margin-right: 10px;
+    }
+    
+    @media (max-width: 768px) {
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .profile-header {
+            flex-direction: column;
+            text-align: center;
+        }
+    }
+</style>
 
-<div class="card p-4">
-    <h5 class="mb-3">Información del usuario</h5>
-
-    <p><strong>Nombre:</strong> {{ request.user.first_name }} {{ request.user.last_name }}</p>
-    <p><strong>Usuario:</strong> {{ request.user.username }}</p>
-    <p><strong>Email:</strong> {{ request.user.email }}</p>
-
-    {% if request.user.perfil %}
-        <p><strong>DNI:</strong> {{ request.user.perfil.dni }}</p>
-        <p><strong>Teléfono:</strong> {{ request.user.perfil.telefono }}</p>
-        <p><strong>Dirección:</strong> {{ request.user.perfil.direccion }}</p>
-        <p><strong>Obra social:</strong> {{ request.user.perfil.obra_social }}</p>
-    {% else %}
-        <p class="text-muted">No hay datos adicionales cargados.</p>
-    {% endif %}
+<div class="perfil-container">
+    <!-- Header con avatar -->
+    <div class="profile-header">
+        <div class="profile-avatar">
+            <i class="bi bi-person-fill"></i>
+        </div>
+        <div class="profile-info">
+            <h2>{{ request.user.first_name }} {{ request.user.last_name }}</h2>
+            <p><i class="bi bi-at"></i> {{ request.user.username }}</p>
+        </div>
+    </div>
+    
+    <!-- Información Personal -->
+    <div class="info-section">
+        <div class="section-title">
+            <i class="bi bi-person-badge"></i>
+            Información Personal
+        </div>
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="info-label">Nombre Completo</div>
+                <div class="info-value">
+                    {{ request.user.first_name|default:"No especificado" }} {{ request.user.last_name|default:"" }}
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">DNI</div>
+                <div class="info-value {% if not request.user.perfil.paciente.dni %}empty{% endif %}">
+                    {{ request.user.perfil.paciente.dni|default:"No especificado" }}
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Fecha de Nacimiento</div>
+                <div class="info-value {% if not request.user.perfil.paciente.fecha_nacimiento %}empty{% endif %}">
+                    {{ request.user.perfil.paciente.fecha_nacimiento|date:"d/m/Y"|default:"No especificado" }}
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Género</div>
+                <div class="info-value">
+                    {{ request.user.perfil.paciente.get_genero_display|default:"No especificado" }}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Información de Contacto -->
+    <div class="info-section">
+        <div class="section-title">
+            <i class="bi bi-envelope"></i>
+            Contacto
+        </div>
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="info-label">Email</div>
+                <div class="info-value {% if not request.user.email %}empty{% endif %}">
+                    <i class="bi bi-envelope-fill"></i> {{ request.user.email|default:"No especificado" }}
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Teléfono</div>
+                <div class="info-value {% if not request.user.perfil.paciente.telefono %}empty{% endif %}">
+                    <i class="bi bi-telephone-fill"></i> {{ request.user.perfil.paciente.telefono|default:"No especificado" }}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Nota informativa -->
+    <div class="alert-info-custom">
+        <i class="bi bi-info-circle-fill"></i>
+        <strong>Importante:</strong> Si necesitás actualizar tu información personal, contactá a un administrador del centro terapéutico.
+    </div>
 </div>
+
 {% endblock %}

@@ -4,32 +4,336 @@
 {% block title %}Comprobantes{% endblock %}
 
 {% block content %}
-<h3><i class="bi bi-receipt"></i> Comprobantes</h3>
-<hr>
+<div class="comprobantes-container">
+    <div class="page-header">
+        <div class="header-content">
+            <i class="bi bi-receipt-cutoff header-icon"></i>
+            <div>
+                <h2>Mis Comprobantes de Pago</h2>
+                <p class="header-subtitle">Consultá y descargá tus comprobantes</p>
+            </div>
+        </div>
+    </div>
 
-{% if comprobantes %}
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Fecha</th>
-            <th>Monto</th>
-            <th>Concepto</th>
-            <th>Descargar</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for c in comprobantes %}
-        <tr>
-            <td>{{ c.fecha }}</td>
-            <td>${{ c.monto }}</td>
-            <td>{{ c.detalle }}</td>
-            <td><a href="{{ c.archivo.url }}" class="btn btn-primary btn-sm">PDF</a></td>
-        </tr>
+    <div class="info-message">
+        <div class="info-content">
+            <i class="bi bi-info-circle-fill"></i>
+            <div>
+                <h4>Sistema de Comprobantes</h4>
+                <p>Los comprobantes son generados por tu equipo terapéutico en cada sesión. Si necesitás acceder a un comprobante específico, podés solicitarlo directamente en tu próxima sesión o contactando con administración.</p>
+            </div>
+        </div>
+    </div>
+
+    {% if comprobantes %}
+    <div class="comprobantes-list">
+        {% for comprobante in comprobantes %}
+        <div class="comprobante-card">
+            <div class="comprobante-icon">
+                <i class="bi bi-file-earmark-pdf-fill"></i>
+            </div>
+            <div class="comprobante-info">
+                <h4>{{ comprobante.concepto }}</h4>
+                <div class="comprobante-detalles">
+                    <span class="detalle-item">
+                        <i class="bi bi-calendar3 me-1"></i>
+                        <strong>Fecha:</strong> {{ comprobante.fecha|date:"d/m/Y" }}
+                    </span>
+                    <span class="detalle-item">
+                        <i class="bi bi-cash-coin me-1"></i>
+                        <strong>Monto:</strong> ${{ comprobante.monto }}
+                    </span>
+                </div>
+                {% if comprobante.detalle %}
+                <p class="comprobante-descripcion">{{ comprobante.detalle }}</p>
+                {% endif %}
+            </div>
+            <div class="comprobante-actions">
+                <a href="{{ comprobante.archivo.url }}" class="btn-descargar" target="_blank">
+                    <i class="bi bi-download"></i>
+                    Descargar PDF
+                </a>
+            </div>
+        </div>
         {% endfor %}
-    </tbody>
-</table>
-{% else %}
-<p class="text-muted">No hay comprobantes disponibles.</p>
-{% endif %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <i class="bi bi-inbox"></i>
+        <h4>No hay comprobantes disponibles</h4>
+        <p>Todavía no tenés comprobantes registrados en el sistema. Cuando realices tu primera sesión y se genere el comprobante correspondiente, aparecerá aquí.</p>
+        <div class="empty-action">
+            <i class="bi bi-telephone-fill me-2"></i>
+            <span>Para más información, contactá con administración</span>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .comprobantes-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px 30px;
+    }
+    
+    .page-header {
+        background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+        color: white;
+        padding: 35px 40px;
+        border-radius: 20px;
+        margin-bottom: 35px;
+        box-shadow: 0 8px 25px rgba(23, 162, 184, 0.3);
+    }
+    
+    .header-content {
+        display: flex;
+        align-items: center;
+        gap: 25px;
+    }
+    
+    .header-icon {
+        font-size: 4rem;
+        opacity: 0.9;
+    }
+    
+    .page-header h2 {
+        color: white;
+        font-weight: 700;
+        font-size: 2.2rem;
+        margin: 0;
+    }
+    
+    .header-subtitle {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1.1rem;
+        margin: 5px 0 0 0;
+    }
+    
+    .info-message {
+        background: linear-gradient(135deg, #e7f7fa 0%, #ffffff 100%);
+        border: 2px solid #b8e4ed;
+        border-left: 5px solid #17a2b8;
+        padding: 20px 25px;
+        border-radius: 12px;
+        margin-bottom: 35px;
+    }
+    
+    .info-content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        max-width: 900px;
+        margin: 0 auto;
+        text-align: center;
+    }
+    
+    .info-message i {
+        font-size: 1.8rem;
+        color: #17a2b8;
+        flex-shrink: 0;
+    }
+    
+    .info-message h4 {
+        color: #138496;
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin: 0 0 5px 0;
+    }
+    
+    .info-message p {
+        color: #495057;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        margin: 0;
+    }
+    
+    .comprobantes-list {
+        display: grid;
+        gap: 20px;
+    }
+    
+    .comprobante-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        border: 2px solid #d1ecf1;
+        display: flex;
+        align-items: center;
+        gap: 25px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+    
+    .comprobante-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(23, 162, 184, 0.2);
+        border-color: #17a2b8;
+    }
+    
+    .comprobante-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+    
+    .comprobante-icon i {
+        font-size: 2.5rem;
+        color: white;
+    }
+    
+    .comprobante-info {
+        flex: 1;
+    }
+    
+    .comprobante-info h4 {
+        color: #138496;
+        font-weight: 700;
+        font-size: 1.3rem;
+        margin: 0 0 12px 0;
+    }
+    
+    .comprobante-detalles {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-bottom: 10px;
+    }
+    
+    .detalle-item {
+        color: #495057;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+    }
+    
+    .detalle-item i {
+        color: #17a2b8;
+    }
+    
+    .comprobante-descripcion {
+        color: #6c757d;
+        font-size: 0.95rem;
+        margin: 10px 0 0 0;
+        font-style: italic;
+    }
+    
+    .comprobante-actions {
+        flex-shrink: 0;
+    }
+    
+    .btn-descargar {
+        background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+        color: white;
+        padding: 12px 25px;
+        border-radius: 25px;
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(23, 162, 184, 0.3);
+    }
+    
+    .btn-descargar:hover {
+        background: linear-gradient(135deg, #138496 0%, #17a2b8 100%);
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(23, 162, 184, 0.4);
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 80px 40px;
+        background: white;
+        border-radius: 20px;
+        border: 2px dashed #d1ecf1;
+    }
+    
+    .empty-state i {
+        font-size: 5rem;
+        color: #17a2b8;
+        margin-bottom: 20px;
+        opacity: 0.7;
+    }
+    
+    .empty-state h4 {
+        color: #138496;
+        font-weight: 700;
+        font-size: 1.8rem;
+        margin-bottom: 15px;
+    }
+    
+    .empty-state p {
+        color: #6c757d;
+        font-size: 1.1rem;
+        max-width: 600px;
+        margin: 0 auto 25px;
+        line-height: 1.7;
+    }
+    
+    .empty-action {
+        background: #e7f7fa;
+        color: #138496;
+        padding: 15px 25px;
+        border-radius: 10px;
+        display: inline-flex;
+        align-items: center;
+        font-weight: 600;
+        font-size: 1.05rem;
+    }
+    
+    @media (max-width: 768px) {
+        .comprobantes-container {
+            padding: 15px;
+        }
+        
+        .page-header {
+            padding: 25px 20px;
+        }
+        
+        .header-content {
+            flex-direction: column;
+            text-align: center;
+            gap: 15px;
+        }
+        
+        .header-icon {
+            font-size: 3rem;
+        }
+        
+        .page-header h2 {
+            font-size: 1.6rem;
+        }
+        
+        .info-message {
+            flex-direction: column;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .comprobante-card {
+            flex-direction: column;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .comprobante-detalles {
+            justify-content: center;
+        }
+        
+        .btn-descargar {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
 
 {% endblock %}

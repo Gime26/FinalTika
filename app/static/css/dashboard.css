@@ -60,6 +60,10 @@
       z-index: 1;
       overflow-y: auto;         /* permite hacer scroll si se extiende mucho */
     }
+    .content-wrapper {
+      padding-top: 30px;        /* espacio adicional para evitar overlap con navbar */
+      width: 100%;
+    }
     .card-custom {
       border-radius: 10px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);

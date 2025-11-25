@@ -92,37 +92,31 @@
     </div>
 
     <!-- 📋 Secciones inferiores -->
-    <div class="row g-3">
-      <div class="col-md-12">
-        <div class="card card-custom p-3">
-          <h5>Clasificación de turnos</h5>
-          <p>No hay turnos cargados para el día de hoy.</p>
-        </div>
+    <div style="display: block; width: 100%;">
+      <div class="card card-custom p-4" style="width: 100% !important; max-width: 100% !important; flex: none !important; display: block !important; margin: 0 0 20px 0 !important;">
+        <h5>Clasificación de turnos</h5>
+        <p>No hay turnos cargados para el día de hoy.</p>
       </div>
       
-      <div class="col-md-12">
-        <div class="card card-custom p-3">
-          <h5>Próximos turnos</h5>
-          <p>No hay próximos turnos cargados.</p>
-        </div>
+      <div class="card card-custom p-4" style="width: 100% !important; max-width: 100% !important; flex: none !important; display: block !important; margin: 0 0 20px 0 !important;">
+        <h5>Próximos turnos</h5>
+        <p>No hay próximos turnos cargados.</p>
       </div>
 
-      <div class="col-md-12">
-        <div class="card card-custom p-3">
-          <h5>Recordatorios de turnos</h5>
-          <p>Utilizá el botón de WhatsApp para enviar los recordatorios a los clientes del 22/10/2025.</p>
-          <table class="table table-sm mt-2">
-            <thead>
-              <tr>
-                <th>Paciente</th>
-                <th>Turno</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- Datos dinámicos -->
-            </tbody>
-          </table>
-        </div>
+      <div class="card card-custom p-4" style="width: 100% !important; max-width: 100% !important; flex: none !important; display: block !important; margin: 0 0 20px 0 !important;">
+        <h5>Recordatorios de turnos</h5>
+        <p>Utilizá el botón de WhatsApp para enviar los recordatorios a los clientes del 22/10/2025.</p>
+        <table class="table table-sm mt-2">
+          <thead>
+            <tr>
+              <th>Paciente</th>
+              <th>Turno</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Datos dinámicos -->
+          </tbody>
+        </table>
       </div>
     </div>
     {% endblock %}
@@ -150,6 +144,21 @@
     
     .logo-link:hover {
       opacity: 0.8;
+    }
+    
+    .dashboard-sections {
+      display: flex !important;
+      flex-direction: column !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      gap: 0 !important;
+    }
+    
+    .dashboard-sections .card {
+      width: 100% !important;
+      display: block !important;
+      margin-bottom: 20px !important;
+      flex: none !important;
     }
     
     .logout-btn {

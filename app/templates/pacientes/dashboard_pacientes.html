@@ -3,36 +3,286 @@
 
 {% block content %}
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h3><i class="bi bi-display"></i> Inicio <small class="text-muted">¡Bienvenid@ a TIKA!</small></h3>
-    <div class="header-icons">
-        <span>{{ request.user.username }}</span>
-        <i class="bi bi-person-circle"></i>
-        <i class="bi bi-bell"></i>
+<div class="dashboard-paciente-container">
+    <div class="welcome-header mb-5">
+        <div class="welcome-content">
+            <i class="bi bi-emoji-smile-fill welcome-emoji"></i>
+            <div class="welcome-text">
+                <h1 class="dashboard-title">¡Bienvenid@ a TIKA, {{ paciente.nombre }}!</h1>
+                <p class="subtitle">Tu espacio de seguimiento terapéutico personalizado</p>
+            </div>
+        </div>
     </div>
-</div>
-
-<!-- Tarjetas -->
-<div class="dashboard-cards">
-    <div class="card card-custom text-center p-3">
-        <h6>TURNOS HOY</h6>
-        <h3>0</h3>
+    
+    <!-- Tarjetas principales -->
+    <div class="features-grid">
+        <a href="{% url 'paciente_observaciones' %}" class="feature-card-link">
+            <div class="feature-card">
+                <div class="feature-icon-wrapper">
+                    <i class="bi bi-clipboard-data-fill"></i>
+                </div>
+                <h4>Observaciones Clínicas</h4>
+                <p>Revisá las anotaciones de tus sesiones con los especialistas</p>
+            </div>
+        </a>
+        
+        <a href="{% url 'paciente_informes' %}" class="feature-card-link">
+            <div class="feature-card">
+                <div class="feature-icon-wrapper">
+                    <i class="bi bi-file-earmark-medical-fill"></i>
+                </div>
+                <h4>Informes Interdisciplinarios</h4>
+                <p>Consultá los informes detallados de tu tratamiento</p>
+            </div>
+        </a>
+        
+        <a href="{% url 'paciente_comprobantes' %}" class="feature-card-link">
+            <div class="feature-card">
+                <div class="feature-icon-wrapper">
+                    <i class="bi bi-receipt-cutoff"></i>
+                </div>
+                <h4>Comprobantes</h4>
+                <p>Accedé a tus recibos y comprobantes de pago</p>
+            </div>
+        </a>
+        
+        <a href="{% url 'paciente_perfil' %}" class="feature-card-link">
+            <div class="feature-card">
+                <div class="feature-icon-wrapper">
+                    <i class="bi bi-person-circle"></i>
+                </div>
+                <h4>Mi Perfil</h4>
+                <p>Mantené actualizada tu información personal</p>
+            </div>
+        </a>
     </div>
-    <div class="card card-custom text-center p-3 bg-info text-white">
-        <h6>TURNOS DEL MES</h6>
-        <h3>0</h3>
-    </div>
-</div>
-
-<!-- Próximos turnos -->
-<div class="row mt-4">
-    <div class="col-md-6">
-        <div class="card card-custom p-3">
-            <h5>Próximos turnos</h5>
-            <p>No hay próximos turnos cargados.</p>
+    
+    <!-- Información sobre notificaciones -->
+    <div class="notification-info">
+        <div class="notification-content">
+            <i class="bi bi-bell-fill"></i>
+            <div class="notification-text">
+                <h5>Notificaciones</h5>
+                <p>Cuando tengas nuevas observaciones o informes, te notificaremos con el campanita en la parte superior derecha.</p>
+            </div>
         </div>
     </div>
 </div>
 
+<style>
+    .dashboard-paciente-container {
+        width: 100%;
+        max-width: 100%;
+        padding: 30px 40px;
+        min-height: calc(100vh - 160px);
+    }
+    
+    .welcome-header {
+        padding: 30px 0;
+        text-align: center;
+    }
+    
+    .welcome-content {
+        display: inline-flex;
+        align-items: center;
+        gap: 25px;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 30px 50px;
+        border-radius: 20px;
+        box-shadow: 0 8px 25px rgba(139, 90, 158, 0.15);
+    }
+    
+    .welcome-emoji {
+        font-size: 5rem;
+        color: #8b5a9e;
+        animation: bounce 2s infinite;
+        flex-shrink: 0;
+    }
+    
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+    
+    .welcome-text {
+        text-align: left;
+    }
+    
+    .dashboard-title {
+        color: #610455;
+        font-weight: 700;
+        font-size: 2.5rem;
+        margin-bottom: 5px;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+    
+    .subtitle {
+        font-size: 1.2rem;
+        color: #8b5a9e;
+        font-weight: 500;
+        margin: 0;
+    }
+    
+    /* Grid de características */
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 30px;
+        margin: 40px 0;
+        padding: 0 20px;
+    }
+    
+    .feature-card-link {
+        text-decoration: none;
+        display: block;
+        height: 100%;
+    }
+    
+    .feature-card {
+        background: white;
+        border-radius: 15px;
+        padding: 40px 30px;
+        text-align: center;
+        border: 2px solid #e1b9eb;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        height: 100%;
+        cursor: pointer;
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 30px rgba(139, 90, 158, 0.3);
+        border-color: #8b5a9e;
+        background: linear-gradient(135deg, #ffffff 0%, #f8f4fa 100%);
+    }
+    
+    .feature-icon-wrapper {
+        width: 90px;
+        height: 90px;
+        margin: 0 auto 20px;
+        background: linear-gradient(135deg, #8b5a9e 0%, #610455 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .feature-icon-wrapper i {
+        font-size: 2.8rem;
+        color: white;
+    }
+    
+    .feature-card h4 {
+        color: #610455;
+        font-weight: 600;
+        font-size: 1.4rem;
+        margin-bottom: 15px;
+    }
+    
+    .feature-card p {
+        color: #666;
+        font-size: 1rem;
+        line-height: 1.6;
+        margin: 0;
+    }
+    
+    /* Información de notificaciones */
+    .notification-info {
+        background: linear-gradient(135deg, #e8f4f8 0%, #d4e9f7 100%);
+        border-radius: 15px;
+        padding: 25px 35px;
+        margin: 40px auto 20px;
+        border: 2px solid #b8dce8;
+        max-width: 900px;
+    }
+    
+    .notification-content {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        justify-content: center;
+    }
+    
+    .notification-info i {
+        font-size: 2.5rem;
+        color: #0d6efd;
+        flex-shrink: 0;
+    }
+    
+    .notification-text {
+        text-align: left;
+    }
+    
+    .notification-info h5 {
+        color: #0d6efd;
+        font-weight: 600;
+        font-size: 1.3rem;
+        margin-bottom: 8px;
+    }
+    
+    .notification-info p {
+        color: #495057;
+        font-size: 1.05rem;
+        margin: 0;
+        line-height: 1.5;
+    }
+    
+    @media (max-width: 768px) {
+        .dashboard-paciente-container {
+            padding: 15px 20px;
+        }
+        
+        .welcome-content {
+            flex-direction: column;
+            padding: 25px 30px;
+            gap: 15px;
+        }
+        
+        .welcome-text {
+            text-align: center;
+        }
+        
+        .welcome-emoji {
+            font-size: 4rem;
+        }
+        
+        .dashboard-title {
+            font-size: 1.8rem;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+        }
+        
+        .features-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+            padding: 0;
+        }
+        
+        .feature-card {
+            padding: 30px 20px;
+        }
+        
+        .notification-info {
+            padding: 20px;
+            margin: 30px 15px 15px;
+        }
+        
+        .notification-content {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .notification-text {
+            text-align: center;
+        }
+        
+        .notification-info i {
+            font-size: 2rem;
+        }
+    }
+</style>
 
 {% endblock %}

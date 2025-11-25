@@ -1,25 +1,377 @@
 {% extends "pacientes/basepacientes.html" %}
 {% load static %}
 
-{% block title %}Informes Interdisciplinarios{% endblock %}
+{% block title %}Mis Informes{% endblock %}
 
 {% block content %}
-<h3><i class="bi bi-file-text"></i> Informes Interdisciplinarios</h3>
-<hr>
+<div class="informes-container">
+    <div class="page-header">
+        <div class="header-content">
+            <i class="bi bi-file-earmark-medical-fill header-icon"></i>
+            <div>
+                <h2>Mis Informes Interdisciplinarios</h2>
+                <p class="header-subtitle">Consultá los informes detallados de tu tratamiento</p>
+            </div>
+        </div>
+    </div>
 
-{% if informes %}
-<ul class="list-group">
-    {% for inf in informes %}
-    <li class="list-group-item">
-        <strong>{{ inf.titulo }}</strong>  
-        <br>
-        <small class="text-muted">Fecha: {{ inf.fecha }}</small>
-        <p>{{ inf.resumen }}</p>
-    </li>
-    {% endfor %}
-</ul>
-{% else %}
-<p class="text-muted">No tenés informes cargados.</p>
-{% endif %}
+    {% if informes %}
+        <div class="informes-list">
+            {% for informe in informes %}
+            <div class="informe-card {% if informe.es_nuevo %}nuevo{% endif %}">
+                <div class="card-header-info">
+                    <div class="title-section">
+                        <h3 class="informe-titulo">
+                            <i class="bi bi-file-text me-2"></i>
+                            {{ informe.asunto }}
+                        </h3>
+                        {% if informe.es_nuevo %}
+                        <span class="badge-nuevo">
+                            <i class="bi bi-star-fill me-1"></i>NUEVO
+                        </span>
+                        {% endif %}
+                    </div>
+                    <span class="fecha-badge">
+                        <i class="bi bi-calendar-check me-1"></i>
+                        {{ informe.fecha_informe|date:"d/m/Y" }}
+                    </span>
+                </div>
+                
+                {% if informe.descripcion_general %}
+                <div class="descripcion">
+                    <p>{{ informe.descripcion_general|truncatewords:40 }}</p>
+                </div>
+                {% endif %}
+                
+                <div class="especialistas-section">
+                    <div class="especialistas-label">
+                        <i class="bi bi-people-fill me-2"></i>
+                        <strong>Especialistas participantes:</strong>
+                    </div>
+                    <div class="especialistas-tags">
+                        {% for esp in informe.especialistas.all %}
+                            <span class="especialista-tag">
+                                <i class="bi bi-person-badge"></i>
+                                {{ esp.nombre }} {{ esp.apellido }}
+                            </span>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <div class="card-footer-info">
+                    <span class="fecha-creacion">
+                        <i class="bi bi-clock-history me-1"></i>
+                        Creado el {{ informe.fecha_creacion|date:"d/m/Y H:i" }}
+                    </span>
+                    <a href="{% url 'detalle_informe' informe.id %}" class="btn-ver-detalle">
+                        <i class="bi bi-eye-fill me-1"></i>
+                        Ver detalle completo
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <i class="bi bi-inbox"></i>
+            <h4>No hay informes disponibles</h4>
+            <p>Todavía no tenés informes interdisciplinarios registrados. Cuando tu equipo terapéutico genere un informe, aparecerá aquí.</p>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .informes-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px 30px;
+    }
+    
+    .page-header {
+        background: linear-gradient(135deg, #8b5a9e 0%, #610455 100%);
+        color: white;
+        padding: 35px 40px;
+        border-radius: 20px;
+        margin-bottom: 35px;
+        box-shadow: 0 8px 25px rgba(139, 90, 158, 0.3);
+    }
+    
+    .header-content {
+        display: flex;
+        align-items: center;
+        gap: 25px;
+    }
+    
+    .header-icon {
+        font-size: 4rem;
+        opacity: 0.9;
+    }
+    
+    .page-header h2 {
+        color: white;
+        font-weight: 700;
+        font-size: 2.2rem;
+        margin: 0;
+    }
+    
+    .header-subtitle {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1.1rem;
+        margin: 5px 0 0 0;
+    }
+    
+    .informes-list {
+        display: grid;
+        gap: 25px;
+    }
+    
+    .informe-card {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        border: 2px solid #e1b9eb;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+    
+    .informe-card.nuevo {
+        border-color: #8b5a9e;
+        background: linear-gradient(135deg, #ffffff 0%, #f8f4fa 100%);
+        box-shadow: 0 6px 20px rgba(139, 90, 158, 0.15);
+    }
+    
+    .informe-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 30px rgba(139, 90, 158, 0.25);
+        border-color: #8b5a9e;
+    }
+    
+    .card-header-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    
+    .title-section {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+    
+    .informe-titulo {
+        color: #610455;
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin: 0;
+        display: flex;
+        align-items: center;
+    }
+    
+    .badge-nuevo {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 25px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        animation: pulse 2s infinite;
+        box-shadow: 0 3px 10px rgba(220, 53, 69, 0.3);
+    }
+    
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.05); opacity: 0.9; }
+    }
+    
+    .fecha-badge {
+        background: #8b5a9e;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 1rem;
+        display: inline-flex;
+        align-items: center;
+        white-space: nowrap;
+    }
+    
+    .descripcion {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        border-left: 4px solid #8b5a9e;
+    }
+    
+    .descripcion p {
+        color: #495057;
+        font-size: 1.05rem;
+        line-height: 1.7;
+        margin: 0;
+    }
+    
+    .especialistas-section {
+        background: linear-gradient(135deg, #f8f4fa 0%, #ffffff 100%);
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #e1b9eb;
+    }
+    
+    .especialistas-label {
+        color: #610455;
+        font-size: 1.05rem;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .especialistas-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .especialista-tag {
+        background: white;
+        color: #610455;
+        padding: 10px 18px;
+        border-radius: 20px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: 2px solid #8b5a9e;
+        font-size: 0.95rem;
+        transition: all 0.2s;
+    }
+    
+    .especialista-tag:hover {
+        background: #8b5a9e;
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    .card-footer-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 20px;
+        border-top: 2px solid #f0f0f0;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    
+    .fecha-creacion {
+        color: #6c757d;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+    }
+    
+    .btn-ver-detalle {
+        background: linear-gradient(135deg, #8b5a9e 0%, #610455 100%);
+        color: white;
+        padding: 12px 28px;
+        border-radius: 25px;
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(139, 90, 158, 0.3);
+        border: none;
+    }
+    
+    .btn-ver-detalle:hover {
+        background: linear-gradient(135deg, #610455 0%, #8b5a9e 100%);
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(139, 90, 158, 0.4);
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 80px 40px;
+        background: white;
+        border-radius: 20px;
+        border: 2px dashed #e1b9eb;
+    }
+    
+    .empty-state i {
+        font-size: 5rem;
+        color: #8b5a9e;
+        margin-bottom: 20px;
+        opacity: 0.7;
+    }
+    
+    .empty-state h4 {
+        color: #610455;
+        font-weight: 700;
+        font-size: 1.8rem;
+        margin-bottom: 15px;
+    }
+    
+    .empty-state p {
+        color: #6c757d;
+        font-size: 1.1rem;
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.7;
+    }
+    
+    @media (max-width: 768px) {
+        .informes-container {
+            padding: 15px;
+        }
+        
+        .page-header {
+            padding: 25px 20px;
+        }
+        
+        .header-content {
+            flex-direction: column;
+            text-align: center;
+            gap: 15px;
+        }
+        
+        .header-icon {
+            font-size: 3rem;
+        }
+        
+        .page-header h2 {
+            font-size: 1.6rem;
+        }
+        
+        .informe-card {
+            padding: 20px;
+        }
+        
+        .informe-titulo {
+            font-size: 1.3rem;
+        }
+        
+        .card-header-info {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .card-footer-info {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .btn-ver-detalle {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
 
 {% endblock %}
