@@ -122,6 +122,7 @@ class Especialista(models.Model):
     matricula = models.CharField(max_length=20, unique=True, verbose_name="Matrícula", null=True, blank=True)
     email = models.EmailField(blank=True, null=True)
     telefono = models.CharField(max_length=20, blank=True, null=True)
+    perfil = models.OneToOneField(Perfil, on_delete=models.SET_NULL, null=True, blank=True, related_name='especialista_relacionado', verbose_name="Perfil de usuario")
     
     class Meta:
         verbose_name = "Especialista"
@@ -144,6 +145,7 @@ class Turno(models.Model):
         verbose_name="Estado"
     )
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    creado_por = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='turnos_creados', verbose_name="Creado por")
     
     class Meta:
         verbose_name = "Turno"

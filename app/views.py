@@ -557,8 +557,31 @@ class CrearObservacionView(LoginRequiredMixin, CreateView):
     template_name = 'observaciones/observacion_form.html'
     success_url = reverse_lazy('lista_observaciones')
 
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        # Prellenar especialista con el usuario actual
+        try:
+            perfil = self.request.user.perfil
+            # Buscar el valor del especialista basado en el perfil
+            for choice_value, choice_label in Observacion.ESPECIALISTAS:
+                if perfil.nombre.lower() in choice_label.lower() or perfil.apellido.lower() in choice_label.lower():
+                    form.fields['especialista'].initial = choice_value
+                    break
+        except:
+            pass
+        return form
+
     def form_valid(self, form):
         form.instance.creada_por = self.request.user
+        # Asegurar que el especialista sea el del usuario actual
+        try:
+            perfil = self.request.user.perfil
+            for choice_value, choice_label in Observacion.ESPECIALISTAS:
+                if perfil.nombre.lower() in choice_label.lower() or perfil.apellido.lower() in choice_label.lower():
+                    form.instance.especialista = choice_value
+                    break
+        except:
+            pass
         return super().form_valid(form)
 
 
@@ -567,11 +590,16 @@ def editar_observacion(request, pk):
     """Editar una observación existente"""
     observacion = get_object_or_404(Observacion, pk=pk)
     
-    # Solo el creador o un especialista puede editar
+    # Solo el creador puede editar
+    if observacion.creada_por != request.user:
+        messages.error(request, "Solo el especialista que creó esta observación puede editarla.")
+        return redirect('lista_observaciones')
+    
+    # Validar que el usuario sea especialista
     try:
         perfil = request.user.perfil
-        if perfil.rol != 'especialista' and observacion.creada_por != request.user:
-            messages.error(request, "No tienes permiso para editar esta observación.")
+        if perfil.rol != 'especialista':
+            messages.error(request, "Solo los especialistas pueden editar observaciones.")
             return redirect('lista_observaciones')
     except AttributeError:
         messages.error(request, "Error: Tu cuenta no tiene un perfil asociado.")
@@ -580,11 +608,17 @@ def editar_observacion(request, pk):
     if request.method == 'POST':
         form = ObservacionForm(request.POST, instance=observacion)
         if form.is_valid():
-            form.save()
+            # Forzar que el especialista siga siendo el mismo (del creador original)
+            observacion_actualizada = form.save(commit=False)
+            # Mantener el especialista original, no permitir cambios
+            observacion_actualizada.especialista = observacion.especialista
+            observacion_actualizada.save()
             messages.success(request, 'Observación actualizada exitosamente.')
             return redirect('lista_observaciones')
     else:
         form = ObservacionForm(instance=observacion)
+        # Prellenar y deshabilitar el campo especialista
+        form.fields['especialista'].initial = observacion.especialista
     
     return render(request, 'observaciones/observacion_form.html', {
         'form': form,
@@ -598,11 +632,16 @@ def eliminar_observacion(request, pk):
     """Eliminar una observación"""
     observacion = get_object_or_404(Observacion, pk=pk)
     
-    # Solo el creador o un especialista puede eliminar
+    # Solo el creador puede eliminar
+    if observacion.creada_por != request.user:
+        messages.error(request, "Solo el especialista que creó esta observación puede eliminarla.")
+        return redirect('lista_observaciones')
+    
+    # Validar que el usuario sea especialista
     try:
         perfil = request.user.perfil
-        if perfil.rol != 'especialista' and observacion.creada_por != request.user:
-            messages.error(request, "No tienes permiso para eliminar esta observación.")
+        if perfil.rol != 'especialista':
+            messages.error(request, "Solo los especialistas pueden eliminar observaciones.")
             return redirect('lista_observaciones')
     except AttributeError:
         messages.error(request, "Error: Tu cuenta no tiene un perfil asociado.")
@@ -760,6 +799,32 @@ def crear_informe_interdisciplinario(request):
 def crear_turno(request):
     """Crear un nuevo turno"""
     if request.method == 'POST':
+        # Validar que el usuario sea especialista
+        try:
+            perfil = request.user.perfil
+            if perfil.rol != 'especialista':
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Solo los especialistas pueden crear turnos'
+                })
+            
+            # Buscar o crear el Especialista asociado al perfil
+            especialista_usuario, created = Especialista.objects.get_or_create(
+                perfil=perfil,
+                defaults={
+                    'nombre': f"{perfil.nombre} {perfil.apellido}",
+                    'especialidad': perfil.especialidad or "No especificado",
+                    'matricula': perfil.matricula,
+                    'email': perfil.email,
+                    'telefono': perfil.telefono
+                }
+            )
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'error': f'Error al obtener especialista: {str(e)}'
+            })
+        
         try:
             import json
             import re
@@ -796,15 +861,8 @@ def crear_turno(request):
                     paciente.apellido = apellido
                     paciente.save()
             
-            # Obtener especialista
-            especialista_id = data.get('especialista')
-            if not especialista_id:
-                return JsonResponse({
-                    'success': False,
-                    'error': 'Debe seleccionar un profesional'
-                })
-            
-            especialista = Especialista.objects.get(id=especialista_id)
+            # USAR EL ESPECIALISTA DEL USUARIO ACTUAL (no permitir selección)
+            especialista = especialista_usuario
             fecha = data.get('fecha')
             
             # Validar que el paciente no tenga otro turno con el mismo especialista el mismo día
@@ -817,7 +875,7 @@ def crear_turno(request):
             if turno_existente:
                 return JsonResponse({
                     'success': False,
-                    'error': f'El paciente ya tiene un turno con {especialista.nombre} el {fecha} a las {turno_existente.hora.strftime("%H:%M")}. No se pueden agendar múltiples turnos con el mismo profesional en un mismo día.'
+                    'error': f'El paciente ya tiene un turno contigo el {fecha} a las {turno_existente.hora.strftime("%H:%M")}. No se pueden agendar múltiples turnos con el mismo profesional en un mismo día.'
                 })
             
             # Crear el turno
@@ -826,7 +884,8 @@ def crear_turno(request):
                 especialista=especialista,
                 fecha=fecha,
                 hora=data.get('hora'),
-                motivo=data.get('motivo', '')
+                motivo=data.get('motivo', ''),
+                creado_por=request.user
             )
             
             turno.full_clean()  # Validar
@@ -865,6 +924,27 @@ def crear_turno(request):
 def editar_turno(request, pk):
     """Editar un turno existente"""
     turno = get_object_or_404(Turno, pk=pk)
+    
+    # Validar que el usuario sea el creador del turno
+    if turno.creado_por and turno.creado_por != request.user:
+        return JsonResponse({
+            'success': False,
+            'error': 'Solo el especialista que creó este turno puede editarlo'
+        })
+    
+    # Validar que el usuario sea especialista
+    try:
+        perfil = request.user.perfil
+        if perfil.rol != 'especialista':
+            return JsonResponse({
+                'success': False,
+                'error': 'Solo los especialistas pueden editar turnos'
+            })
+    except:
+        return JsonResponse({
+            'success': False,
+            'error': 'Usuario no tiene perfil de especialista'
+        })
     
     if request.method == 'POST':
         try:
@@ -995,6 +1075,28 @@ def eliminar_turno(request, pk):
     """Eliminar permanentemente un turno"""
     if request.method == 'POST':
         turno = get_object_or_404(Turno, pk=pk)
+        
+        # Validar que el usuario sea el creador del turno
+        if turno.creado_por and turno.creado_por != request.user:
+            return JsonResponse({
+                'success': False,
+                'error': 'Solo el especialista que creó este turno puede eliminarlo'
+            })
+        
+        # Validar que el usuario sea especialista
+        try:
+            perfil = request.user.perfil
+            if perfil.rol != 'especialista':
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Solo los especialistas pueden eliminar turnos'
+                })
+        except:
+            return JsonResponse({
+                'success': False,
+                'error': 'Usuario no tiene perfil de especialista'
+            })
+        
         paciente_nombre = turno.paciente.nombre
         
         try:
@@ -1093,6 +1195,16 @@ def derivar_entrevista(request, pk):
 @login_required
 def crear_informe_interdisciplinario(request):
     """Crear un nuevo informe interdisciplinario"""
+    # Validar que el usuario sea especialista
+    try:
+        perfil = request.user.perfil
+        if perfil.rol != 'especialista':
+            messages.error(request, "Solo los especialistas pueden crear informes.")
+            return redirect('dashboard')
+    except AttributeError:
+        messages.error(request, "Error: Tu cuenta no tiene un perfil asociado.")
+        return redirect('dashboard')
+    
     if request.method == 'POST':
         form = InformeInterdisciplinarioForm(request.POST)
         if form.is_valid():
@@ -1241,9 +1353,19 @@ def editar_informe(request, informe_id):
     """Editar un informe interdisciplinario (solo el creador)"""
     informe = get_object_or_404(InformeInterdisciplinario, pk=informe_id)
     
+    # Validar que el usuario sea especialista
+    try:
+        perfil = request.user.perfil
+        if perfil.rol != 'especialista':
+            messages.error(request, "Solo los especialistas pueden editar informes.")
+            return redirect('dashboard')
+    except AttributeError:
+        messages.error(request, "Error: Tu cuenta no tiene un perfil asociado.")
+        return redirect('dashboard')
+    
     # Solo el creador puede editar el informe base
     if informe.creado_por != request.user:
-        messages.error(request, "Solo el creador puede editar este informe.")
+        messages.error(request, "Solo el especialista que creó este informe puede editarlo.")
         return redirect('detalle_informe', informe_id=informe_id)
     
     if request.method == 'POST':
@@ -1266,9 +1388,19 @@ def eliminar_informe(request, informe_id):
     """Eliminar un informe (solo el creador)"""
     informe = get_object_or_404(InformeInterdisciplinario, pk=informe_id)
     
+    # Validar que el usuario sea especialista
+    try:
+        perfil = request.user.perfil
+        if perfil.rol != 'especialista':
+            messages.error(request, "Solo los especialistas pueden eliminar informes.")
+            return redirect('dashboard')
+    except AttributeError:
+        messages.error(request, "Error: Tu cuenta no tiene un perfil asociado.")
+        return redirect('dashboard')
+    
     # Solo el creador puede eliminar
     if informe.creado_por != request.user:
-        messages.error(request, "Solo el creador puede eliminar este informe.")
+        messages.error(request, "Solo el especialista que creó este informe puede eliminarlo.")
         return redirect('lista_informes')
     
     if request.method == 'POST':
@@ -1320,9 +1452,30 @@ def gestion_turnos(request):
     turnos = Turno.objects.all().select_related('paciente', 'especialista').order_by('-fecha', '-hora')
     especialistas = Especialista.objects.all()
     
+    # Obtener o crear el Especialista del usuario actual
+    especialista_usuario = None
+    try:
+        perfil = request.user.perfil
+        if perfil.rol == 'especialista':
+            especialista_usuario, created = Especialista.objects.get_or_create(
+                perfil=perfil,
+                defaults={
+                    'nombre': f"{perfil.nombre} {perfil.apellido}",
+                    'especialidad': perfil.especialidad or "No especificado",
+                    'matricula': perfil.matricula,
+                    'email': perfil.email,
+                    'telefono': perfil.telefono
+                }
+            )
+            # Filtrar turnos solo del especialista actual
+            turnos = turnos.filter(especialista=especialista_usuario)
+    except:
+        pass
+    
     context = {
         'turnos': turnos,
         'especialistas': especialistas,
+        'especialista_usuario': especialista_usuario,
         'status_choices': STATUS_CHOICES,
     }
     return render(request, 'Turnos/gestion_turnos.html', context)

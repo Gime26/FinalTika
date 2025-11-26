@@ -193,16 +193,12 @@
                 
                 <!-- Profesional y Fecha -->
                 <div class="row mb-2">
-                    <div class="col-6">
-                        <label for="id_especialista" class="form-label mb-1">Profesional</label>
-                        <select id="id_especialista" class="form-select form-control-sm" required>
-                            <option value="">Seleccione...</option>
-                            {% for especialista in especialistas %}
-                            <option value="{{ especialista.id }}">{{ especialista.nombre }}</option>
-                            {% endfor %}
-                        </select>
+                    <!-- Profesional ocult oautomático -->
+                    <input type="hidden" id="id_especialista" value="{{ especialista_usuario.id }}">
+                    <div class="col-12 mb-2">
+                        <label class="form-label mb-1"><strong>Especialista:</strong> {{ especialista_usuario.nombre }} ({{ especialista_usuario.especialidad }})</label>
                     </div>
-                    <div class="col-6">
+                    <div class="col-12">
                         <label for="id_fecha" class="form-label mb-1">Fecha</label>
                         <input type="date" id="id_fecha" class="form-control form-control-sm" 
                                min="{{ today }}" required>

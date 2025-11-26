@@ -216,7 +216,9 @@ class ObservacionForm(forms.ModelForm):
 
     especialista = forms.ChoiceField(
         choices=Observacion.ESPECIALISTAS,
-        label="Especialista:"
+        label="Especialista:",
+        disabled=True,  # No editable
+        required=False
     )
 
     def clean_fecha(self):
