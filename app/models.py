@@ -351,5 +351,29 @@ class Testimonio(models.Model):
 
     def __str__(self):
         return f"{self.titulo} - {self.usuario.username}"
+
+
+class Contacto(models.Model):
+    ESTADOS = [
+        ('nuevo', 'Nuevo'),
+        ('leido', 'Leído'),
+        ('respondido', 'Respondido'),
+    ]
+    
+    nombre = models.CharField(max_length=100, verbose_name="Nombre")
+    email = models.EmailField(verbose_name="Email")
+    telefono = models.CharField(max_length=20, blank=True, null=True, verbose_name="Teléfono")
+    mensaje = models.TextField(verbose_name="Mensaje")
+    fecha_envio = models.DateTimeField(auto_now_add=True)
+    estado = models.CharField(max_length=20, choices=ESTADOS, default='nuevo')
+    
+    class Meta:
+        ordering = ['-fecha_envio']
+        verbose_name = "Contacto"
+        verbose_name_plural = "Contactos"
+    
+    def __str__(self):
+        return f"{self.nombre} - {self.email} ({self.fecha_envio.strftime('%d/%m/%Y')})"
+    
     
     

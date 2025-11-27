@@ -1,17 +1,13 @@
 {% load static %}
 <section id="inicio" class="content home">
     <h2 class="title"> ¡BIENVENIDOS A TIKA! </h2>
-    <p>Tu espacio para aprender y crecer.</p>
+    <p class="subtitle-yellow">Tu espacio para aprender y crecer.</p>
     <div class="btn-home">
-      <h3>
-        <form method="POST" action="{% url 'dashboard' %}">
-          <a href="{% url 'login' %}" class="btn register-btn"> 
-            Ingresar
-          </a>
-        </form>
-        <a href="{% url 'registro' %}" class="btn register-btn" >
-         Registrarse
+        <a href="{% url 'login' %}" class="btn register-btn"> 
+          <i class="bi bi-box-arrow-in-right"></i> Ingresar
         </a>
-      </h3>
+        <a href="{% url 'registro' %}" class="btn register-btn btn-registro">
+          <i class="bi bi-person-plus"></i> Registrarse
+        </a>
     </div>
 </section>

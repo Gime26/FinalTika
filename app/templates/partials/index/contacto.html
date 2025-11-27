@@ -19,7 +19,8 @@
             <h4>¿Estás interesado en formar parte de TIKA?</h4>
             <p class="form-subtitle">Comunicate con nosotros</p>
             
-            <form class="contact-form" action="#" method="POST">
+            <form class="contact-form" action="{% url 'index' %}" method="POST">
+                {% csrf_token %}
                 <input type="text" name="nombre" placeholder="Nombre" required>
                 <input type="email" name="email" placeholder="E-mail" required>
                 <input type="tel" name="telefono" placeholder="Teléfono">

@@ -91,12 +91,12 @@
                     <tbody>
                         {% for entrevista in entrevistas %}
                         <tr data-estado="{{ entrevista.estado }}" data-especialista="{{ entrevista.especialista_asignado.id|default:'' }}" 
-                            data-paciente="{{ entrevista.paciente.nombre }} {{ entrevista.paciente.apellido }} {{ entrevista.paciente.dni_paciente }}">
+                            data-paciente="{{ entrevista.paciente.nombre }} {{ entrevista.paciente.apellido }} {{ entrevista.paciente.dni }}">
                             <td><strong>#{{ entrevista.id }}</strong></td>
                             <td>
                                 <strong>{{ entrevista.paciente.nombre }} {{ entrevista.paciente.apellido }}</strong>
                             </td>
-                            <td>{{ entrevista.paciente.dni_paciente }}</td>
+                            <td>{{ entrevista.paciente.dni }}</td>
                             <td>{{ entrevista.fecha|date:"d/m/Y" }}</td>
                             <td>{{ entrevista.hora|time:"H:i" }}</td>
                             <td>

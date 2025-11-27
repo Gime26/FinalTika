@@ -125,7 +125,7 @@ header{
     height: 100vh !important;
     background: url("./../img/fondotika.png") no-repeat center;
     background-size: cover;
-    color: #fff; /* Texto blanco si la imagen es oscura */
+    color: #ffffff !important; /* Texto blanco */
     display: flex; /* Para centrar el contenido vertical y horizontalmente */
     flex-direction: column;
     justify-content: center;
@@ -138,28 +138,73 @@ header{
     margin-bottom: 40px; /* Espacio debajo del título */
     font-weight: 600;
     text-transform: uppercase; /* Título en mayúsculas */
+    color: #ffffff !important;
+    text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 0, 0, 0.5);
 }
 p {
     font-size: 40px; /* Tamaño del párrafo */
     margin-bottom: 40px; /* Espacio debajo del párrafo */
     max-width: 600px; /* Ancho máximo para el párrafo */
     line-height: 1.6; /* Mejora la legibilidad */
+    color: #ffffff !important;
 }
 
 .btn { /* Estilo del botón del bienvenido */
-    display: inline-block; /* Para que el botón se comporte como un bloque */
-    margin-top: 15px; /* Espacio encima del botón */
-    padding: 20px 40px; /* Espacio interno del botón */;
-    border-radius: 8px; /* Bordes redondeados */
-    color: #500202; /* Color del texto del botón */
-    background: #A99B72; /* Color de fondo del botón */
-    text-decoration: none; /* Sin subrayado */
+    display: inline-block;
+    margin: 10px 0;
+    padding: 16px 45px;
+    border-radius: 50px;
+    color: #fff;
+    background: linear-gradient(135deg, #9d38e5 0%, #7b2cbf 100%);
+    text-decoration: none;
     text-transform: uppercase;
+    font-weight: 600;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    box-shadow: 0 8px 20px rgba(157, 56, 229, 0.3);
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    min-width: 250px;
+    text-align: center;
 }
  
-.btn:hover { /* Efecto al pasar el ratón */
-    background: #e782db; /* Cambia el color de fondo al pasar el ratón */
-    color: #fff; /* Cambia el color del texto al pasar el ratón */
+.btn:hover {
+    background: linear-gradient(135deg, #b24ef8 0%, #9d38e5 100%);
+    color: #fff;
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(157, 56, 229, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn i {
+    margin-right: 8px;
+    font-size: 1.1rem;
+}
+
+.btn-registro {
+    background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+    box-shadow: 0 8px 20px rgba(216, 70, 239, 0.3);
+}
+
+.btn-registro:hover {
+    background: linear-gradient(135deg, #e879f9 0%, #d946ef 100%);
+    box-shadow: 0 12px 30px rgba(216, 70, 239, 0.5);
+}
+
+.subtitle-yellow {
+    color: #ffd700 !important;
+    font-size: 1.2rem;
+    font-weight: 500;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.btn-home {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 30px;
 }
 
 .content.about { /* Estilo para la página de "Nosotros" */
@@ -179,10 +224,17 @@ p {
 }
 
 .title {
-    font-size: 60px; /* Tamaño del título */
-    margin-bottom: 40px; /* Espacio debajo del título */
+    font-size: 60px;
+    margin-bottom: 40px;
     font-weight: 600;
-    text-transform: uppercase; /* Título en mayúsculas */
+    text-transform: uppercase;
+}
+
+.content h2, .content .title {
+    font-size: 60px !important;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 40px;
 }
 
 p { /* Estilo del párrafo de cada contenedor*/
@@ -422,41 +474,102 @@ p { /* Estilo del párrafo de cada contenedor*/
 .footer {
     background-color: #333;
     color: #eee;
-    padding: 30px 20px;
+    padding: 25px 20px;
     text-align: center;
     font-size: 0.9em;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 30px;
+    align-items: start;
+}
+
+.footer-column {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.footer-column h4 {
+    color: #A99B72;
+    font-size: 1.1em;
+    font-weight: 600;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.footer-column p {
+    margin: 5px 0;
+    color: #ccc;
+    font-size: 0.95em;
+}
+
+.footer-column p i {
+    margin-right: 8px;
+    color: #A99B72;
+    width: 18px;
+    text-align: center;
+}
+
+.footer-column a {
+    color: #ccc;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    padding: 5px 0;
+    font-size: 0.95em;
+}
+
+.footer-column a:hover {
+    color: #fff;
+    padding-left: 5px;
+}
+
+.footer-center {
+    text-align: center;
+    justify-content: center;
     align-items: center;
 }
 
-.footer p {
-    margin-bottom: 8px;
-    color: #ccc;
-    justify-self: center;
-    
-}
-
-.footer a {
-    color: #A99B72;
-    transition: color 0.3s ease;
-}
-
-.footer a:hover {
-    color: #fff;
+.footer-center p {
+    font-size: 0.9em;
+    margin-bottom: 15px;
 }
 
 .social-icons {
-    margin-top: 20px;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 10px;
 }
 
 .social-icons a {
-    color: #15036e;
-    font-size: 1.8em;
-    margin: 0 12px;
-    transition: color 0.3s ease;
+    color: #A99B72;
+    font-size: 1.5em;
+    transition: all 0.3s ease;
+    display: inline-block;
 }
 
 .social-icons a:hover {
-    color: #A99B72;
+    color: #fff;
+    transform: translateY(-3px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .footer-content {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        text-align: center;
+    }
+    
+    .footer-column {
+        align-items: center;
+    }
 }
 
 /* CSS para el Botón Flotante */
@@ -734,12 +847,12 @@ header {
     }
 
     .btn-home {
-        flex-direction: column; /* Botones uno debajo del otro */
-        gap: 10px;
+        flex-direction: column;
+        gap: 15px;
     }
 
     .btn-home .btn {
-        width: 80%; /* Ancho de los botones */
+        width: 80%;
         margin: 0 auto;
     }
 

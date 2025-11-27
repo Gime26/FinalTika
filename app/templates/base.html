@@ -66,14 +66,13 @@
             <i class="bi bi-caret-down-fill btn-caret"></i>
         </button>
         <div class="dropdown-container">
-            <a href="#">Contacto</a>
+            <a href="{% url 'lista_contactos' %}" class="{% if 'contactos' in request.path %}active{% endif %}">
+              <i class="bi bi-envelope"></i> Contactos
+            </a>
             <a href="{% url 'testimonios_lista' %}" class="{% if 'testimonios' in request.path %}active{% endif %}"> 
               <i class="bi bi-chat-quote"></i> Testimonios 
             </a>
         </div>
-         <a href="http://localhost:8501" target="_blank" class="sidebar-link"> 
-             <i class="bi bi-robot"></i> TikaBot
-          </a>
           
           <hr class="sidebar-divider">
           

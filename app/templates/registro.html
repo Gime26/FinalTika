@@ -76,6 +76,13 @@
       transition: 0.3s;
     }
 
+    input[type="checkbox"] {
+      width: auto;
+      margin-top: 3px;
+      cursor: pointer;
+      transform: scale(1.2);
+    }
+
     input:focus, select:focus {
       border-color: #6c3483;
       box-shadow: 0 0 5px rgba(108, 52, 131, 0.3);
@@ -145,8 +152,42 @@
     <form method="POST" action="{% url 'registro' %}">
       {% csrf_token %}
       
-      <!-- Renderizado de campos del formulario -->
-      {{ form.as_p }}
+      <!-- Renderizado de campos del formulario excepto el checkbox -->
+      {% for field in form %}
+        {% if field.name != 'aceptar_politicas' %}
+          <p>
+            {{ field.label_tag }}
+            {{ field }}
+            {% if field.errors %}
+              <ul class="errorlist">
+                {% for error in field.errors %}
+                  <li>{{ error }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+            {% if field.help_text %}
+              <small style="color: #666; font-size: 0.85em;">{{ field.help_text }}</small>
+            {% endif %}
+          </p>
+        {% endif %}
+      {% endfor %}
+
+      <!-- Checkbox de políticas de privacidad con estilo personalizado -->
+      <div style="margin: 20px 0; padding: 15px; background: #f8f4ff; border-radius: 10px; border-left: 4px solid #6c3483;">
+        <label style="display: flex; align-items: flex-start; cursor: pointer; font-weight: normal;">
+          {{ form.aceptar_politicas }}
+          <span style="margin-left: 10px; line-height: 1.5;">
+            Acepto las <a href="{% url 'politicas_privacidad' %}" target="_blank" style="color: #6c3483; font-weight: 600; text-decoration: underline;">Políticas de Privacidad</a> y autorizo el tratamiento de mis datos personales y los de mi hijo/a conforme a la Ley 25.326 de Protección de Datos Personales.
+          </span>
+        </label>
+        {% if form.aceptar_politicas.errors %}
+          <ul class="errorlist" style="margin-top: 8px;">
+            {% for error in form.aceptar_politicas.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
 
       <button type="submit">
         <i class="fas fa-user-plus"></i> Registrarse

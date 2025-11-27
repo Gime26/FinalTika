@@ -41,12 +41,12 @@
                 <div class="carousel-item">
                     <div class="team-card">
                         <div class="card-image">
-                            <img src="{% static 'img/fono.png' %}" alt="Fonoaudióloga" />
+                            <img src="{% static 'img/moni.jpg' %}" alt="Fonoaudióloga" />
                         </div>
                         <div class="card-info">
                             <h3>Lic. Monica Palacios Cañizares</h3>
                             <p class="specialty">Fonoaudióloga</p>
-                            <p class="matricula">MP XXXX</p>
+                            <p class="matricula">MP 221</p>
                         </div>
                     </div>
                 </div>
@@ -150,7 +150,7 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: rgba(255, 255, 255, 0.3);
+        background: rgba(0, 0, 0, 0.5);
         z-index: 0;
     }
     
@@ -158,10 +158,11 @@
         text-align: center;
         font-size: 2.5rem;
         font-weight: 700;
-        color: #333;
+        color: #ffffff;
         margin-bottom: 3rem;
         position: relative;
         z-index: 1;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     }
     
     .carousel-container {
@@ -237,15 +238,16 @@
     }
     
     .specialty {
-        color: #9b59b6;
+        color: #2d1846;
         font-size: 0.95rem;
         font-weight: 500;
         margin-bottom: 0.3rem;
     }
     
     .matricula {
-        color: #666;
+        color: #2d1846;
         font-size: 0.85rem;
+        font-weight: 600;
     }
     
     .carousel-btn {

@@ -39,6 +39,12 @@ class RegisterForm(UserCreationForm):
         max_length=50,
         required=False
     )
+    
+    aceptar_politicas = forms.BooleanField(
+        label='',
+        required=True,
+        error_messages={'required': 'Debe aceptar las Políticas de Privacidad para registrarse.'}
+    )
 
     def clean_fecha_nacimiento(self):
         fecha_nacimiento = self.cleaned_data.get('fecha_nacimiento')
@@ -65,6 +71,12 @@ class RegisterForm(UserCreationForm):
 
         widgets = {}
 
+    def clean_aceptar_politicas(self):
+        aceptar = self.cleaned_data.get('aceptar_politicas')
+        if not aceptar:
+            raise forms.ValidationError('Debe aceptar las Políticas de Privacidad para registrarse.')
+        return aceptar
+    
     def clean(self):
         cleaned = super().clean()
         dni_val = cleaned.get('dni')

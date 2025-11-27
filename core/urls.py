@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from app import views
+from core import views as core_views
 from django.conf import settings
 from django.conf.urls import handler404, handler500
 from django.conf.urls.static import static
@@ -9,6 +10,8 @@ urlpatterns = [
     path('', include('app.urls')),
     path("entrevista/", views.entrevista_view, name="entrevista"), #ESTO ACABO DE AUMENTAR
     path("registro/", views.register_view, name="registro"),
+    path('politicas-privacidad/', core_views.politicas_privacidad, name='politicas_privacidad'),
+    path('terminos-condiciones/', core_views.terminos_condiciones, name='terminos_condiciones'),
 
 ]
 handler404 = 'core.views.custom_404'

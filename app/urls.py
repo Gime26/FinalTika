@@ -73,6 +73,11 @@ urlpatterns = [
     path('entrevistas/ver/<int:pk>/', views.ver_entrevista, name='ver_entrevista'),
     path('entrevistas/derivar/<int:pk>/', views.derivar_entrevista, name='derivar_entrevista'),
     
+    # Gestión de Contactos
+    path('contactos/', views.lista_contactos, name='lista_contactos'),
+    path('contactos/<int:pk>/leido/', views.marcar_contacto_leido, name='marcar_contacto_leido'),
+    path('contactos/<int:pk>/respondido/', views.marcar_contacto_respondido, name='marcar_contacto_respondido'),
+    
 ]    
     
     

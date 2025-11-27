@@ -1,0 +1,362 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Políticas de Privacidad - TIKA</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #9d38e5 0%, #7b2cbf 100%);
+            padding: 50px 40px;
+            text-align: center;
+            color: white;
+        }
+
+        .logo-container {
+            margin-bottom: 25px;
+        }
+
+        .logo-container img {
+            max-width: 150px;
+            height: auto;
+            filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3));
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .content {
+            padding: 50px 40px;
+            color: #333;
+            line-height: 1.8;
+        }
+
+        .section {
+            margin-bottom: 35px;
+        }
+
+        .section h2 {
+            color: #7b2cbf;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #9d38e5;
+            font-weight: 600;
+        }
+
+        .section h3 {
+            color: #9d38e5;
+            font-size: 1.3em;
+            margin-top: 25px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .section p {
+            margin-bottom: 15px;
+            text-align: justify;
+            font-size: 1.05em;
+        }
+
+        .section ul {
+            margin-left: 30px;
+            margin-bottom: 15px;
+        }
+
+        .section li {
+            margin-bottom: 10px;
+            font-size: 1.05em;
+        }
+
+        .highlight-box {
+            background: #f8f4ff;
+            border-left: 4px solid #9d38e5;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .highlight-box p {
+            margin: 0;
+            color: #555;
+        }
+
+        .date-info {
+            text-align: center;
+            color: #777;
+            font-style: italic;
+            margin: 30px 0;
+            font-size: 0.95em;
+        }
+
+        .btn-container {
+            text-align: center;
+            padding: 30px 40px 50px;
+            background: #f9f9f9;
+        }
+
+        .btn-volver {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #9d38e5 0%, #7b2cbf 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(157, 56, 229, 0.4);
+        }
+
+        .btn-volver:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(157, 56, 229, 0.6);
+        }
+
+        .btn-volver i {
+            margin-right: 10px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 20px 10px;
+            }
+
+            .header {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .content {
+                padding: 30px 20px;
+            }
+
+            .section h2 {
+                font-size: 1.4em;
+            }
+
+            .section h3 {
+                font-size: 1.2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo-container">
+                <img src="{% static 'img/sinfondo.png' %}" alt="Logo TIKA">
+            </div>
+            <h1>Políticas de Privacidad</h1>
+            <p>Centro de Atención Terapéutica TIKA</p>
+        </div>
+
+        <div class="content">
+            <div class="date-info">
+                <p><i class="fas fa-calendar-alt"></i> Última actualización: Noviembre 2025</p>
+            </div>
+
+            <div class="section">
+                <h2><i class="fas fa-shield-alt"></i> 1. Introducción</h2>
+                <p>
+                    TIKA - Centro de Atención Terapéutica, con domicilio en Bolívar 142, Salta Capital, 
+                    en cumplimiento de la Ley Nacional N° 25.326 de Protección de Datos Personales y su 
+                    Decreto Reglamentario N° 1558/2001, se compromete a proteger la privacidad y 
+                    confidencialidad de la información personal de nuestros pacientes.
+                </p>
+            </div>
+
+            <div class="section">
+                <h2><i class="fas fa-database"></i> 2. Datos que Recopilamos</h2>
+                <h3>2.1 Información Personal</h3>
+                <ul>
+                    <li><strong>Datos de identificación:</strong> Nombre completo, DNI, fecha de nacimiento, género</li>
+                    <li><strong>Datos de contacto:</strong> Domicilio, teléfono, correo electrónico</li>
+                    <li><strong>Datos de salud:</strong> Historia clínica, diagnósticos, tratamientos, evoluciones</li>
+                    <li><strong>Datos de obra social:</strong> Cobertura médica, número de afiliado</li>
+                    <li><strong>Datos del responsable:</strong> Información del tutor o responsable legal (en caso de menores)</li>
+                </ul>
+
+                <h3>2.2 Datos Sensibles</h3>
+                <div class="highlight-box">
+                    <p>
+                        <i class="fas fa-exclamation-triangle"></i> 
+                        Conforme al artículo 7 de la Ley 25.326, los datos referidos a la salud son considerados 
+                        datos sensibles. Su tratamiento requiere el consentimiento expreso y por escrito del titular 
+                        o su representante legal.
+                    </p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2><i class="fas fa-tasks"></i> 3. Finalidad del Tratamiento de Datos</h2>
+                <p>Los datos personales recopilados se utilizan exclusivamente para:</p>
+                <ul>
+                    <li>Prestación de servicios de atención terapéutica y rehabilitación</li>
+                    <li>Elaboración y mantenimiento de historias clínicas</li>
+                    <li>Coordinación de turnos y seguimiento de tratamientos</li>
+                    <li>Facturación y gestión administrativa</li>
+                    <li>Comunicación con pacientes y responsables</li>
+                    <li>Cumplimiento de obligaciones legales y regulatorias</li>
+                    <li>Elaboración de informes interdisciplinarios</li>
+                    <li>Derivación a otros profesionales cuando sea necesario</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2><i class="fas fa-lock"></i> 4. Protección y Seguridad de los Datos</h2>
+                <p>
+                    TIKA implementa medidas técnicas y organizativas adecuadas para garantizar la seguridad, 
+                    confidencialidad e integridad de los datos personales:
+                </p>
+                <ul>
+                    <li>Control de acceso restringido al personal autorizado</li>
+                    <li>Cifrado de datos sensibles en sistemas informáticos</li>
+                    <li>Copias de seguridad periódicas</li>
+                    <li>Protocolos de seguridad física en instalaciones</li>
+                    <li>Capacitación continua del personal en protección de datos</li>
+                    <li>Acuerdos de confidencialidad con todo el equipo profesional</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2><i class="fas fa-user-shield"></i> 5. Derechos del Titular de los Datos</h2>
+                <p>Conforme a la Ley 25.326, todo paciente tiene derecho a:</p>
+                <ul>
+                    <li><strong>Acceso:</strong> Conocer qué datos personales poseemos</li>
+                    <li><strong>Rectificación:</strong> Solicitar la corrección de datos inexactos</li>
+                    <li><strong>Actualización:</strong> Mantener sus datos actualizados</li>
+                    <li><strong>Supresión:</strong> Solicitar la eliminación de datos (sujeto a obligaciones legales)</li>
+                    <li><strong>Confidencialidad:</strong> Exigir el cumplimiento del secreto profesional</li>
+                    <li><strong>Información:</strong> Conocer la finalidad del tratamiento de sus datos</li>
+                </ul>
+
+                <div class="highlight-box">
+                    <p>
+                        <i class="fas fa-envelope"></i> 
+                        Para ejercer estos derechos, puede contactarnos en: 
+                        <strong>contacto@tika.com</strong> o presencialmente en Bolívar 142, Salta Capital.
+                    </p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2><i class="fas fa-share-alt"></i> 6. Cesión de Datos a Terceros</h2>
+                <p>
+                    Los datos personales de nuestros pacientes NO serán cedidos, transferidos o compartidos 
+                    con terceros, excepto en los siguientes casos:
+                </p>
+                <ul>
+                    <li>Cuando exista orden judicial que lo requiera</li>
+                    <li>Cuando sea necesario para la prestación del servicio (obras sociales, laboratorios)</li>
+                    <li>Cuando el paciente otorgue su consentimiento expreso</li>
+                    <li>Cuando lo requieran organismos de salud pública por razones epidemiológicas</li>
+                    <li>Para derivaciones a otros profesionales de la salud (previa autorización)</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2><i class="fas fa-clock"></i> 7. Conservación de Datos</h2>
+                <p>
+                    Las historias clínicas y datos asociados se conservarán por un período mínimo de 
+                    <strong>10 años</strong> desde la última atención, conforme a la Ley N° 26.529 de Derechos 
+                    del Paciente y normativas provinciales vigentes.
+                </p>
+            </div>
+
+            <div class="section">
+                <h2><i class="fas fa-child"></i> 8. Protección de Datos de Menores</h2>
+                <p>
+                    El tratamiento de datos de pacientes menores de edad requiere el consentimiento de 
+                    sus padres, tutores o representantes legales. TIKA garantiza especial protección 
+                    a la información de niños y adolescentes conforme a la Ley N° 26.061 de Protección 
+                    Integral de los Derechos de Niñas, Niños y Adolescentes.
+                </p>
+            </div>
+
+            <div class="section">
+                <h2><i class="fas fa-file-medical"></i> 9. Secreto Profesional</h2>
+                <p>
+                    Todo el equipo profesional de TIKA está sujeto al secreto profesional establecido en el 
+                    Código de Ética de cada profesión y en la Ley N° 26.529. La información clínica es 
+                    estrictamente confidencial y solo podrá ser revelada en los casos previstos por ley.
+                </p>
+            </div>
+
+            <div class="section">
+                <h2><i class="fas fa-balance-scale"></i> 10. Marco Legal</h2>
+                <p>Estas políticas de privacidad se fundamentan en:</p>
+                <ul>
+                    <li>Ley Nacional N° 25.326 - Protección de Datos Personales</li>
+                    <li>Decreto N° 1558/2001 - Reglamentario de la Ley 25.326</li>
+                    <li>Ley Nacional N° 26.529 - Derechos del Paciente en su Relación con los Profesionales e Instituciones de la Salud</li>
+                    <li>Ley Nacional N° 26.061 - Protección Integral de los Derechos de las Niñas, Niños y Adolescentes</li>
+                    <li>Código Civil y Comercial de la Nación</li>
+                    <li>Normativas provinciales de salud de la Provincia de Salta</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2><i class="fas fa-sync-alt"></i> 11. Modificaciones</h2>
+                <p>
+                    TIKA se reserva el derecho de modificar estas políticas de privacidad en cualquier momento. 
+                    Cualquier cambio será notificado a través de nuestros canales oficiales y publicado en 
+                    nuestro sitio web con la fecha de última actualización.
+                </p>
+            </div>
+
+            <div class="section">
+                <h2><i class="fas fa-phone-alt"></i> 12. Contacto</h2>
+                <div class="highlight-box">
+                    <p><strong>Centro de Atención Terapéutica TIKA</strong></p>
+                    <p><i class="fas fa-map-marker-alt"></i> Dirección: Bolívar 142, Salta Capital, Argentina</p>
+                    <p><i class="fas fa-envelope"></i> Email: contacto@tika.com</p>
+                    <p><i class="fas fa-user-md"></i> Responsable de Protección de Datos: Equipo Directivo TIKA</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="btn-container">
+            <a href="{% url 'index' %}" class="btn-volver">
+                <i class="fas fa-home"></i> Volver a Inicio
+            </a>
+        </div>
+    </div>
+</body>
+</html>

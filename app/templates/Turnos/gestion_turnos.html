@@ -169,7 +169,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid">
+<div class="container-fluid" style="padding-top: 80px;">
     <h2 class="mb-3">Gestión de Turnos</h2>
     
     <div class="turnos-container">
@@ -193,11 +193,19 @@
                 
                 <!-- Profesional y Fecha -->
                 <div class="row mb-2">
-                    <!-- Profesional ocult oautomático -->
+                    <!-- Profesional oculto automático -->
+                    {% if especialista_usuario %}
                     <input type="hidden" id="id_especialista" value="{{ especialista_usuario.id }}">
                     <div class="col-12 mb-2">
                         <label class="form-label mb-1"><strong>Especialista:</strong> {{ especialista_usuario.nombre }} ({{ especialista_usuario.especialidad }})</label>
                     </div>
+                    {% else %}
+                    <div class="col-12 mb-2">
+                        <div class="alert alert-warning">
+                            <strong>Error:</strong> No se pudo cargar tu perfil de especialista. Por favor contacta al administrador.
+                        </div>
+                    </div>
+                    {% endif %}
                     <div class="col-12">
                         <label for="id_fecha" class="form-label mb-1">Fecha</label>
                         <input type="date" id="id_fecha" class="form-control form-control-sm" 
@@ -230,7 +238,7 @@
                               rows="2" placeholder="⏰ Primero seleccione un horario arriba" disabled></textarea>
                 </div>
                 
-                <button type="submit" class="btn btn-primary btn-sm w-100">Guardar Turno</button>
+                <button type="submit" class="btn btn-primary btn-sm w-100" {% if not especialista_usuario %}disabled{% endif %}>Guardar Turno</button>
                 <button type="button" class="btn btn-secondary btn-sm w-100 mt-2" onclick="limpiarFormulario()">Limpiar</button>
             </form>
         </div>
@@ -250,14 +258,14 @@
                 {% for turno in turnos %}
                 <div class="turno-card" 
                      data-turno-id="{{ turno.id }}"
-                     data-paciente-dni="{{ turno.paciente.dni_paciente }}"
+                     data-paciente-dni="{{ turno.paciente.dni }}"
                      data-paciente-nombre="{{ turno.paciente.nombre }}"
                      data-paciente-apellido="{{ turno.paciente.apellido }}"
-                     data-search="{{ turno.paciente.nombre|lower }} {{ turno.paciente.apellido|lower }} {{ turno.paciente.dni_paciente }}">
+                     data-search="{{ turno.paciente.nombre|lower }} {{ turno.paciente.apellido|lower }} {{ turno.paciente.dni }}">
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
                             <strong>{{ turno.paciente.nombre }} {{ turno.paciente.apellido }}</strong>
-                            <small class="text-muted">(DNI: {{ turno.paciente.dni_paciente }})</small>
+                            <small class="text-muted">(DNI: {{ turno.paciente.dni }})</small>
                             <br>
                             <small>{{ turno.especialista.nombre }} - {{ turno.fecha|date:"d/m/Y" }} {{ turno.hora|time:"H:i" }}</small>
                         </div>
@@ -271,6 +279,9 @@
                     <div class="turno-actions">
                         {% if turno.status == 'PENDING' %}
                         <button class="btn btn-success btn-sm" onclick="confirmarTurno({{ turno.id }})">Confirmar</button>
+                        {% endif %}
+                        {% if turno.status != 'CANCELLED' %}
+                        <button class="btn btn-warning btn-sm" onclick="cancelarTurno({{ turno.id }})">Cancelar</button>
                         {% endif %}
                         <button class="btn btn-info btn-sm" onclick="modificarTurno({{ turno.id }})">Modificar</button>
                         <button class="btn btn-danger btn-sm" onclick="eliminarTurno({{ turno.id }})">Eliminar</button>
@@ -429,6 +440,14 @@
             return;
         }
         
+        // Validar que no sea fin de semana
+        const fechaSeleccionada = new Date(document.getElementById('id_fecha').value);
+        const diaSemana = fechaSeleccionada.getDay();
+        if (diaSemana === 0 || diaSemana === 6) {
+            alert('No se pueden agendar turnos los fines de semana (sábados y domingos)');
+            return;
+        }
+        
         const formData = {
             dni_paciente: document.getElementById('dni_paciente').value,
             nombre_paciente: document.getElementById('nombre_paciente').value,
@@ -438,6 +457,8 @@
             hora: horaSeleccionada + ':00',
             motivo: document.getElementById('id_motivo').value
         };
+        
+        console.log('Enviando datos:', formData);
         
         const url = turnoEnEdicion ? `/turnos/editar/${turnoEnEdicion}/` : '{% url "crear_turno" %}';
         
@@ -453,6 +474,8 @@
             
             const data = await response.json();
             
+            console.log('Respuesta del servidor:', data);
+            
             if (data.success) {
                 alert(data.message);
                 location.reload();
@@ -460,6 +483,7 @@
                 alert('Error: ' + data.error);
             }
         } catch (error) {
+            console.error('Error completo:', error);
             alert('Error al guardar turno: ' + error);
         }
     });

@@ -1,0 +1,84 @@
+{% extends "dashboard.html" %}
+
+{% block content %}
+<h2 class="mt-4 text-center">Gestión de Contactos</h2>
+
+<table class="table mt-3 table-hover align-middle">
+  <thead class="table-light">
+    <tr>
+      <th>Nombre</th>
+      <th>Email</th>
+      <th>Teléfono</th>
+      <th>Mensaje</th>
+      <th>Fecha</th>
+      <th>Estado</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for contacto in contactos %}
+      <tr>
+        <td><strong>{{ contacto.nombre }}</strong></td>
+        <td>{{ contacto.email }}</td>
+        <td>{{ contacto.telefono|default:"—" }}</td>
+        <td style="max-width: 300px;">{{ contacto.mensaje|truncatechars:80 }}</td>
+        <td>{{ contacto.fecha_envio|date:"d/m/Y H:i" }}</td>
+        <td>
+          {% if contacto.estado == 'nuevo' %}
+            <span class="badge bg-warning text-dark">Nuevo</span>
+          {% elif contacto.estado == 'leido' %}
+            <span class="badge bg-info">Leído</span>
+          {% elif contacto.estado == 'respondido' %}
+            <span class="badge bg-success">Respondido</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if contacto.estado == 'nuevo' %}
+            <a href="{% url 'marcar_contacto_leido' contacto.pk %}" class="btn-custom btn-leido">LEÍDO</a>
+          {% elif contacto.estado == 'leido' %}
+            {% if contacto.telefono %}
+              <a href="https://wa.me/54{{ contacto.telefono|cut:' '|cut:'-' }}" target="_blank" class="btn-custom btn-whatsapp">
+                <i class="bi bi-whatsapp"></i> WHATSAPP
+              </a>
+            {% endif %}
+            <a href="mailto:{{ contacto.email }}" class="btn-custom btn-email">
+              <i class="bi bi-envelope"></i> EMAIL
+            </a>
+            <a href="{% url 'marcar_contacto_respondido' contacto.pk %}" class="btn-custom btn-respondido">RESPONDIDO</a>
+          {% endif %}
+        </td>
+      </tr>
+    {% empty %}
+      <tr>
+        <td colspan="7" class="text-center text-muted">No hay contactos recibidos todavía.</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<style>
+.btn-custom {
+  display: inline-block;
+  padding: 10px 24px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: white;
+  font-size: 0.85rem;
+  transition: all 0.2s ease-in-out;
+  text-decoration: none;
+  min-width: 120px;
+  text-align: center;
+  margin: 2px;
+}
+
+.btn-leido { background-color: #17a2b8; }
+.btn-whatsapp { background-color: #25d366; }
+.btn-email { background-color: #0078d4; }
+.btn-respondido { background-color: #28a745; }
+
+.btn-custom:hover { opacity: 0.9; transform: scale(1.03); }
+.btn-custom:active { transform: scale(0.97); }
+</style>
+{% endblock %}

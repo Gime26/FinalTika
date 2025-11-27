@@ -1,10 +1,25 @@
 {% load static %}
 <section id="footer" class="footer">
-    <p>© 2025 TIKA. Todos los derechos reservados.</p>
-    <p>Diseñado por <a href="Isa Agustina y Sandoval Gimena">Isa Agustina y Sandoval Gimena.</a></p>
-    <p>¡Seguinos en nuestras redes sociales!</p>
-    <div class="social-icons">
-      <a href="https://www.facebook.com/tikaespacioterapeutico" target="_blank"><i class="fab fa-facebook"></i></a>
-      <a href="https://www.instagram.com/tika.et" target="_blank"><i class="fab fa-instagram"></i></a>
+    <div class="footer-content">
+        <div class="footer-column">
+            <h4>Legal</h4>
+            <a href="{% url 'politicas_privacidad' %}" target="_blank">Políticas de Privacidad</a>
+            <a href="{% url 'terminos_condiciones' %}" target="_blank">Términos y Condiciones</a>
+        </div>
+        
+        <div class="footer-column footer-center">
+            <p>© 2025 TIKA. Todos los derechos reservados.</p>
+            <div class="social-icons">
+                <a href="https://www.facebook.com/tikaespacioterapeutico" target="_blank" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                <a href="https://www.instagram.com/tika.et" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+        
+        <div class="footer-column">
+            <h4>Contacto</h4>
+            <p><i class="fas fa-envelope"></i> contacto@tika.com</p>
+            <p><i class="fas fa-map-marker-alt"></i> Bolívar 142, Salta Capital</p>
+        </div>
     </div>
 </section>
+

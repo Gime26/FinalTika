@@ -1,0 +1,540 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Términos y Condiciones - TIKA</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #9d38e5 0%, #7b2cbf 100%);
+            padding: 50px 40px;
+            text-align: center;
+            color: white;
+        }
+
+        .logo-container {
+            margin-bottom: 25px;
+        }
+
+        .logo-container img {
+            max-width: 150px;
+            height: auto;
+            filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3));
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .content {
+            padding: 50px 40px;
+            color: #333;
+            line-height: 1.8;
+        }
+
+        .section {
+            margin-bottom: 35px;
+        }
+
+        .section h2 {
+            color: #7b2cbf;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #9d38e5;
+            font-weight: 600;
+        }
+
+        .section h3 {
+            color: #9d38e5;
+            font-size: 1.3em;
+            margin-top: 25px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .section p {
+            margin-bottom: 15px;
+            text-align: justify;
+            font-size: 1.05em;
+        }
+
+        .section ul {
+            margin-left: 30px;
+            margin-bottom: 15px;
+        }
+
+        .section li {
+            margin-bottom: 10px;
+            font-size: 1.05em;
+        }
+
+        .highlight-box {
+            background: #f8f4ff;
+            border-left: 4px solid #9d38e5;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .highlight-box p {
+            margin: 0;
+            color: #555;
+        }
+
+        .date-info {
+            text-align: center;
+            color: #777;
+            font-style: italic;
+            margin: 30px 0;
+            font-size: 0.95em;
+        }
+
+        .btn-container {
+            text-align: center;
+            padding: 30px 40px 50px;
+            background: #f9f9f9;
+        }
+
+        .btn-volver {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #9d38e5 0%, #7b2cbf 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(157, 56, 229, 0.4);
+        }
+
+        .btn-volver:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(157, 56, 229, 0.6);
+        }
+
+        .btn-volver i {
+            margin-right: 10px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 20px 10px;
+            }
+
+            .header {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .content {
+                padding: 30px 20px;
+            }
+
+            .section h2 {
+                font-size: 1.4em;
+            }
+
+            .section h3 {
+                font-size: 1.2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo-container">
+                <img src="{% static 'img/sinfondo.png' %}" alt="Logo TIKA">
+            </div>
+            <h1>Términos y Condiciones</h1>
+            <p>Centro de Atención Terapéutica TIKA</p>
+        </div>
+
+        <div class="content">
+            <div class="date-info">
+                <p><i class="fas fa-calendar-alt"></i> Última actualización: Noviembre 2025</p>
+            </div>
+
+            <div class="section">
+                <h2><i class="fas fa-file-contract"></i> 1. Aceptación de los Términos</h2>
+                <p>
+                    Al solicitar servicios en TIKA - Centro de Atención Terapéutica, usted acepta 
+                    cumplir con estos términos y condiciones. Si no está de acuerdo con alguna parte 
+                    de estos términos, no deberá utilizar nuestros servicios.
+                </p>
+                <div class="highlight-box">
+                    <p>
+                        <i class="fas fa-info-circle"></i> 
+                        Estos términos se rigen por las leyes de la República Argentina y las normativas 
+                        sanitarias vigentes en la Provincia de Salta.
+                    </p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2><i class="fas fa-hospital"></i> 2. Servicios Prestados</h2>
+                <h3>2.1 Alcance de los Servicios</h3>
+                <p>TIKA ofrece servicios de atención terapéutica integral que incluyen:</p>
+                <ul>
+                    <li>Psicología clínica infantil, adolescente y adultos</li>
+                    <li>Psicopedagogía y acompañamiento educativo</li>
+                    <li>Fonoaudiología y terapia del lenguaje</li>
+                    <li>Kinesiología y fisioterapia</li>
+                    <li>Terapia ocupacional</li>
+                    <li>Psicomotricidad</li>
+                    <li>Evaluaciones diagnósticas interdisciplinarias</li>
+                    <li>Orientación familiar y escolar</li>
+                </ul>
+
+                <h3>2.2 Personal Profesional</h3>
+                <p>
+                    Todos los servicios son prestados por profesionales debidamente matriculados en 
+                    sus respectivas áreas, en cumplimiento de la Ley Nacional N° 17.132 de Ejercicio 
+                    de la Medicina y normativas específicas de cada profesión de la salud.
+                </p>
+            </div>
+
+            <div class="section">
+                <h2><i class="fas fa-calendar-check"></i> 3. Sistema de Turnos</h2>
+                <h3>3.1 Solicitud de Turnos</h3>
+                <ul>
+                    <li>Los turnos pueden solicitarse de forma presencial, telefónica o a través de nuestro sistema web</li>
+                    <li>La confirmación del turno se realizará por el medio de contacto proporcionado</li>
+                    <li>Se requiere proporcionar datos personales completos y veraces</li>
+                    <li>En caso de menores, el turno debe ser solicitado por un responsable legal</li>
+                </ul>
+
+                <h3>3.2 Cancelaciones y Reprogramaciones</h3>
+                <div class="highlight-box">
+                    <p>
+                        <i class="fas fa-exclamation-circle"></i> 
+                        <strong>IMPORTANTE:</strong> Las cancelaciones deben realizarse con un mínimo de 
+                        <strong>24 horas de anticipación</strong>. El no aviso o ausencias reiteradas sin 
+                        justificación podrán resultar en la pérdida del turno.
+                    </p>
+                </div>
+                <ul>
+                    <li>Primera inasistencia sin aviso: Advertencia</li>
+                    <li>Segunda inasistencia sin aviso: Suspensión temporal del sistema de turnos</li>
+                    <li>Las reprogramaciones están sujetas a disponibilidad</li>
+                </ul>
+
+                <h3>3.3 Puntualidad</h3>
+                <p>
+                    Se solicita llegar con 10 minutos de anticipación a la cita. Los retrasos mayores 
+                    a 15 minutos podrán resultar en la pérdida del turno, sin perjuicio del cobro de 
+                    la sesión si corresponde.
+                </p>
+            </div>
+
+            <div class="section">
+                <h2><i class="fas fa-money-bill-wave"></i> 4. Aranceles y Formas de Pago</h2>
+                <h3>4.1 Tarifas</h3>
+                <ul>
+                    <li>Los aranceles varían según el tipo de servicio y profesional</li>
+                    <li>Los valores se informan al momento de solicitar el turno</li>
+                    <li>Las tarifas pueden ser actualizadas periódicamente (se notifica con anticipación)</li>
+                    <li>Pacientes con obra social: bonificación según cobertura</li>
+                </ul>
+
+                <h3>4.2 Formas de Pago</h3>
+                <ul>
+                    <li>Efectivo</li>
+                    <li>Transferencia bancaria</li>
+                    <li>Tarjetas de débito y crédito</li>
+                    <li>Mercado Pago / Billeteras virtuales</li>
+                    <li>Obras sociales y prepagas autorizadas</li>
+                </ul>
+
+                <h3>4.3 Facturación</h3>
+                <p>
+                    Se emite comprobante fiscal por cada prestación según normativa AFIP. Para factura "A" 
+                    es necesario proporcionar CUIT/CUIL y datos de facturación antes de la sesión.
+                </p>
+            </div>
+
+            <div class="section">
+                <h2><i class="fas fa-user-md"></i> 5. Derechos del Paciente</h2>
+                <p>Conforme a la Ley Nacional N° 26.529, todo paciente tiene derecho a:</p>
+                <ul>
+                    <li><strong>Asistencia:</strong> Recibir atención profesional de calidad</li>
+                    <li><strong>Trato digno:</strong> Ser tratado con respeto a sus convicciones personales y morales</li>
+                    <li><strong>Intimidad:</strong> Respeto por la privacidad durante las consultas</li>
+                    <li><strong>Confidencialidad:</strong> Protección del secreto profesional</li>
+                    <li><strong>Autonomía de voluntad:</strong> Decidir sobre su tratamiento</li>
+                    <li><strong>Información sanitaria:</strong> Conocer su estado de salud y tratamiento</li>
+                    <li><strong>Interconsulta médica:</strong> Solicitar opinión de otros profesionales</li>
+                    <li><strong>Historia clínica:</strong> Acceder a su historia clínica</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2><i class="fas fa-clipboard-check"></i> 6. Obligaciones del Paciente</h2>
+                <p>El paciente o su responsable legal se compromete a:</p>
+                <ul>
+                    <li>Proporcionar información veraz sobre su estado de salud</li>
+                    <li>Seguir las indicaciones terapéuticas del profesional</li>
+                    <li>Respetar los horarios de las sesiones</li>
+                    <li>Abonar los honorarios profesionales acordados</li>
+                    <li>Mantener un trato respetuoso con el personal y otros pacientes</li>
+                    <li>Informar cambios relevantes en su estado de salud</li>
+                    <li>Presentar documentación requerida (DNI, credencial de obra social, órdenes médicas)</li>
+                    <li>Notificar cualquier cambio en sus datos de contacto</li>
+                </ul>
+
+                <div class="highlight-box">
+                    <p>
+                        <i class="fas fa-ban"></i> 
+                        El incumplimiento reiterado de estas obligaciones puede resultar en la suspensión 
+                        o finalización del servicio.
+                    </p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2><i class="fas fa-file-medical-alt"></i> 7. Historia Clínica</h2>
+                <h3>7.1 Elaboración y Contenido</h3>
+                <p>
+                    TIKA elabora y mantiene una historia clínica para cada paciente, conforme a la 
+                    Ley N° 26.529 y Resolución N° 1619/2012 del Ministerio de Salud de la Nación. 
+                    La historia clínica contiene:
+                </p>
+                <ul>
+                    <li>Datos de identificación del paciente</li>
+                    <li>Antecedentes personales y familiares</li>
+                    <li>Evaluaciones diagnósticas</li>
+                    <li>Planes de tratamiento</li>
+                    <li>Evoluciones de cada sesión</li>
+                    <li>Informes interdisciplinarios</li>
+                    <li>Consentimientos informados</li>
+                </ul>
+
+                <h3>7.2 Propiedad y Acceso</h3>
+                <p>
+                    La historia clínica es propiedad del paciente. TIKA actúa como custodio de la misma. 
+                    El paciente puede solicitar copia en cualquier momento, que será entregada dentro 
+                    de las 48 horas hábiles.
+                </p>
+
+                <h3>7.3 Conservación</h3>
+                <p>
+                    Las historias clínicas se conservan por un mínimo de 10 años desde la última 
+                    atención, en cumplimiento de normativas vigentes.
+                </p>
+            </div>
+
+            <div class="section">
+                <h2><i class="fas fa-handshake"></i> 8. Consentimiento Informado</h2>
+                <p>
+                    Para la realización de evaluaciones, tratamientos o procedimientos específicos, 
+                    se solicitará el consentimiento informado del paciente o su representante legal. 
+                    Este consentimiento implica:
+                </p>
+                <ul>
+                    <li>Información clara sobre el procedimiento o tratamiento</li>
+                    <li>Explicación de beneficios y riesgos potenciales</li>
+                    <li>Alternativas disponibles</li>
+                    <li>Derecho a revocar el consentimiento en cualquier momento</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2><i class="fas fa-child"></i> 9. Atención de Menores de Edad</h2>
+                <h3>9.1 Representación Legal</h3>
+                <p>
+                    La atención de pacientes menores de 18 años requiere la autorización y presencia 
+                    de un padre, tutor o representante legal, conforme a la Ley N° 26.061 de Protección 
+                    Integral de los Derechos de Niñas, Niños y Adolescentes.
+                </p>
+
+                <h3>9.2 Competencia del Menor</h3>
+                <p>
+                    Los adolescentes entre 13 y 16 años tienen capacidad para decidir sobre tratamientos 
+                    no invasivos. Para tratamientos invasivos o que impliquen riesgo, se requiere el 
+                    consentimiento de los progenitores (artículos 26 y 27 del Código Civil y Comercial).
+                </p>
+
+                <h3>9.3 Mayores de 16 años</h3>
+                <p>
+                    Los adolescentes mayores de 16 años son considerados adultos para decisiones sobre 
+                    su salud (artículo 26 del CCyC).
+                </p>
+            </div>
+
+            <div class="section">
+                <h2><i class="fas fa-shield-virus"></i> 10. Protocolos Sanitarios</h2>
+                <p>
+                    TIKA cumple con todas las normativas sanitarias vigentes establecidas por el 
+                    Ministerio de Salud de la Nación y la Provincia de Salta, incluyendo:
+                </p>
+                <ul>
+                    <li>Higiene y desinfección de espacios</li>
+                    <li>Protocolos de bioseguridad</li>
+                    <li>Control de residuos patogénicos</li>
+                    <li>Habilitación municipal y provincial</li>
+                    <li>Medidas preventivas ante situaciones epidemiológicas</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2><i class="fas fa-gavel"></i> 11. Responsabilidad Profesional</h2>
+                <h3>11.1 Cobertura de Seguro</h3>
+                <p>
+                    Todos los profesionales de TIKA cuentan con seguro de responsabilidad civil 
+                    profesional vigente, conforme a requisitos de sus respectivos colegios profesionales.
+                </p>
+
+                <h3>11.2 Límites de Responsabilidad</h3>
+                <p>
+                    TIKA no se responsabiliza por:
+                </p>
+                <ul>
+                    <li>Resultados terapéuticos cuando el paciente no sigue las indicaciones</li>
+                    <li>Daños derivados de información falsa o incompleta proporcionada por el paciente</li>
+                    <li>Eventos de fuerza mayor que impidan la prestación del servicio</li>
+                    <li>Pérdida de objetos personales en las instalaciones</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2><i class="fas fa-comments"></i> 12. Quejas y Reclamos</h2>
+                <p>
+                    Cualquier queja, reclamo o sugerencia puede ser presentada:
+                </p>
+                <ul>
+                    <li>De forma presencial en nuestras oficinas</li>
+                    <li>Por correo electrónico a: contacto@tika.com</li>
+                    <li>Libro de Quejas habilitado conforme a normativa de Defensa del Consumidor</li>
+                </ul>
+                <p>
+                    Los reclamos serán respondidos en un plazo máximo de 10 días hábiles.
+                </p>
+
+                <h3>12.1 Organismos de Fiscalización</h3>
+                <p>Ante discrepancias, puede recurrir a:</p>
+                <ul>
+                    <li>Ministerio de Salud Pública de la Provincia de Salta</li>
+                    <li>Colegios profesionales correspondientes</li>
+                    <li>Defensa del Consumidor (Ley N° 24.240)</li>
+                    <li>Dirección de Protección de Datos Personales</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2><i class="fas fa-exclamation-triangle"></i> 13. Suspensión y Rescisión del Servicio</h2>
+                <h3>13.1 Por parte de TIKA</h3>
+                <p>TIKA se reserva el derecho de suspender o rescindir el servicio en caso de:</p>
+                <ul>
+                    <li>Falta de pago reiterada</li>
+                    <li>Conducta inapropiada o violenta del paciente o acompañantes</li>
+                    <li>Incumplimiento sistemático de horarios sin justificación</li>
+                    <li>Información falsa en la ficha del paciente</li>
+                </ul>
+
+                <h3>13.2 Por parte del Paciente</h3>
+                <p>
+                    El paciente puede discontinuar el tratamiento en cualquier momento, previa 
+                    notificación al profesional tratante. Se recomienda realizar al menos una sesión 
+                    de cierre terapéutico.
+                </p>
+            </div>
+
+            <div class="section">
+                <h2><i class="fas fa-balance-scale"></i> 14. Marco Legal Aplicable</h2>
+                <p>Estos términos y condiciones se rigen por:</p>
+                <ul>
+                    <li>Ley Nacional N° 26.529 - Derechos del Paciente</li>
+                    <li>Ley Nacional N° 17.132 - Ejercicio de la Medicina</li>
+                    <li>Ley Nacional N° 25.326 - Protección de Datos Personales</li>
+                    <li>Ley Nacional N° 26.061 - Protección Integral de Derechos de Niños, Niñas y Adolescentes</li>
+                    <li>Ley Nacional N° 24.240 - Defensa del Consumidor</li>
+                    <li>Código Civil y Comercial de la Nación</li>
+                    <li>Normativas provinciales de salud de Salta</li>
+                    <li>Códigos de Ética profesionales específicos</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2><i class="fas fa-edit"></i> 15. Modificaciones</h2>
+                <p>
+                    TIKA se reserva el derecho de modificar estos términos y condiciones. Las 
+                    modificaciones entrarán en vigencia a partir de su publicación en nuestros 
+                    canales oficiales y serán notificadas a los pacientes activos con al menos 
+                    15 días de anticipación.
+                </p>
+            </div>
+
+            <div class="section">
+                <h2><i class="fas fa-map-marked-alt"></i> 16. Jurisdicción</h2>
+                <p>
+                    Para cualquier controversia derivada de estos términos y condiciones, las partes 
+                    se someten a la jurisdicción de los tribunales ordinarios de la ciudad de Salta, 
+                    Argentina, renunciando expresamente a cualquier otro fuero o jurisdicción que 
+                    pudiera corresponder.
+                </p>
+            </div>
+
+            <div class="section">
+                <h2><i class="fas fa-phone-alt"></i> 17. Información de Contacto</h2>
+                <div class="highlight-box">
+                    <p><strong>Centro de Atención Terapéutica TIKA</strong></p>
+                    <p><i class="fas fa-map-marker-alt"></i> Dirección: Bolívar 142, Salta Capital, Argentina</p>
+                    <p><i class="fas fa-envelope"></i> Email: contacto@tika.com</p>
+                    <p><i class="fas fa-clock"></i> Horario de atención: Lunes a Viernes 8:00 - 20:00 hs</p>
+                </div>
+            </div>
+
+            <div class="highlight-box" style="margin-top: 40px; background: #fff3cd; border-left-color: #ffd700;">
+                <p style="text-align: center; font-weight: 600; color: #856404;">
+                    <i class="fas fa-check-circle"></i> 
+                    Al utilizar nuestros servicios, usted confirma haber leído, comprendido y aceptado 
+                    estos términos y condiciones en su totalidad.
+                </p>
+            </div>
+        </div>
+
+        <div class="btn-container">
+            <a href="{% url 'index' %}" class="btn-volver">
+                <i class="fas fa-home"></i> Volver a Inicio
+            </a>
+        </div>
+    </div>
+</body>
+</html>

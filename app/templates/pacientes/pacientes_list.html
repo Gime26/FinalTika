@@ -9,9 +9,10 @@
 <!-- ✅ DataTables CSS -->
 <link rel="stylesheet" href="https://cdn.datatables.net/2.1.4/css/dataTables.dataTables.min.css">
 
-<h2 class="titulo-pacientes">Lista de Pacientes</h2>
-
-<a href="{% url 'pacientes_create' %}" class="btn-add"><i class="bi bi-plus-circle"></i> Nuevo Paciente</a>
+<div style="padding-top: 80px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2 class="titulo-pacientes" style="margin: 0;">Lista de Pacientes</h2>
+    <a href="{% url 'pacientes_create' %}" class="btn-add"><i class="bi bi-plus-circle"></i> Nuevo Paciente</a>
+</div>
 
 <table id="tablaPacientes" class="display">
     <thead>
@@ -29,7 +30,7 @@
     <tbody>
         {% for paciente in pacientes %}
         <tr>
-            <td>{{ paciente.dni_paciente }}</td>
+            <td>{{ paciente.dni }}</td>
             <td>{{ paciente.nombre }}</td>
             <td>{{ paciente.apellido }}</td>
             <td>{{ paciente.fecha_nacimiento }}</td>
@@ -68,6 +69,12 @@ $(document).ready(function () {
 </script>
 
 <style>
+    .titulo-pacientes {
+        color: #333;
+        font-size: 1.8rem;
+        font-weight: 600;
+    }
+    
     .btn-add {
         display: inline-block;
         background: #28a745;
@@ -76,8 +83,8 @@ $(document).ready(function () {
         text-decoration: none;
         border-radius: 5px;
         font-weight: 500;
-        margin-bottom: 20px;
         transition: all 0.3s;
+        white-space: nowrap;
     }
     
     .btn-add:hover {
