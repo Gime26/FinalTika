@@ -209,34 +209,10 @@ class ObservacionForm(forms.ModelForm):
         label="Paciente:"
     )
 
-    tipo_sesion = forms.ChoiceField(
-        choices=Observacion.TIPO_SESION,
-        label="Tipo de sesión:"
-    )
-
-    especialista = forms.ChoiceField(
-        choices=Observacion.ESPECIALISTAS,
-        label="Especialista:",
-        disabled=True,  # No editable
-        required=False
-    )
-
-    def clean_fecha(self):
-        fecha = self.cleaned_data.get('fecha')
-        if fecha:
-            if fecha.year < 2020 or fecha.year > 2030:
-                raise forms.ValidationError('La fecha debe estar entre 2020 y 2030')
-        return fecha
-
     class Meta:
         model = Observacion
-        fields = ['paciente', 'fecha', 'tipo_sesion', 'especialista', 'observacion_clinica']
+        fields = ['paciente', 'observacion_clinica']
         widgets = {
-            'fecha': forms.DateInput(attrs={
-                'type': 'date',
-                'min': '2020-01-01',
-                'max': '2030-12-31'
-            }),
             'observacion_clinica': forms.Textarea(attrs={'rows': 5})
         }
 

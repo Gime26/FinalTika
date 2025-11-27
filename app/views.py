@@ -557,31 +557,50 @@ class CrearObservacionView(LoginRequiredMixin, CreateView):
     template_name = 'observaciones/observacion_form.html'
     success_url = reverse_lazy('lista_observaciones')
 
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        # Prellenar especialista con el usuario actual
-        try:
-            perfil = self.request.user.perfil
-            # Buscar el valor del especialista basado en el perfil
-            for choice_value, choice_label in Observacion.ESPECIALISTAS:
-                if perfil.nombre.lower() in choice_label.lower() or perfil.apellido.lower() in choice_label.lower():
-                    form.fields['especialista'].initial = choice_value
-                    break
-        except:
-            pass
-        return form
-
     def form_valid(self, form):
+        from django.utils import timezone
+        
         form.instance.creada_por = self.request.user
-        # Asegurar que el especialista sea el del usuario actual
+        # Asignar fecha y hora actual automáticamente
+        form.instance.fecha = timezone.now()
+        
+        # Asignar automáticamente especialista y tipo_sesion basado en el perfil
         try:
             perfil = self.request.user.perfil
+            
+            # Mapear especialidad del perfil a tipo_sesion
+            especialidad_map = {
+                'psicología': 'psicologia',
+                'psicopedagogía': 'psicopedagogia',
+                'psicomotricidad': 'psicomotricidad',
+                'fonoaudiología': 'fonoaudiologia',
+                'kinesiología': 'kinesiologia',
+            }
+            
+            especialidad_lower = perfil.especialidad.lower() if perfil.especialidad else ''
+            form.instance.tipo_sesion = especialidad_map.get(especialidad_lower, 'psicologia')
+            
+            # Buscar el código de especialista que coincida con el nombre del usuario
+            nombre_completo = f"{perfil.nombre} {perfil.apellido}".lower()
+            especialista_encontrado = None
+            
             for choice_value, choice_label in Observacion.ESPECIALISTAS:
-                if perfil.nombre.lower() in choice_label.lower() or perfil.apellido.lower() in choice_label.lower():
-                    form.instance.especialista = choice_value
+                if perfil.nombre.lower() in choice_label.lower() and perfil.apellido.lower() in choice_label.lower():
+                    especialista_encontrado = choice_value
                     break
-        except:
-            pass
+            
+            # Si no se encuentra, usar el primero como fallback o crear un código único
+            if not especialista_encontrado:
+                # Crear un código basado en nombre_apellido
+                especialista_encontrado = f"{perfil.nombre.lower()}_{perfil.apellido.lower()}"[:20]
+            
+            form.instance.especialista = especialista_encontrado
+            
+        except Exception as e:
+            # Si hay error, usar valores por defecto
+            form.instance.tipo_sesion = 'psicologia'
+            form.instance.especialista = 'especialista_gen'
+            
         return super().form_valid(form)
 
 
@@ -608,17 +627,16 @@ def editar_observacion(request, pk):
     if request.method == 'POST':
         form = ObservacionForm(request.POST, instance=observacion)
         if form.is_valid():
-            # Forzar que el especialista siga siendo el mismo (del creador original)
+            # Mantener la fecha, especialista y tipo_sesion originales (no permitir cambios)
             observacion_actualizada = form.save(commit=False)
-            # Mantener el especialista original, no permitir cambios
+            observacion_actualizada.fecha = observacion.fecha
             observacion_actualizada.especialista = observacion.especialista
+            observacion_actualizada.tipo_sesion = observacion.tipo_sesion
             observacion_actualizada.save()
             messages.success(request, 'Observación actualizada exitosamente.')
             return redirect('lista_observaciones')
     else:
         form = ObservacionForm(instance=observacion)
-        # Prellenar y deshabilitar el campo especialista
-        form.fields['especialista'].initial = observacion.especialista
     
     return render(request, 'observaciones/observacion_form.html', {
         'form': form,

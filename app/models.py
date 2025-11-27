@@ -322,7 +322,7 @@ class Observacion(models.Model):
     ]
 
     paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
-    fecha = models.DateField()
+    fecha = models.DateTimeField(verbose_name="Fecha y hora de la sesión")
     tipo_sesion = models.CharField(max_length=50, choices=TIPO_SESION)
     especialista = models.CharField(max_length=100, choices=ESPECIALISTAS)
     observacion_clinica = models.TextField()
@@ -330,7 +330,7 @@ class Observacion(models.Model):
     fecha_registro = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Obs. de {self.paciente.nombre} el {self.fecha}"
+        return f"Obs. de {self.paciente.nombre} el {self.fecha.strftime('%d/%m/%Y %H:%M')}"
 
 
 class Testimonio(models.Model):

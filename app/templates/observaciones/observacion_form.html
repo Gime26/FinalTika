@@ -157,6 +157,17 @@
             {% if es_edicion %}Editar Observación{% else %}Registrar Nueva Observación{% endif %}
         </h2>
 
+        <!-- Información del Especialista -->
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 25px; border-left: 4px solid #8b5a9e;">
+            <p style="margin: 0; color: #2d1b35;"><strong><i class="bi bi-person-badge"></i> Especialista:</strong> {{ user.perfil.nombre }} {{ user.perfil.apellido }}</p>
+            <p style="margin: 5px 0 0 0; color: #6c757d; font-size: 0.9rem;"><strong>Especialidad:</strong> {{ user.perfil.especialidad|default:"No especificada" }}</p>
+            {% if not es_edicion %}
+            <p style="margin: 5px 0 0 0; color: #6c757d; font-size: 0.9rem;"><strong><i class="bi bi-calendar-check"></i> Fecha y hora:</strong> {% now "d/m/Y H:i" %} (Ahora)</p>
+            {% else %}
+            <p style="margin: 5px 0 0 0; color: #6c757d; font-size: 0.9rem;"><strong><i class="bi bi-calendar-check"></i> Fecha y hora:</strong> {{ observacion.fecha|date:"d/m/Y H:i" }}</p>
+            {% endif %}
+        </div>
+
         <form method="POST">
             {% csrf_token %}
             {{ form.as_p }}
