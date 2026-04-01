@@ -298,3 +298,22 @@
 </div>
 
 {% endblock %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var fechaInput = document.querySelector('input[name="fecha_nacimiento"]');
+    if (fechaInput) {
+        var today = new Date();
+        var yyyy = today.getFullYear();
+        var mm = String(today.getMonth() + 1).padStart(2, '0');
+        var dd = String(today.getDate()).padStart(2, '0');
+        var maxDate = yyyy + '-' + mm + '-' + dd;
+        fechaInput.setAttribute('max', maxDate);
+        fechaInput.addEventListener('change', function() {
+            if (fechaInput.value > maxDate) {
+                fechaInput.value = maxDate;
+                alert('La fecha de nacimiento no puede ser mayor a hoy.');
+            }
+        });
+    }
+});
+</script>

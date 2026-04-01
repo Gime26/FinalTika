@@ -207,21 +207,7 @@
 <div class="perfil-container">
     <h1 class="page-title">Información Personal y de Contacto</h1>
     
-    {% if not perfil.matricula or not perfil.telefono or not perfil.email %}
-    <div class="alert-box">
-        <i class="bi bi-exclamation-triangle-fill"></i>
-        <div class="alert-content">
-            <div class="alert-title">Datos incompletos</div>
-            <p class="alert-text">
-                Para continuar usando la plataforma es necesario que completes tu información personal. 
-                Por favor, actualiza los siguientes datos: 
-                {% if not perfil.matricula %}Matrícula Profesional{% endif %}
-                {% if not perfil.telefono %}{% if not perfil.matricula %}, {% endif %}Teléfono{% endif %}
-                {% if not perfil.email %}{% if not perfil.matricula or not perfil.telefono %}, {% endif %}Email{% endif %}.
-            </p>
-        </div>
-    </div>
-    {% endif %}
+    {# Mensaje de bienvenida eliminado #}
     
     <!-- INFORMACIÓN PERSONAL -->
     <div class="data-section">
@@ -325,6 +311,15 @@
         </div>
     </div>
     
+    <!-- FECHA ÚLTIMA COPIA DE SEGURIDAD -->
+    <div style="text-align:center; margin-top:30px; color:#666; font-size:0.95rem;">
+        <i class="bi bi-cloud-arrow-down" style="font-size:1.2rem; color:#8b5a9e;"></i>
+        {% if ultima_backup %}
+            Última copia de seguridad: <strong>{{ ultima_backup }}</strong>
+        {% else %}
+            No se ha realizado ninguna copia de seguridad aún.
+        {% endif %}
+    </div>
     <!-- BOTÓN MODIFICAR -->
     <div class="button-container">
         <a href="{% url 'editar_perfil' %}" class="btn-modificar">

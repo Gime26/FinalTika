@@ -9,6 +9,16 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        /* Fix urgente: Forzar texto blanco y visibilidad en botones morados */
+        .btn-next, .btn-submit, button.btn, a.btn {
+            color: #fff !important;
+            font-weight: 700 !important;
+            font-size: 1.1rem !important;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.15) !important;
+            letter-spacing: 0.5px !important;
+            text-rendering: optimizeLegibility !important;
+            text-align: center !important;
+        }
         :root {
             --primary-purple: #9b59b6;
             --dark-purple: #8e44ad;
@@ -213,7 +223,29 @@
         .btn-next,
         .btn-submit {
             background: linear-gradient(135deg, var(--primary-purple) 0%, var(--dark-purple) 100%);
-            color: white;
+            color: #fff !important;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+            border-radius: 12px !important;
+            padding: 0.75rem 2rem !important;
+            line-height: 1.2 !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-next {
+            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--dark-purple) 100%);
+            color: #fff !important;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+            border-radius: 12px !important;
+            padding: 0.75rem 2rem !important;
+            line-height: 1.2 !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .btn-next:hover,
@@ -335,6 +367,32 @@
                         <div class="col-md-6">
                             <label class="form-label">Fecha de Nacimiento</label>
                             <input type="date" name="fecha_nacimiento" class="form-control">
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var fechaInput = document.querySelector('input[name="fecha_nacimiento"]');
+    if (fechaInput) {
+        var today = new Date();
+        var yyyy = today.getFullYear();
+        var mm = String(today.getMonth() + 1).padStart(2, '0');
+        var dd = String(today.getDate()).padStart(2, '0');
+        var maxDate = yyyy + '-' + mm + '-' + dd;
+        fechaInput.setAttribute('max', maxDate);
+        fechaInput.addEventListener('change', function() {
+            if (fechaInput.value > maxDate) {
+                fechaInput.value = maxDate;
+                alert('La fecha de nacimiento no puede ser mayor a hoy.');
+            }
+        });
+        // Si hay un datepicker personalizado (Bootstrap, jQuery UI, etc.)
+        if (window.$ && typeof $.fn.datepicker === 'function') {
+            $(fechaInput).datepicker('option', 'maxDate', maxDate);
+        }
+        if (window.bootstrap && fechaInput._datepicker) {
+            fechaInput._datepicker.setOptions({ maxDate: maxDate });
+        }
+    }
+});
+</script>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Nombre del tutor <span class="text-danger">*</span></label>
@@ -354,10 +412,24 @@
                     <p class="step-description">Detalles sobre embarazo, parto y primeros meses</p>
 
                     <div class="mb-3">
-                        <label class="form-label">Información sobre el embarazo y parto</label>
-                        <textarea name="datos_prenatales" class="form-control" 
-                                  placeholder="Detalles sobre embarazo, parto y primeros meses de vida..."></textarea>
-                        <small class="text-muted">Por ejemplo: tipo de parto, peso al nacer, complicaciones, etc.</small>
+                        <label class="form-label">Tipo de parto</label>
+                        <select name="tipo_parto" class="form-select" required>
+                            <option value="">Seleccione...</option>
+                            <option value="natural">Natural</option>
+                            <option value="cesarea">Cesárea</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Complicaciones</label>
+                        <div>
+                            <input type="radio" name="complicaciones" value="ninguna" required> Ninguna
+                            <input type="radio" name="complicaciones" value="leves"> Leves
+                            <input type="radio" name="complicaciones" value="graves"> Graves
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Peso al nacer</label>
+                        <input type="number" name="peso_nacer" class="form-control" placeholder="Peso en gramos" min="500" max="6000" required>
                     </div>
                 </div>
 
@@ -367,10 +439,29 @@
                     <p class="step-description">Información sobre escolaridad, desempeño y actividades</p>
 
                     <div class="mb-3">
-                        <label class="form-label">Información escolar</label>
-                        <textarea name="datos_escolares" class="form-control" 
-                                  placeholder="Información sobre escolaridad, desempeño y actividades..."></textarea>
-                        <small class="text-muted">Por ejemplo: nivel educativo, rendimiento, adaptación social, etc.</small>
+                        <label class="form-label">Nivel educativo</label>
+                        <select name="nivel_educativo" class="form-select" required>
+                            <option value="">Seleccione...</option>
+                            <option value="inicial">Inicial</option>
+                            <option value="primario">Primario</option>
+                            <option value="secundario">Secundario</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Rendimiento escolar</label>
+                        <div>
+                            <input type="radio" name="rendimiento" value="bueno" required> Bueno
+                            <input type="radio" name="rendimiento" value="regular"> Regular
+                            <input type="radio" name="rendimiento" value="bajo"> Bajo
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Adaptación social</label>
+                        <div>
+                            <input type="radio" name="adaptacion" value="buena" required> Buena
+                            <input type="radio" name="adaptacion" value="regular"> Regular
+                            <input type="radio" name="adaptacion" value="mala"> Mala
+                        </div>
                     </div>
                 </div>
 
@@ -380,10 +471,22 @@
                     <p class="step-description">Historial médico y motivo de consulta</p>
 
                     <div class="mb-3">
-                        <label class="form-label">Antecedentes médicos y motivo de consulta</label>
-                        <textarea name="datos_clinicos" class="form-control" 
-                                  placeholder="Antecedentes médicos, tratamientos previos, motivo de la consulta..."></textarea>
-                        <small class="text-muted">Por ejemplo: diagnósticos previos, medicación actual, razón de la consulta, etc.</small>
+                        <label class="form-label">Diagnóstico previo</label>
+                        <select name="diagnostico_previo" class="form-select" required>
+                            <option value="">Seleccione...</option>
+                            <option value="ninguno">Ninguno</option>
+                            <option value="tdah">TDAH</option>
+                            <option value="tea">TEA</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Medicación actual</label>
+                        <input type="text" name="medicacion_actual" class="form-control" placeholder="Nombre de la medicación">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Motivo de la consulta</label>
+                        <textarea name="motivo_consulta" class="form-control" placeholder="Motivo de la consulta..." required></textarea>
                     </div>
                 </div>
             </div>
@@ -397,12 +500,112 @@
                 <a href="{% url 'index' %}" class="btn btn-back-home">
                     <i class="bi bi-house"></i> Volver al Inicio
                 </a>
+                <style>
+                    .btn-back-home {
+                        background: linear-gradient(135deg, var(--primary-purple) 0%, var(--dark-purple) 100%) !important;
+                        color: #fff !important;
+                        font-weight: 700 !important;
+                        font-size: 1.1rem !important;
+                        text-shadow: 0 1px 2px rgba(0,0,0,0.15) !important;
+                        border-radius: 12px !important;
+                        padding: 0.75rem 2rem !important;
+                        line-height: 1.2 !important;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border: none !important;
+                    }
+                    .btn-back-home:hover {
+                        background: linear-gradient(135deg, var(--dark-purple) 0%, var(--primary-purple) 100%) !important;
+                        color: #fff !important;
+                    }
+                </style>
                 <button type="button" class="btn btn-next" id="nextBtn">
                     Siguiente <i class="bi bi-arrow-right"></i>
                 </button>
+                <div class="form-check mt-3" id="privacidadCheck" style="display:none;">
+                    <input class="form-check-input" type="checkbox" value="1" id="aceptaPrivacidad" name="aceptaPrivacidad" required>
+                    <label class="form-check-label" for="aceptaPrivacidad">
+                        Acepto las <a href="{% url 'politicas_privacidad' %}" target="_blank">políticas de privacidad</a> para el tratamiento de datos de menores.
+                    </label>
+                </div>
                 <button type="submit" class="btn btn-submit" id="submitBtn" style="display: none;">
                     <i class="bi bi-send"></i> Enviar Entrevista
                 </button>
+                <script>
+                // Mostrar el checkbox solo en el último paso
+                document.addEventListener('DOMContentLoaded', function() {
+                    const privacidadCheck = document.getElementById('privacidadCheck');
+                    const nextBtn = document.getElementById('nextBtn');
+                    const submitBtn = document.getElementById('submitBtn');
+                    let currentStep = 1;
+                    const totalSteps = document.querySelectorAll('.step-content').length;
+                    function togglePrivacidadCheck(step) {
+                        privacidadCheck.style.display = (step === totalSteps) ? 'block' : 'none';
+                    }
+                    function showStep(step) {
+                        document.querySelectorAll('.step-content').forEach(content => {
+                            content.classList.remove('active');
+                        });
+                        var actualStep = document.querySelector(`.step-content[data-step="${step}"]`);
+                        if (actualStep) actualStep.classList.add('active');
+                        document.querySelectorAll('.step').forEach((stepEl, index) => {
+                            stepEl.classList.remove('active', 'completed');
+                            if (index + 1 < step) {
+                                stepEl.classList.add('completed');
+                            } else if (index + 1 === step) {
+                                stepEl.classList.add('active');
+                            }
+                        });
+                        prevBtn.style.display = step === 1 ? 'none' : 'block';
+                        nextBtn.style.display = step === totalSteps ? 'none' : 'block';
+                        submitBtn.style.display = step === totalSteps ? 'block' : 'none';
+                        togglePrivacidadCheck(step);
+                        currentStep = step;
+                    }
+                    function validateStep(step) {
+                        const stepContent = document.querySelector(`.step-content[data-step="${step}"]`);
+                        const requiredFields = stepContent.querySelectorAll('[required]');
+                        for (let field of requiredFields) {
+                            if ((field.type === 'radio' || field.type === 'checkbox')) {
+                                let checked = stepContent.querySelector(`[name='${field.name}']:checked`);
+                                if (!checked) {
+                                    field.focus();
+                                    return false;
+                                }
+                            } else if (field.tagName === 'SELECT') {
+                                if (!field.value) {
+                                    field.focus();
+                                    return false;
+                                }
+                            } else {
+                                if (!field.value.trim()) {
+                                    field.focus();
+                                    return false;
+                                }
+                            }
+                            if (field.name === 'dni_paciente' && !/^\d{8}$/.test(field.value)) {
+                                field.focus();
+                                return false;
+                            }
+                            if (field.name === 'peso_nacer' && (parseInt(field.value) < 500 || parseInt(field.value) > 6000)) {
+                                field.focus();
+                                return false;
+                            }
+                        }
+                        return true;
+                    }
+                    nextBtn.addEventListener('click', function() {
+                        if (validateStep(currentStep)) {
+                            showStep(currentStep + 1);
+                        }
+                    });
+                    prevBtn.addEventListener('click', function() {
+                        showStep(currentStep - 1);
+                    });
+                    showStep(1);
+                });
+                </script>
             </div>
         </form>
 
@@ -431,15 +634,14 @@
         const form = document.getElementById('wizardForm');
 
         function showStep(step) {
-            // Hide all steps
+            // Oculta todos los pasos
             document.querySelectorAll('.step-content').forEach(content => {
                 content.classList.remove('active');
             });
-
-            // Show current step
-            document.querySelector(`.step-content[data-step="${step}"]`).classList.add('active');
-
-            // Update progress indicators
+            // Muestra el paso actual
+            var actualStep = document.querySelector(`.step-content[data-step="${step}"]`);
+            if (actualStep) actualStep.classList.add('active');
+            // Actualiza los indicadores
             document.querySelectorAll('.step').forEach((stepEl, index) => {
                 stepEl.classList.remove('active', 'completed');
                 if (index + 1 < step) {
@@ -448,14 +650,22 @@
                     stepEl.classList.add('active');
                 }
             });
-
-            // Update buttons
+            // Actualiza los botones
             prevBtn.style.display = step === 1 ? 'none' : 'block';
             nextBtn.style.display = step === totalSteps ? 'none' : 'block';
             submitBtn.style.display = step === totalSteps ? 'block' : 'none';
-
+            // Muestra el checkbox de privacidad solo en el último paso
+            var privacidadCheck = document.getElementById('privacidadCheck');
+            if (privacidadCheck) privacidadCheck.style.display = (step === totalSteps) ? 'block' : 'none';
             currentStep = step;
         }
+        // Corrige el avance de pasos
+        // Elimina duplicidad y asegura avance correcto
+        nextBtn.addEventListener('click', function() {
+            if (validateStep(currentStep)) {
+                showStep(currentStep + 1);
+            }
+        });
 
         function validateStep(step) {
             const stepContent = document.querySelector(`.step-content[data-step="${step}"]`);
@@ -464,14 +674,12 @@
             for (let field of requiredFields) {
                 if (!field.value.trim()) {
                     field.focus();
-                    alert('Por favor complete todos los campos obligatorios.');
                     return false;
                 }
                 
                 // Validar DNI
                 if (field.name === 'dni_paciente' && !/^\d{8}$/.test(field.value)) {
                     field.focus();
-                    alert('El DNI debe contener exactamente 8 dígitos.');
                     return false;
                 }
             }

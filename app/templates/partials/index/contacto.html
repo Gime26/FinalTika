@@ -17,7 +17,7 @@
         <!-- Columna Derecha: Formulario -->
         <div class="right-side">
             <h4>¿Estás interesado en formar parte de TIKA?</h4>
-            <p class="form-subtitle">Comunicate con nosotros</p>
+            <p>Comunicate con nosotros</p>
             
             <form class="contact-form" action="{% url 'index' %}" method="POST">
                 {% csrf_token %}
@@ -55,6 +55,17 @@
         background: rgba(255, 255, 255, 0.3);
         pointer-events: none;
         z-index: 0;
+    }
+
+    #contacto .title {
+        text-align: center;
+        font-size: 2rem;
+        font-weight: 700;
+        color: #f3e5f5;
+        text-shadow: 2px 2px 4px rgba(155, 89, 182, 0.4);
+        margin-bottom: 2rem;
+        position: relative;
+        z-index: 1;
     }
 
     #contacto .title {
@@ -140,7 +151,6 @@
         box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         height: fit-content;
     }
-
     .right-side h4 {
         color: #333;
         font-size: 1.2rem;
@@ -229,6 +239,11 @@
         .right-side {
             padding: 1.5rem;
         }
+    }
+    /* Color para el texto 'Comunicate con nosotros' */
+    .right-side p {
+        color: #6a1b9a !important;
+        text-shadow: none !important;
     }
 </style>
 

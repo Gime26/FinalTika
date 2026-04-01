@@ -204,6 +204,14 @@
                         <i class="bi bi-person-badge"></i>
                         {{ o.get_especialista_display }}
                     </div>
+                    <div class="info-item">
+                        <i class="bi bi-award"></i>
+                        {% if o.creada_por and o.creada_por.perfil %}
+                            {{ o.creada_por.perfil.especialidad|default:"Sin especialidad" }}
+                        {% else %}
+                            Sin especialidad
+                        {% endif %}
+                    </div>
                 </div>
                 <span class="badge-tipo">{{ o.get_tipo_sesion_display }}</span>
             </div>

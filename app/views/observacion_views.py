@@ -32,6 +32,13 @@ class CrearObservacionView(LoginRequiredMixin, CreateView):
     template_name = 'observaciones/observacion_form.html'
     success_url = reverse_lazy('lista_observaciones')
 
+    def get_context_data(self, **kwargs):
+        import json
+        context = super().get_context_data(**kwargs)
+        pacientes_qs = self.form_class.base_fields['paciente'].queryset.values('id', 'nombre', 'apellido')
+        pacientes_list = list(pacientes_qs)
+        context['pacientes'] = json.dumps(pacientes_list, ensure_ascii=False)
+        return context
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
         # Prellenar especialista con el usuario actual
@@ -47,7 +54,9 @@ class CrearObservacionView(LoginRequiredMixin, CreateView):
         return form
 
     def form_valid(self, form):
+        from django.utils import timezone
         form.instance.creada_por = self.request.user
+        form.instance.fecha = timezone.now()
         # Asegurar que el especialista sea el del usuario actual
         try:
             perfil = self.request.user.perfil
@@ -93,12 +102,19 @@ def editar_observacion(request, pk):
     else:
         form = ObservacionForm(instance=observacion)
         # Prellenar y deshabilitar el campo especialista
-        form.fields['especialista'].initial = observacion.especialista
+        if 'especialista' in form.fields:
+            form.fields['especialista'].initial = observacion.especialista
     
+    import json
+    from ..models import Paciente
+    pacientes_qs = Paciente.objects.values('id', 'nombre', 'apellido')
+    pacientes_list = list(pacientes_qs)
+    pacientes_json = json.dumps(pacientes_list, ensure_ascii=False)
     return render(request, 'observaciones/observacion_form.html', {
         'form': form,
         'es_edicion': True,
-        'observacion': observacion
+        'observacion': observacion,
+        'pacientes': pacientes_json
     })
 
 

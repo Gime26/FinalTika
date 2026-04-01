@@ -11,4 +11,5 @@ from .informe_views import *
 from .contacto_views import *
 from .estadistica_views import *
 from .comprobantes_views import *
+from .usuarios_views import *
 

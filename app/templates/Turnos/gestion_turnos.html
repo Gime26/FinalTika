@@ -277,14 +277,14 @@
                     <p class="mb-1 small"><strong>Motivo:</strong> {{ turno.motivo }}</p>
                     {% endif %}
                     <div class="turno-actions">
-                        {% if turno.status == 'PENDING' %}
-                        <button class="btn btn-success btn-sm" onclick="confirmarTurno({{ turno.id }})">Confirmar</button>
-                        {% endif %}
-                        {% if turno.status != 'CANCELLED' %}
-                        <button class="btn btn-warning btn-sm" onclick="cancelarTurno({{ turno.id }})">Cancelar</button>
-                        {% endif %}
-                        <button class="btn btn-info btn-sm" onclick="modificarTurno({{ turno.id }})">Modificar</button>
-                        <button class="btn btn-danger btn-sm" onclick="eliminarTurno({{ turno.id }})">Eliminar</button>
+                            <!-- Removed inline style to avoid overriding external CSS -->
+                            {% if turno.status == 'PENDING' %}
+                            <button class="btn btn-tika btn-tika-primary btn-sm" onclick="confirmarTurno({{ turno.id }})">Confirmar</button>
+                            {% endif %}
+                            {% if turno.status != 'CANCELLED' %}
+                            <button class="btn btn-tika btn-tika-warning btn-sm" onclick="cancelarTurno({{ turno.id }})">Cancelar</button>
+                            {% endif %}
+                            <button class="btn btn-tika btn-tika-info btn-sm" onclick="modificarTurno({{ turno.id }})">Modificar</button>
                     </div>
                 </div>
                 {% empty %}
@@ -461,21 +461,46 @@
         console.log('Enviando datos:', formData);
         
         const url = turnoEnEdicion ? `/turnos/editar/${turnoEnEdicion}/` : '{% url "crear_turno" %}';
-        
+
+        // Obtener CSRF de la cookie
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
         try {
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRFToken': '{{ csrf_token }}'
+                    'X-CSRFToken': getCookie('csrftoken')
                 },
                 body: JSON.stringify(formData)
             });
-            
-            const data = await response.json();
-            
+
+            // Si la respuesta no es JSON, mostrar el texto completo para depurar
+            const text = await response.text();
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch (err) {
+                console.error('Respuesta no es JSON:', text);
+                alert('Error inesperado: ' + text);
+                return;
+            }
+
             console.log('Respuesta del servidor:', data);
-            
+
             if (data.success) {
                 alert(data.message);
                 location.reload();

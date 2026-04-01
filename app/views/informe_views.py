@@ -1,3 +1,113 @@
+from django.http import FileResponse, Http404
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404
+from ..models import InformeInterdisciplinario
+from reportlab.lib.pagesizes import letter
+
+from reportlab.lib.units import inch
+from reportlab.lib.utils import ImageReader
+from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Frame, PageBreak, Image
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.enums import TA_JUSTIFY
+import io
+import os
+
+@login_required
+
+def descargar_pdf_informe(request, informe_id):
+    """Genera y descarga el PDF profesional del informe interdisciplinario"""
+    from reportlab.lib.pagesizes import letter
+    informe = get_object_or_404(InformeInterdisciplinario, pk=informe_id)
+    secciones = informe.secciones.all().select_related('especialista')
+
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=letter,
+        leftMargin=inch, rightMargin=inch, topMargin=inch, bottomMargin=inch)
+
+    styles = getSampleStyleSheet()
+    style_normal = ParagraphStyle(
+        name='Justify',
+        parent=styles['Normal'],
+        fontName='Helvetica',
+        fontSize=12,
+        alignment=TA_JUSTIFY,
+        leading=14,
+    )
+    style_title = ParagraphStyle(
+        name='Title',
+        parent=styles['Heading1'],
+        fontName='Helvetica-Bold',
+        fontSize=18,
+        alignment=1,
+        spaceAfter=20,
+    )
+    style_subtitle = ParagraphStyle(
+        name='Subtitle',
+        parent=styles['Heading2'],
+        fontName='Helvetica-Bold',
+        fontSize=13,
+        alignment=0,
+        spaceAfter=10,
+    )
+
+    elements = []
+
+    # Logo y título
+    logo_path = os.path.join('app', 'static', 'img', 'logotikadash.png')
+    if os.path.exists(logo_path):
+        elements.append(Image(logo_path, width=120, height=60))
+        elements.append(Spacer(1, 10))
+    elements.append(Paragraph("Informe Interdisciplinario", style_title))
+
+    # Datos principales
+    datos = [
+        f"Paciente: {informe.paciente.nombre} {informe.paciente.apellido} (DNI: {informe.paciente.dni})",
+        f"Fecha del informe: {informe.fecha_informe.strftime('%d/%m/%Y') if informe.fecha_informe else ''}",
+        f"Creado por: {informe.creado_por.username}",
+        f"Última modificación: {informe.fecha_modificacion.strftime('%d/%m/%Y %H:%M') if informe.fecha_modificacion else ''}"
+    ]
+    for dato in datos:
+        elements.append(Paragraph(dato, style_normal))
+    elements.append(Spacer(1, 16))
+
+    # Descripción general
+    if informe.descripcion_general:
+        elements.append(Paragraph("Descripción General:", style_subtitle))
+        elements.append(Paragraph(informe.descripcion_general, style_normal))
+        elements.append(Spacer(1, 16))
+
+    # Secciones de cada especialista
+    for idx, seccion in enumerate(secciones, start=1):
+        encabezado = f"{seccion.especialista.nombre} {seccion.especialista.apellido} - {seccion.especialista.especialidad}"
+        elements.append(Paragraph(encabezado, style_subtitle))
+        elements.append(Paragraph(seccion.contenido, style_normal))
+        elements.append(Spacer(1, 10))
+
+    # Pie de firma: logo y nombre del especialista principal (creador)
+    elements.append(Spacer(1, 40))
+    logo_path = os.path.join('app', 'static', 'img', 'logotikadash.png')
+    if os.path.exists(logo_path):
+        elements.append(Image(logo_path, width=100, height=50))
+        elements.append(Spacer(1, 10))
+    # Obtener datos del perfil del especialista responsable
+    perfil_resp = getattr(informe.creado_por, 'perfil', None)
+    if perfil_resp:
+        nombre_firma = f"{perfil_resp.nombre} {perfil_resp.apellido}".strip()
+        especialidad = perfil_resp.especialidad if hasattr(perfil_resp, 'especialidad') else ''
+        matricula = perfil_resp.matricula if hasattr(perfil_resp, 'matricula') else ''
+        datos_firma = f"{nombre_firma} {especialidad} MP {matricula}".strip()
+    else:
+        nombre_firma = f"{informe.creado_por.first_name} {informe.creado_por.last_name}".strip()
+        if not nombre_firma:
+            nombre_firma = informe.creado_por.username
+        datos_firma = nombre_firma
+    elements.append(Paragraph(f"Especialista responsable: <b>{datos_firma}</b>", style_normal))
+    elements.append(Spacer(1, 20))
+    elements.append(Paragraph("Firma: _____________________________", style_normal))
+
+    doc.build(elements)
+    buffer.seek(0)
+    return FileResponse(buffer, as_attachment=True, filename=f"Informe_{informe.paciente.apellido}_{informe.id}.pdf")
 """
 Vistas de gestión de informes interdisciplinarios
 """
@@ -12,7 +122,7 @@ from ..forms import InformeInterdisciplinarioForm, SeccionInformeForm
 __all__ = [
     'crear_informe_interdisciplinario', 'lista_informes', 'detalle_informe',
     'agregar_seccion_informe', 'editar_informe', 'eliminar_informe',
-    'eliminar_seccion_informe'
+    'eliminar_seccion_informe', 'descargar_pdf_informe'
 ]
 
 

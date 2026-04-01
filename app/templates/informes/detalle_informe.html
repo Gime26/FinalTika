@@ -1,3 +1,9 @@
+    .descripcion-full {
+        max-width: 100%;
+        width: 100%;
+        box-sizing: border-box;
+        display: block;
+    }
 {% extends 'base.html' %}
 {% load static %}
 
@@ -134,7 +140,7 @@
     }
     
     .descripcion-section p {
-        color: #004578;
+        color: #000000 !important;
         line-height: 1.7;
         margin: 0;
         font-size: 1rem;
@@ -293,7 +299,15 @@
         padding: 25px 30px;
         font-size: 1.05rem;
         line-height: 1.8;
-        color: #333;
+        color: #111 !important;
+        background: #fff !important;
+    }
+    .seccion-body * {
+        color: #111 !important;
+        background: #fff !important;
+        text-shadow: none !important;
+        filter: none !important;
+        opacity: 1 !important;
     }
     
     .empty-state {
@@ -365,6 +379,9 @@
                     <i class="bi bi-trash"></i> Eliminar
                 </a>
                 {% endif %}
+                <a href="{% url 'descargar_pdf_informe' informe.id %}" class="btn-action btn-ver" style="background:#005EA2; color:white;">
+                    <i class="bi bi-file-earmark-pdf"></i> Descargar PDF
+                </a>
                 <a href="{% url 'lista_informes' %}" class="btn-action btn-volver">
                     <i class="bi bi-arrow-left"></i> Volver
                 </a>
@@ -399,7 +416,7 @@
         </div>
 
         {% if informe.descripcion_general %}
-        <div class="descripcion-section">
+        <div class="descripcion-section descripcion-full">
             <h6><i class="bi bi-file-earmark-text"></i> Descripción General</h6>
             <p>{{ informe.descripcion_general|linebreaks }}</p>
         </div>
@@ -467,8 +484,8 @@
                         {% endif %}
                     </div>
                 </div>
-                <div class="seccion-body">
-                    {{ seccion.contenido|linebreaks }}
+                <div class="seccion-body" style="color:#000 !important; background:#fff !important; filter:none !important; opacity:1 !important;">
+                    <span style="color:#000 !important; background:#fff !important; filter:none !important; opacity:1 !important;">{{ seccion.contenido|safe }}</span>
                 </div>
             </div>
             {% endfor %}

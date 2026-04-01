@@ -1,3 +1,12 @@
+    .seccion-contenido p {
+        color: #111 !important;
+        background: #fff !important;
+        opacity: 1 !important;
+        font-size: 1.1rem;
+        line-height: 1.8;
+        margin: 0;
+        white-space: pre-wrap;
+    }
 {% extends 'pacientes/basepacientes.html' %}
 {% load static %}
 
@@ -58,10 +67,26 @@
 
     <!-- Descripción general -->
     {% if informe.descripcion_general %}
-    <div class="descripcion-card">
+    <div class="descripcion-card seccion-contenido">
         <h3><i class="bi bi-file-text me-2"></i>Descripción General</h3>
-        <p>{{ informe.descripcion_general }}</p>
+        <p class="seccion-contenido">{{ informe.descripcion_general }}</p>
     </div>
+
+<style>
+    .descripcion-general-texto {
+        color: #000 !important;
+        background: #fff !important;
+        text-shadow: none !important;
+        filter: none !important;
+        opacity: 1 !important;
+        font-size: 1.1rem;
+    }
+    .descripcion-card {
+        background: #fff !important;
+        opacity: 1 !important;
+        color: #000 !important;
+    }
+</style>
     {% endif %}
 
     <!-- Especialistas participantes -->
@@ -101,7 +126,7 @@
                 </span>
             </div>
             
-            <div class="seccion-contenido">
+            <div class="seccion-contenido" style="color:#111 !important; background:#fff !important; opacity:1 !important;">
                 {{ seccion.contenido|linebreaks }}
             </div>
         </div>
@@ -226,7 +251,9 @@
     }
 
     .descripcion-card p {
-        color: #495057;
+        color: #111 !important;
+        background: #fff !important;
+        opacity: 1 !important;
         font-size: 1.1rem;
         line-height: 1.8;
         margin: 0;

@@ -39,12 +39,13 @@
         </select>
 
         <label>Fecha:</label>
-        <input type="date">
+        <input type="date" id="fechaTurno">
 
         <label>Hora:</label>
         <input type="time">
 
         <button type="submit" class="submit-btn">Guardar turno</button>
+        <span id="errorFecha" style="color:red;display:none;margin-top:8px;"></span>
       </form>
     </section>
 
@@ -67,6 +68,9 @@
   const modal = document.getElementById('modalTurnos');
   const btnAbrir = document.getElementById('btnAbrirModal');
   const spanClose = document.querySelector('.modal .close');
+  const fechaInput = document.getElementById('fechaTurno');
+  const form = modal.querySelector('form');
+  const errorFecha = document.getElementById('errorFecha');
 
   if (btnAbrir) {
     btnAbrir.onclick = function() {
@@ -83,6 +87,22 @@
       modal.style.display = "none";
     }
   }
+
+  // Validación para bloquear sábados y domingos
+  form.addEventListener('submit', function(e) {
+    if (fechaInput.value) {
+      const fecha = new Date(fechaInput.value);
+      const dia = fecha.getDay(); // 0=Domingo, 6=Sábado
+      if (dia === 0 || dia === 6) {
+        errorFecha.textContent = 'No se pueden agendar turnos en sábado o domingo.';
+        errorFecha.style.display = 'block';
+        e.preventDefault();
+        return false;
+      } else {
+        errorFecha.style.display = 'none';
+      }
+    }
+  });
 </script>
 
 {% endblock %}

@@ -34,6 +34,9 @@ def mi_perfil(request):
     })
 
 def editar_perfil(request):
+        """Editar un turno existente"""
+        turno = get_object_or_404(Turno, pk=pk)
+
     try:
         perfil = request.user.perfil
     except Perfil.DoesNotExist:
@@ -951,6 +954,9 @@ def crear_turno(request):
 
 
 @login_required
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
 def editar_turno(request, pk):
     """Editar un turno existente"""
     turno = get_object_or_404(Turno, pk=pk)

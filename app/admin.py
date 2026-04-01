@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import (
-    Paciente, Entrevista, Perfil, EstadoPaciente, HistorialPaciente, 
-    Turno, Especialista, Centrosterapeuticos, Detallepagos, Especialidades, Especialistas, Observacion, Testimonio
+    Paciente, Entrevista, Perfil, HistorialPaciente, 
+    Turno, Especialista, Especialidades, Observacion, Testimonio, InformeInterdisciplinario, Contacto
 )
 
 # ----------------------
@@ -52,7 +52,7 @@ class PerfilAdmin(admin.ModelAdmin):
         'domicilio', 'telefono', 'cp', 'email', 'especialidad', 'matricula', 'rol']
     search_fields = ['user__username', 'nombre', 'apellido', 'dni', 'matricula', 'email']
     list_filter = ['rol']
-    exclude = ['paciente']  # Excluir el campo paciente del formulario de admin
+    # exclude = ['paciente']  # Permitir editar el campo paciente en el admin
     
     def get_readonly_fields(self, request, obj=None):
         # Solo hacer 'user' de solo lectura cuando se está editando (obj existe)
@@ -60,21 +60,16 @@ class PerfilAdmin(admin.ModelAdmin):
         if obj:  # Editando un perfil existente
             return ['user']
         return []  # Creando un nuevo perfil, permitir seleccionar usuario
-# ----------------------
-# ESTADO PACIENTE
-# ----------------------
-@admin.register(EstadoPaciente)
-class EstadoPacienteAdmin(admin.ModelAdmin):
-    list_display = ('id_estado', 'nombre_estado')
-    search_fields = ('nombre_estado',)
 
 # ----------------------
-# HISTORIAL PACIENTE
+# COMPROBANTES
 # ----------------------
-@admin.register(HistorialPaciente)
-class HistorialPacienteAdmin(admin.ModelAdmin):
-    list_display = ('nro_historia_paciente', 'paciente', 'estado_paciente', 'observaciones', 'antecedentes')
-    search_fields = ('paciente__nombre', 'paciente__apellido', 'observaciones')
+from .models import Comprobantes
+@admin.register(Comprobantes)
+class ComprobanteAdmin(admin.ModelAdmin):
+    list_display = ('codigo', 'monto', 'observaciones', 'fecha')
+    search_fields = ('codigo', 'observaciones')
+    list_filter = ('monto', 'fecha')
 
 # ----------------------
 # TURNOS Y ESPECIALISTAS
@@ -93,35 +88,15 @@ class TurnoAdmin(admin.ModelAdmin):
     ordering = ('-fecha', '-hora')
 
 # ----------------------
-# CENTROS TERAPÉUTICOS
-# ----------------------
-@admin.register(Centrosterapeuticos)
-class CentrosterapeuticosAdmin(admin.ModelAdmin):
-    list_display = ('id_centroterapeutico', 'nombre', 'telefono')
-    search_fields = ('nombre',)
-
-# ----------------------
-# DETALLE PAGOS
-# ----------------------
-@admin.register(Detallepagos)
-class DetallepagosAdmin(admin.ModelAdmin):
-    list_display = ('codigo_pago', 'monto', 'observaciones')
-    search_fields = ('codigo_pago',)
-
-# Para Especialidades
-@admin.register(Especialidades)
-class EspecialidadesAdmin(admin.ModelAdmin):
-    list_display = ('id_especialidades', 'id_especialista', 'nombre', 'matricula')
-    search_fields = ('nombre',)
-
-# Para Especialistas
-@admin.register(Especialistas)
-class EspecialistasAdmin(admin.ModelAdmin):
-    list_display = ('id_especialistas', 'id_especialidad_especialista', 'dni', 'matricula', 'email', 'telefono')
-    search_fields = ('dni', 'email')
-# ----------------------
 # INFORMES
 # ----------------------
+@admin.register(InformeInterdisciplinario)
+class InformeInterdisciplinarioAdmin(admin.ModelAdmin):
+    list_display = ('paciente', 'asunto', 'fecha_informe', 'fecha_creacion')
+    search_fields = ('paciente__nombre', 'paciente__apellido', 'asunto')
+    list_filter = ('fecha_informe',)
+
+
 
 # ----------------------
 # OBSERVACIONES
@@ -140,5 +115,12 @@ class TestimonioAdmin(admin.ModelAdmin):
     list_display = ('titulo', 'usuario', 'relacion', 'fecha_envio', 'estado', 'publicado')
     search_fields = ('titulo', 'usuario__username', 'contenido')
     list_filter = ('estado', 'publicado')
+
+# Vista de contactos
+@admin.register(Contacto)
+class ContactoAdmin(admin.ModelAdmin):
+    list_display = ('nombre', 'email', 'telefono', 'mensaje', 'fecha_envio', 'estado')
+    search_fields = ('nombre', 'email', 'mensaje')
+    list_filter = ('estado', 'fecha_envio')
 
 

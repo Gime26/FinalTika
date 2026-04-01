@@ -57,7 +57,7 @@ def aprobar_testimonio(request, id):
     testimonio.estado = 'aprobado'
     testimonio.publicado = True
     testimonio.save()
-    messages.success(request, f'Testimonio de {testimonio.nombre_autor} aprobado exitosamente.')
+    messages.success(request, f'Testimonio de {testimonio.usuario.username} aprobado exitosamente.')
     return redirect('testimonios_lista')
 
 

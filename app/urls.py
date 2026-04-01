@@ -32,6 +32,7 @@ urlpatterns = [
     path('informes/<int:informe_id>/eliminar/', views.eliminar_informe, name='eliminar_informe'),
     path('informes/<int:informe_id>/agregar-seccion/', views.agregar_seccion_informe, name='agregar_seccion_informe'),
     path('informes/seccion/<int:seccion_id>/eliminar/', views.eliminar_seccion_informe, name='eliminar_seccion_informe'),
+    path('informes/<int:informe_id>/descargar-pdf/', views.descargar_pdf_informe, name='descargar_pdf_informe'),
     
      # CRUD Pacientes
     path("pacientes/", views.pacientes_list, name="pacientes_list"),
@@ -77,7 +78,25 @@ urlpatterns = [
     path('contactos/', views.lista_contactos, name='lista_contactos'),
     path('contactos/<int:pk>/leido/', views.marcar_contacto_leido, name='marcar_contacto_leido'),
     path('contactos/<int:pk>/respondido/', views.marcar_contacto_respondido, name='marcar_contacto_respondido'),
-    
-]    
-    
-    
+        path('usuarios_registrados/', views.usuarios_registrados, name='usuarios_registrados'),
+]
+
+urlpatterns += [
+    path('password_reset/', auth_views.PasswordResetView.as_view(
+        template_name='registration/password_reset_form.html',
+        email_template_name='registration/password_reset_email.html',
+        subject_template_name='registration/password_reset_subject.txt',
+        success_url='/password_reset/done/'
+    ), name='password_reset'),
+    path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(
+        template_name='registration/password_reset_done.html'
+    ), name='password_reset_done'),
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(
+        template_name='registration/password_reset_confirm.html',
+        success_url='/reset/done/'
+    ), name='password_reset_confirm'),
+    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(
+        template_name='registration/password_reset_complete.html'
+    ), name='password_reset_complete'),
+]
+

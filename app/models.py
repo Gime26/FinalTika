@@ -1,6 +1,21 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
+# ----------------------
+# COMPROBANTES
+# ----------------------
+class Comprobantes(models.Model):
+    codigo = models.AutoField(primary_key=True)
+    monto = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    observaciones = models.CharField(max_length=400, blank=True, null=True)
+    fecha = models.DateField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Comprobante"
+        verbose_name_plural = "Comprobantes"
+
+    def __str__(self):
+        return f"Comprobante {self.codigo} - ${self.monto}"
 
 User = get_user_model()
 

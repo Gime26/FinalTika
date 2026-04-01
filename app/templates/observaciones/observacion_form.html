@@ -15,7 +15,7 @@
         border-radius: 12px;
         padding: 35px;
         box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        border-top: 4px solid {% if es_edicion %}#ffc107{% else %}#28a745{% endif %};
+        border-top: 4px solid #8b5a9e;
     }
     
     .form-card h2 {
@@ -27,12 +27,11 @@
         gap: 12px;
     }
     
-    .form-card h2 i {
-        {% if es_edicion %}
+    .form-card h2 i.edicion {
         color: #ffc107;
-        {% else %}
+    }
+    .form-card h2 i.nuevo {
         color: #28a745;
-        {% endif %}
     }
     
     .form-card form p {
@@ -82,14 +81,15 @@
         border-top: 1px solid #d4b5e0;
     }
     
-    .btn-guardar {
-        {% if es_edicion %}
+    .btn-guardar.edicion {
         background: #ffc107;
         color: #212529;
-        {% else %}
+    }
+    .btn-guardar.nuevo {
         background: #28a745;
         color: white;
-        {% endif %}
+    }
+    .btn-guardar {
         padding: 14px 32px;
         border: none;
         border-radius: 8px;
@@ -102,16 +102,17 @@
         font-size: 1rem;
     }
     
-    .btn-guardar:hover {
-        {% if es_edicion %}
+    .btn-guardar.edicion:hover {
         background: #e0a800;
         color: #212529;
-        {% else %}
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(255, 193, 7, 0.3);
+    }
+    .btn-guardar.nuevo:hover {
         background: #218838;
         color: white;
-        {% endif %}
         transform: translateY(-2px);
-        box-shadow: 0 6px 12px rgba({% if es_edicion %}255, 193, 7{% else %}40, 167, 69{% endif %}, 0.3);
+        box-shadow: 0 6px 12px rgba(40, 167, 69, 0.3);
     }
     
     .btn-volver {
@@ -153,16 +154,16 @@
 <div class="form-observacion-container">
     <div class="form-card">
         <h2>
-            <i class="bi bi-{% if es_edicion %}pencil-square{% else %}journal-plus{% endif %}"></i> 
+            <i class="bi bi-{% if es_edicion %}pencil-square edicion{% else %}journal-plus nuevo{% endif %}"></i> 
             {% if es_edicion %}Editar Observación{% else %}Registrar Nueva Observación{% endif %}
         </h2>
 
         <!-- Información del Especialista -->
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 25px; border-left: 4px solid #8b5a9e;">
-            <p style="margin: 0; color: #2d1b35;"><strong><i class="bi bi-person-badge"></i> Especialista:</strong> {{ user.perfil.nombre }} {{ user.perfil.apellido }}</p>
-            <p style="margin: 5px 0 0 0; color: #6c757d; font-size: 0.9rem;"><strong>Especialidad:</strong> {{ user.perfil.especialidad|default:"No especificada" }}</p>
+        <div style="background: #3d054c; padding: 15px; border-radius: 8px; margin-bottom: 25px; border-left: 4px solid #8b5a9e;">
+            <p style="margin: 0; color: #fff;"><strong><i class="bi bi-person-badge"></i> Especialista:</strong> {{ user.perfil.nombre }} {{ user.perfil.apellido }}</p>
+            <p style="margin: 5px 0 0 0; color: #d4b5e0; font-size: 1rem;"><strong>Especialidad:</strong> {{ user.perfil.especialidad|default:"No especificada" }}</p>
             {% if not es_edicion %}
-            <p style="margin: 5px 0 0 0; color: #6c757d; font-size: 0.9rem;"><strong><i class="bi bi-calendar-check"></i> Fecha y hora:</strong> {% now "d/m/Y H:i" %} (Ahora)</p>
+            <p style="margin: 5px 0 0 0; color: #7d6c75; font-size: 0.9rem;"><strong><i class="bi bi-calendar-check"></i> Fecha y hora:</strong> {% now "d/m/Y H:i" %} </p>
             {% else %}
             <p style="margin: 5px 0 0 0; color: #6c757d; font-size: 0.9rem;"><strong><i class="bi bi-calendar-check"></i> Fecha y hora:</strong> {{ observacion.fecha|date:"d/m/Y H:i" }}</p>
             {% endif %}
@@ -170,10 +171,20 @@
 
         <form method="POST">
             {% csrf_token %}
-            {{ form.as_p }}
-            
+            {% if es_edicion %}
+                <label>Paciente:</label>
+                <input type="text" class="form-control" value="{{ observacion.paciente.nombre }} {{ observacion.paciente.apellido }}" readonly>
+                <input type="hidden" name="paciente" value="{{ observacion.paciente.id }}">
+            {% else %}
+                <label for="pacienteInput">Paciente:</label>
+                <input type="text" id="pacienteInput" name="paciente_nombre" class="form-control" placeholder="Escriba para buscar paciente..." autocomplete="off" required>
+                <input type="hidden" id="pacienteId" name="paciente">
+                <ul id="pacienteList" style="list-style:none; padding:0; margin:0; border:1px solid #d4b5e0; border-radius:8px; max-height:150px; overflow-y:auto; display:none; position:absolute; background:white; z-index:10;"></ul>
+            {% endif %}
+            <label for="id_observacion_clinica" style="font-weight:600; margin-top:20px;">Observación clínica:</label>
+            <textarea id="id_observacion_clinica" name="observacion_clinica" class="form-control" required></textarea>
             <div class="form-actions">
-                <button type="submit" class="btn-guardar">
+                <button type="submit" class="btn-guardar {% if es_edicion %}edicion{% else %}nuevo{% endif %}">
                     <i class="bi bi-{% if es_edicion %}check-circle{% else %}save{% endif %}"></i> 
                     {% if es_edicion %}Guardar Cambios{% else %}Guardar Observación{% endif %}
                 </button>
@@ -182,6 +193,88 @@
                 </a>
             </div>
         </form>
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Pacientes: pasar desde la vista como contexto
+            const pacientes = {{ pacientes|safe }};
+            const input = document.getElementById('pacienteInput');
+            const list = document.getElementById('pacienteList');
+            const hiddenId = document.getElementById('pacienteId');
+            input.addEventListener('input', function() {
+                const val = input.value.toLowerCase();
+                list.innerHTML = '';
+                if (val.length > 0) {
+                    const filtrados = pacientes.filter(p => (p.nombre + ' ' + p.apellido).toLowerCase().includes(val));
+                    filtrados.forEach(p => {
+                        const li = document.createElement('li');
+                        li.textContent = p.nombre + ' ' + p.apellido;
+                        li.style.padding = '8px 12px';
+                        li.style.cursor = 'pointer';
+                        li.addEventListener('mousedown', function() {
+                            input.value = p.nombre + ' ' + p.apellido;
+                            hiddenId.value = p.id;
+                            list.style.display = 'none';
+                        });
+                        list.appendChild(li);
+                    });
+                    list.style.display = filtrados.length ? 'block' : 'none';
+                } else {
+                    list.style.display = 'none';
+                }
+            });
+            input.addEventListener('blur', function() {
+                setTimeout(() => { list.style.display = 'none'; }, 100);
+            });
+
+            // Validación antes de enviar el formulario
+            const form = input.closest('form');
+            form.addEventListener('submit', function(e) {
+                if (!hiddenId.value) {
+                    e.preventDefault();
+                    alert('Por favor, seleccione un paciente de la lista.');
+                    input.focus();
+                }
+            });
+        });
+        </script>
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Pacientes: pasar desde la vista como contexto
+            const pacientes = [
+                {% for paciente in pacientes %}
+                    {id: {{ paciente.id }}, nombre: "{{ paciente.nombre }} {{ paciente.apellido }}"},
+                {% endfor %}
+            ];
+            const input = document.getElementById('pacienteInput');
+            const list = document.getElementById('pacienteList');
+            const hiddenId = document.getElementById('pacienteId');
+            input.addEventListener('input', function() {
+                const val = input.value.toLowerCase();
+                list.innerHTML = '';
+                if (val.length > 0) {
+                    const filtrados = pacientes.filter(p => p.nombre.toLowerCase().includes(val));
+                    filtrados.forEach(p => {
+                        const li = document.createElement('li');
+                        li.textContent = p.nombre;
+                        li.style.padding = '8px 12px';
+                        li.style.cursor = 'pointer';
+                        li.addEventListener('mousedown', function() {
+                            input.value = p.nombre;
+                            hiddenId.value = p.id;
+                            list.style.display = 'none';
+                        });
+                        list.appendChild(li);
+                    });
+                    list.style.display = filtrados.length ? 'block' : 'none';
+                } else {
+                    list.style.display = 'none';
+                }
+            });
+            input.addEventListener('blur', function() {
+                setTimeout(() => { list.style.display = 'none'; }, 100);
+            });
+        });
+        </script>
     </div>
 </div>
 

@@ -75,3 +75,56 @@ window.addEventListener('resize', updateWelcomeVisibility);
 // También llama a la función cuando se haga clic en los botones
 btnSignUp.addEventListener('click', updateWelcomeVisibility);
 btnSignIn.addEventListener('click', updateWelcomeVisibility);
+
+// ========== MODIFICAR TURNO ========== //
+async function modificarTurno(turnoId, datosTurno) {
+  try {
+    const response = await fetch(`/turnos/editar/${turnoId}/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken') // Si usas CSRF
+      },
+      body: JSON.stringify(datosTurno)
+    });
+    if (!response.ok) {
+      throw new Error('Error de red o permisos');
+    }
+    const data = await response.json();
+    if (data.success) {
+      alert('Turno modificado exitosamente');
+      window.location.reload();
+    } else {
+      alert('Error: ' + (data.error || 'No se pudo modificar el turno'));
+    }
+  } catch (err) {
+    alert('Error al modificar turno: ' + err.message);
+  }
+}
+
+// Utilidad para obtener el token CSRF de la cookie
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+
+// Ejemplo de uso:
+// modificarTurno(123, {
+//   dni_paciente: '12345678',
+//   nombre_paciente: 'Juan',
+//   apellido_paciente: 'Pérez',
+//   especialista: 1,
+//   fecha: '2025-12-04',
+//   hora: '10:00',
+//   motivo: 'Motivo del turno'
+// });

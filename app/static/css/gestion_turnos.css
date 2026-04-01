@@ -1,4 +1,15 @@
 /* Estilos para Gestión de Turnos */
+/* Fix botones morados sin texto visible */
+.btn-tika, .btn-tika-primary, .btn-tika-warning, .btn-tika-info, .btn-tika-danger {
+    color: #fff !important;
+    font-weight: 700;
+    font-size: 1.1rem;
+    border: 2px solid #a77bb8;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+    letter-spacing: 0.5px;
+    text-rendering: optimizeLegibility;
+    text-align: center;
+}
 
 .card {
     box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);

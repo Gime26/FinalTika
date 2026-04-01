@@ -95,9 +95,17 @@ class LoginForm(forms.Form):
 
 
 class PacienteForm(forms.ModelForm):
+    def clean_fecha_nacimiento(self):
+        fecha_nacimiento = self.cleaned_data.get('fecha_nacimiento')
+        today = date.today()
+        if fecha_nacimiento and fecha_nacimiento > today:
+            raise forms.ValidationError("La fecha de nacimiento no puede ser mayor a hoy.")
+        return fecha_nacimiento
     class Meta:
         model = Paciente
         fields = ['dni', 'nombre', 'apellido', 'fecha_nacimiento', 'genero', 'telefono', 'email']
+        from datetime import date
+        today_str = date.today().strftime('%Y-%m-%d')
         widgets = {
             'dni': forms.TextInput(attrs={
                 'class': 'form-input',
@@ -121,7 +129,7 @@ class PacienteForm(forms.ModelForm):
                 'type': 'date',
                 'class': 'form-input',
                 'min': '1920-01-01',
-                'max': '2024-12-31'
+                'max': today_str
             }),
             'genero': forms.Select(attrs={
                 'class': 'form-input'

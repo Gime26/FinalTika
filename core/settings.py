@@ -155,3 +155,11 @@ MEDIA_ROOT= os.path.join(BASE_DIR, 'media')
 
 CODIGO_SECRETO_TERAPEUTA = "TIKA-2025"
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'tu_correo@gmail.com'  # Cambia por tu correo
+EMAIL_HOST_PASSWORD = 'tu_app_password'  # Cambia por tu contraseña de aplicación de Google
+DEFAULT_FROM_EMAIL = 'Tika <tu_correo@gmail.com>'
+

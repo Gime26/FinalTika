@@ -19,8 +19,27 @@ def mi_perfil(request):
         messages.error(request, "Error: Tu cuenta no tiene un perfil asociado. Contacta a un administrador.")
         return redirect('login')
     
+    # Buscar la última fecha de backup
+    import os
+    import re
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    BACKUP_DIR = os.path.join(BASE_DIR, 'backups')
+    ultima_backup = None
+    if os.path.exists(BACKUP_DIR):
+        backups = [d for d in os.listdir(BACKUP_DIR) if re.match(r'backup_\d{8}_\d{6}', d)]
+        if backups:
+            backups.sort(reverse=True)
+            fecha_str = backups[0].replace('backup_', '').replace('_', ' ')
+            # Formatear fecha para mostrar bonito
+            try:
+                from datetime import datetime
+                dt = datetime.strptime(fecha_str, '%Y%m%d %H%M%S')
+                ultima_backup = dt.strftime('%d/%m/%Y %H:%M')
+            except Exception:
+                ultima_backup = fecha_str
     return render(request, 'mi_perfil.html', {
-        'perfil': perfil
+        'perfil': perfil,
+        'ultima_backup': ultima_backup
     })
 
 

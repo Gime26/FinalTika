@@ -3,10 +3,11 @@ from tikabot import predict_class, get_response, intents
 import os , pathlib
 
 st.title("TikaBot")
+
 if "messages" not in st.session_state:
     st.session_state.messages = []
-if "first_message" not in st.session_state:
-    st.session_state.first_message = True 
+    # Mensaje de bienvenida fijo
+    st.session_state.messages.append({"role": "assistant", "content": "Hola, ¿cómo puedo ayudarte?"})
 
 for message in st.session_state.messages:
     content= message.get("content","")
@@ -14,13 +15,6 @@ for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
-if st.session_state.first_message:
-    initial_message = "Hola, ¿cómo puedo ayudarte?"
-    
-    with st.chat_message("assistant"):
-        st.markdown(initial_message)
-    #st.session_state.messages.append({"role":"assistant","content":initial_message})
-    st.session_state.first_message = False
 
 if prompt := st.chat_input("¿cómo puedo ayudarte?"):
     with st.chat_message("user"):

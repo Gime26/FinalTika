@@ -186,7 +186,7 @@
         {% endfor %}
         {% endif %}
      </div>
-       <a href="#" class="forgot">¿Olvidaste tu contraseña?</a>
+        <a href="{% url 'password_reset' %}" class="forgot">¿Olvidaste tu contraseña?</a>
        <a href="{% url 'inicio' %}" class="back-home">
          <i class="fas fa-arrow-left"></i> Volver al inicio
        </a>
